@@ -1,0 +1,77 @@
+﻿
+namespace PatientManagement.Infrastructure.Repositories.Implementations
+{
+    using Microsoft.AspNetCore.Identity;
+    using Microsoft.Extensions.Logging;
+    using DbContexts;
+    using PatientManagement.Common.Results;
+    using Repositories.Interfaces;
+    using Common.Enums;
+    using Microsoft.AspNetCore.Http;
+    using PatientManagement.Common.Utilities;
+
+    public class AccountRepository : IAccountRepository
+    {
+        private readonly AppDbContext _context;
+        private readonly UserManager<Entities.ApplicationUser> _userManager;
+        private readonly RoleManager<IdentityRole<Guid>> _roleManager;
+        private readonly ILogger<AccountRepository> _logger;
+
+        public AccountRepository(
+            AppDbContext context,
+            UserManager<Entities.ApplicationUser> userManager,
+            RoleManager<IdentityRole<Guid>> roleManager,
+            ILogger<AccountRepository> logger)
+        {
+            _context = context;
+            _userManager = userManager;
+            _roleManager = roleManager;
+            _logger = logger;
+        }
+
+
+        public async Task<CreateUserResult> CreateUserAsync(
+            string email,
+            string password,
+            UserRole role,
+            CancellationToken cancellationToken = default)
+        {
+            var user = await _userManager.FindByEmailAsync(email);
+            if (user != null)
+            {
+                throw new CustomException($"user with email {email} already exist", StatusCodes.Status400BadRequest);
+            }
+
+            bool roleExists = await _roleManager.RoleExistsAsync(role.ToString());
+
+            if (!roleExists)
+            {
+                throw new CustomException($"UserRole {role} does not exist", StatusCodes.Status400BadRequest);
+            }
+
+            var newUser = new Entities.ApplicationUser
+            {
+                Email = email,
+                UserName = email,
+                Role = role
+            };
+
+            var result = await _userManager.CreateAsync(newUser, password);
+            if (result.Succeeded)
+            {
+                await _userManager.AddToRoleAsync(newUser, role.ToString());
+            }
+
+
+            return new CreateUserResult(
+                userId: newUser.Id,
+                email: email,
+                userRole: role.ToString(),
+                created: newUser.CreatedDate);
+        }
+
+
+
+
+    }
+}

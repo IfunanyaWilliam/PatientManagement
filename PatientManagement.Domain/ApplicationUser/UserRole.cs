@@ -1,4 +1,5 @@
 ﻿
+
 namespace PatientManagement.Domain.ApplicationUser
 {
     public enum UserRole

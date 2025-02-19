@@ -1,27 +1,33 @@
+
 using PatientManagement.Api.Extensions;
-using PatientManagement.Api.Middlewares;
-
-var builder = WebApplication.CreateBuilder(args).AddSerilog();
-
-// Add services to the container.
+using Serilog;
 
 
-builder.Services.AddSwaggerGen();
-builder.Services.AddServices(builder.Configuration);
+public class Program
+{
+    public static async Task Main(string[] args)
+    {
+        try
+        {
+            var builder = WebApplication.CreateBuilder(args);
+            builder.AddSerilog();
 
-var app = builder.Build();
+            builder.Services.AddServices(builder.Configuration);
+            
+            var app = builder.Build();
 
+            // Seed data and configure the request pipeline
+            await app.ConfigureRequestPipeline();
+            app.Run();
 
-app.UseSwagger();
-app.UseSwaggerUI();
-
-
-app.UseMiddleware<ExceptionMiddleware>();
-
-app.UseHttpsRedirection();
-
-app.UseAuthorization();
-
-app.MapControllers();
-
-app.Run();
+        }
+        catch (Exception ex)
+        {
+            Log.Logger.Fatal(ex, ex.Source ?? string.Empty, ex.InnerException, ex.Message, ex.ToString());
+        }
+        finally
+        {
+            Log.CloseAndFlush();
+        }
+    }
+}

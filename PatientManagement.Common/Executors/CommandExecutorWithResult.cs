@@ -1,8 +1,11 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using PatientManagement.Common.Handlers;
-
+﻿
 namespace PatientManagement.Common.Executors
 {
+
+    using Microsoft.Extensions.DependencyInjection;
+    using Contracts;
+    using Handlers;
+
     public class CommandExecutorWithResult : ICommandExecutorWithResult
     {
         private readonly IServiceProvider _container;

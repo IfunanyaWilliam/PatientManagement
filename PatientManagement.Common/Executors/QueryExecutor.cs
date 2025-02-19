@@ -1,8 +1,10 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using PatientManagement.Common.Handlers;
-
+﻿
 namespace PatientManagement.Common.Executors
 {
+    using Microsoft.Extensions.DependencyInjection;
+    using Contracts;
+    using Handlers;
+
     public class QueryExecutor : IQueryExecutor
     {
         private readonly IServiceProvider _container;

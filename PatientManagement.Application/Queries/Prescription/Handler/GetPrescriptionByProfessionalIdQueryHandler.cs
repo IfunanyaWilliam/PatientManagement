@@ -1,0 +1,69 @@
+﻿
+namespace PatientManagement.Application.Queries.Prescription.Handler
+{
+    using Microsoft.AspNetCore.Http;
+    using System.Text.Json;
+    using Microsoft.Extensions.Logging;
+    using Parameters;
+    using Results;
+    using Common.Dto;
+    using Common.Handlers;
+    using Common.Utilities;
+    using Infrastructure.Repositories.Interfaces;
+    
+
+    public class GetPrescriptionByProfessionalIdQueryHandler : 
+        IQueryHandler<GetPrescriptionByProfessionalIdQueryParameters, GetPrescriptionByProfessionalIdQueryResult>
+    {
+
+        private readonly IPrescriptionRepository _prescriptionRepository;
+        private readonly ILogger<GetPrescriptionByProfessionalIdQueryHandler> _logger;
+
+        public GetPrescriptionByProfessionalIdQueryHandler(
+            IPrescriptionRepository prescriptionRepository,
+            ILogger<GetPrescriptionByProfessionalIdQueryHandler> logger)
+        {
+            _prescriptionRepository = prescriptionRepository;
+            _logger = logger;
+        }
+
+        public async Task<GetPrescriptionByProfessionalIdQueryResult> HandleAsync(
+            GetPrescriptionByProfessionalIdQueryParameters parameters,
+            CancellationToken ct = default)
+        {
+            if (parameters.ProfessionalId == Guid.Empty)
+                throw new CustomException($"Invalid input", StatusCodes.Status400BadRequest);
+
+            var result = await _prescriptionRepository.GetPrescriptionByProfessionalIdAsync(
+                professionalId: parameters.ProfessionalId,
+                pageNumber: parameters.PageNumber,
+                pageSize: parameters.PageSize,
+                ct);
+
+            if (result == null)
+            {
+                _logger.LogError("Internal Server Error {@Param}, {@Error}, {@DateTimeUtc}",
+                    $"Body: {JsonSerializer.Serialize(parameters)}",
+                    "GetPrescriptionByProfessionalIdQueryHandler: Prescriptions not found",
+                    DateTime.UtcNow.AddHours(1));
+
+                return new GetPrescriptionByProfessionalIdQueryResult(new List<PrescriptionDto>());
+            }
+
+            return new GetPrescriptionByProfessionalIdQueryResult(
+                prescriptions: result.Prescriptions.Select(p => new PrescriptionDto(
+                            id: p.Id,
+                            patientId: p.PatientId,
+                            professionalId: p.ProfessionalId,
+                            diagnosis: p.Diagnosis,
+                            medications: p.Medications?.Select(m => new PrescribedMedication(
+                                id: m.Id,
+                                name: m.Name,
+                                dosage: m.Dosage,
+                                isActive: m.IsActive)).ToList() ?? new List<PrescribedMedication>(),
+                            isActive: p.IsActive,
+                            createdDate: p.CreatedDate,
+                            dateModified: p.DateModified)).ToList());
+        }
+    }
+}

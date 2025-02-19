@@ -1,16 +1,13 @@
-﻿using PatientManagement.Domain.ApplicationUser;
-
+﻿
 namespace PatientManagement.Infrastructure.Entities
 {
-    public class ApplicationUser
+    using Microsoft.AspNetCore.Identity;
+    using Common.Enums;
+
+    public class ApplicationUser : IdentityUser<Guid>
     {
-        public Guid Id { get; set; }
-        public string? FirstName { get; set; }
-        public string? MiddleName { get; set; }
-        public string? LastName { get; set; }
-        public string? Email { get; set; }
-        public DateTime CreatedDate { get; set; }
-        public DateTime DateModified { get; set; }
+        public DateTime CreatedDate { get; set; } = DateTime.UtcNow.AddHours(1);
+        public DateTime DateModified { get; set; } = DateTime.UtcNow.AddHours(1);
         public bool IsDeleted { get; set; } 
         public UserRole Role { get; set; }
     }

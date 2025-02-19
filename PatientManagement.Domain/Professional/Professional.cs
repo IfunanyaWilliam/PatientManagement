@@ -1,7 +1,8 @@
-﻿using PatientManagement.Domain.ApplicationUser;
-
+﻿
 namespace PatientManagement.Domain.Professional
 {
+    using ApplicationUser;
+
     public class Professional
     {
         public Professional(
@@ -14,7 +15,7 @@ namespace PatientManagement.Domain.Professional
             string? license,
             bool isActive,
             bool isDeleted,
-            UserRole role,
+            List<UserRole>? role,
             ProfessionalStatus professionalStatus,
             DateTime createdDate,
             DateTime dateModified)
@@ -28,7 +29,7 @@ namespace PatientManagement.Domain.Professional
             License = license;
             IsActive = isActive;
             IsDeleted = isDeleted;
-            Role = role;
+            Roles = role;
             ProfessionalStatus = professionalStatus;
             CreatedDate = createdDate;
             DateModified = dateModified;
@@ -38,11 +39,12 @@ namespace PatientManagement.Domain.Professional
         public string? Title { get; set; }
         public string? PhoneNumber { get; set; }
         public int Age { get; set; }
+        public string? Email { get; set; }
         public string? Qualification { get; set; }
         public string? License { get; set; }
         public bool IsActive { get; set; }
         public bool IsDeleted { get; set; }
-        public UserRole Role { get; set; }
+        public List<UserRole>? Roles { get; set; }
         public ProfessionalStatus ProfessionalStatus { get; set; }
         public DateTime CreatedDate { get; set; }
         public DateTime DateModified { get; set; }

@@ -4,15 +4,16 @@ namespace PatientManagement.Api.Extensions
 {
     public static class ConfigureSerilog
     {
-        public static WebApplicationBuilder AddSerilog(this WebApplicationBuilder applicationBuilder)
+        public static WebApplicationBuilder AddSerilog(this WebApplicationBuilder builder)
         {
-            var logger = new LoggerConfiguration()
-                .ReadFrom.Configuration(applicationBuilder.Configuration)
-                .Enrich.FromLogContext()
-                .CreateLogger();
-            applicationBuilder.Logging.ClearProviders();
-            applicationBuilder.Logging.AddSerilog(logger);
-            return applicationBuilder;
+            builder.Host.UseSerilog((context, services, configuration) =>
+                configuration
+                    .ReadFrom.Configuration(context.Configuration)
+                    .ReadFrom.Services(services)
+                    .Enrich.FromLogContext()
+            );
+
+            return builder;
         }
     }
 }

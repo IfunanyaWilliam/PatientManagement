@@ -7,9 +7,18 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Commands\" />
-    <Folder Include="Repositories\" />
-    <Folder Include="Queries\" />
+    <Folder Include="Queries\Account\Handler\" />
+    <Folder Include="Queries\Account\Parameters\" />
+    <Folder Include="Queries\Account\Results\" />
+    <Folder Include="Queries\Professional\Handlers\" />
+    <Folder Include="Queries\Professional\Parameters\" />
+    <Folder Include="Queries\Professional\Resulsts\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\PatientManagement.Common\PatientManagement.Common.csproj" />
+    <ProjectReference Include="..\PatientManagement.Domain\PatientManagement.Domain.csproj" />
+    <ProjectReference Include="..\PatientManagement.Infrastructure\PatientManagement.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>

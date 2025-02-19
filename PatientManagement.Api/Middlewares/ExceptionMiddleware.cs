@@ -1,8 +1,10 @@
-﻿using PatientManagement.Api.Results;
-using System.Text.Json;
-
+﻿
 namespace PatientManagement.Api.Middlewares
 {
+    using System.Text.Json;
+    using PatientManagement.Common.Results;
+    using PatientManagement.Common.Utilities;
+
     public class ExceptionMiddleware
     {
         private readonly RequestDelegate _next;
@@ -42,12 +44,22 @@ namespace PatientManagement.Api.Middlewares
             context.Response.ContentType = "application/json";
             context.Response.StatusCode = StatusCodes.Status500InternalServerError;
 
-            var errorResponse = new ExceptionResult
+            var errorResponse = new ExceptionResult();
+
+            switch (ex)
             {
-                Message = "An internal server error occurred.",
-                StatusCode = StatusCodes.Status500InternalServerError,
-                Errors = new List<string> { ex.Message }
-            };
+                case CustomException customException:
+                    context.Response.StatusCode = customException.StatusCode;
+                    errorResponse.StatusCode = customException.StatusCode;
+                    errorResponse.Message = customException.Message;
+                    break;
+
+                default:
+                    context.Response.StatusCode = StatusCodes.Status500InternalServerError;
+                    errorResponse.StatusCode = StatusCodes.Status500InternalServerError;
+                    errorResponse.Message = "An internal server error occurred.";
+                    break;
+            }
 
             await context.Response.WriteAsync(JsonSerializer.Serialize(errorResponse));
         }
