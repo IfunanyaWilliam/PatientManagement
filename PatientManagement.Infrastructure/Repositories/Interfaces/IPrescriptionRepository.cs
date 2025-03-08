@@ -10,7 +10,7 @@ namespace PatientManagement.Infrastructure.Repositories.Interfaces
             Guid patientId,
             Guid professionalId,
             string diagnosis,
-            List<PrescriptionMedication> medications,
+            List<PrescriptionMedicationDto> medications,
             CancellationToken cancellationToken);
 
         Task<UpdatePrescriptionResult> UpdatePrescriptionAsync(

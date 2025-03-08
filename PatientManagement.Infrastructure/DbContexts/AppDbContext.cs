@@ -16,6 +16,7 @@ namespace PatientManagement.Infrastructure.DbContexts
         public DbSet<Prescription> Prescriptions { get; set; }
         public DbSet<Professional> Professionals { get; set; }
         public DbSet<Medication> Medications { get; set; }
+        public DbSet<PrescriptionMedication> PrescriptionMedications { get; set; }
         public DbSet<RefreshToken> RefreshTokens { get; set; }
         public DbSet<Permission> Permissions { get; set; }
         public DbSet<RolePermission> RolePermissions { get; set; }

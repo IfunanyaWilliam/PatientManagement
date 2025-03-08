@@ -19,6 +19,7 @@ namespace PatientManagement.Infrastructure.Seeder
             dbContext.Database.EnsureCreated();
             await SeedPermissions(dbContext, encryptionService);
             await SeedRolesAndUsers(userManager, roleManager, dbContext, encryptionService);
+            await SeedEntities(dbContext);
         }
 
         private static async Task SeedPermissions(AppDbContext dbContext, IEncryptionService encryptionService)
@@ -124,6 +125,66 @@ namespace PatientManagement.Infrastructure.Seeder
                     Console.WriteLine($"Failed to create user {email}: {string.Join(", ", result.Errors.Select(e => e.Description))}");
                 }
             }
+        }
+
+        private static async Task SeedEntities(AppDbContext dbContext)
+        {
+            List<Medication> medications = new List<Medication>
+            {
+                new Medication
+                {
+                    Id = Guid.NewGuid(),
+                    Name = "Paracetamol",
+                    Description = "Pain reliever",
+                    IsActive = true,
+                    CreatedDate = DateTime.UtcNow.AddHours(1),
+                    DateModified = null
+                },
+
+                new Medication
+                {
+                    Id = Guid.NewGuid(),
+                    Name = "Paracetamol",
+                    Description = "Pain reliever",
+                    IsActive = true,
+                    CreatedDate = DateTime.UtcNow.AddHours(1),
+                    DateModified = null
+                },
+
+                new Medication
+                {
+                    Id = Guid.NewGuid(),
+                    Name = "Paracetamol Extra",
+                    Description = "Acute Pain reliever",
+                    IsActive = true,
+                    CreatedDate = DateTime.UtcNow.AddHours(1),
+                    DateModified = null
+                },
+
+                new Medication
+                {
+                    Id = Guid.NewGuid(),
+                    Name = "Vitamin C",
+                    Description = "Mineral supplement",
+                    IsActive = true,
+                    CreatedDate = DateTime.UtcNow.AddHours(1),
+                    DateModified = null
+                },
+
+                new Medication
+                {
+                    Id = Guid.NewGuid(),
+                    Name = "Leonart",
+                    Description = "Kills Plasmodium in blood stream",
+                    IsActive = true,
+                    CreatedDate = DateTime.UtcNow.AddHours(1),
+                    DateModified = null
+                }
+            };
+
+            await dbContext.Medications.AddRangeAsync(medications);
+
+            await dbContext.SaveChangesAsync();
         }
     }
 }
