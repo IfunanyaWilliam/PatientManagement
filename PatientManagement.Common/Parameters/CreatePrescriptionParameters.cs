@@ -13,7 +13,7 @@ namespace PatientManagement.Common.Parameters
             Guid patientId,
             Guid professionalId,
             string? diagnosis,
-            List<PrescriptionMedication>? medications)
+            List<PrescriptionMedicationDto>? medications)
         {
             PatientId = patientId;
             ProfessionalId = professionalId;
@@ -25,6 +25,6 @@ namespace PatientManagement.Common.Parameters
         public Guid PatientId { get; set; }
         public Guid ProfessionalId { get; set; }
         public string? Diagnosis { get; set; }
-        public List<PrescriptionMedication>? Medications { get; set; }
+        public List<PrescriptionMedicationDto>? Medications { get; set; }
     }
 }

@@ -40,7 +40,7 @@ namespace PatientManagement.Infrastructure.Repositories.Implementations
             Guid patientId,
             Guid professionalId,
             string diagnosis,
-            List<PrescriptionMedication> medications,
+            List<Common.Dto.PrescriptionMedicationDto> medications,
             CancellationToken cancellationToken)
         {
             if (patientId == Guid.Empty || professionalId == Guid.Empty
@@ -51,7 +51,7 @@ namespace PatientManagement.Infrastructure.Repositories.Implementations
 
             if (patientEntity is null || patientEntity.IsDeleted)
                 throw new CustomException($"Patient with Id {patientId} Not Found", StatusCodes.Status404NotFound);
-
+            
             if (!patientEntity.IsActive)
                 throw new CustomException($"Patient with Id {patientId} is currently in active," +
                     $"contact admin for support", StatusCodes.Status403Forbidden);
@@ -68,8 +68,12 @@ namespace PatientManagement.Infrastructure.Repositories.Implementations
                     $"Consult Admin for guide", StatusCodes.Status403Forbidden);
             }
 
-            var exisitingPrescription = await _context.Prescriptions
-                               .FirstOrDefaultAsync(p => p.Diagnosis == diagnosis, cancellationToken);
+            var exisitingPrescription = await _context.Prescriptions.FirstOrDefaultAsync(
+                                p => p.Diagnosis == diagnosis &&
+                                p.ProfessionalId == professionalId &&
+                                p.PatientId == patientId &&
+                                p.IsActive, 
+                                cancellationToken);
 
             if(exisitingPrescription is not null && exisitingPrescription.IsActive)
             {
@@ -82,44 +86,42 @@ namespace PatientManagement.Infrastructure.Repositories.Implementations
                 PatientId = patientId,
                 ProfessionalId = professionalId,
                 Diagnosis = diagnosis,
-                IsActive = true,
-                IsDeleted = false
+                IsActive = true
             };
 
             await _context.AddAsync(prescription);
 
-            var ListOfMedications = new List<Medication>();
+            var ListOfPrescriptionMedications = new List<PrescriptionMedication>();
             foreach (var medication in medications)
             {
-                //var existingMedication = await _context.Medications.FirstOrDefaultAsync(
-                //    m => m.Name == medication.Name 
-                //    && m.PatientId == patientId
-                //    && m.ProfessionalId == professionalId
-                //    && m.IsActive,
-                //    cancellationToken);
+                var existingMedication = await _context.Medications.FirstOrDefaultAsync(
+                    m => m.Id == medication.MedicationId
+                    && m.IsActive,
+                    cancellationToken);
 
-                //if(existingMedication != null)
-                //{
-                //    throw new CustomException($"Patient has an active medication with same name as {medication.Name}", 
-                //        StatusCodes.Status409Conflict);
-                //}
+                if (existingMedication is null || !existingMedication.IsActive)
+                {
+                    throw new CustomException($"Medication with Id: {medication.MedicationId} Not Found",
+                        StatusCodes.Status400BadRequest);
+                }
 
-                var medicationEntity = new Medication
+                var medicationEntity = new PrescriptionMedication
                 {
                     PatientId = patientId,
+                    MedicationId =  existingMedication.Id,
                     PrescriptionId = prescription.Id,
                     ProfessionalId = professionalId,
-                    Name = medication.Name,
+                    Name = existingMedication.Name,
                     Dosage = medication.Dosage,
+                    Instruction = medication.Instruction,
                     IsActive = true,
                     CreatedDate = DateTime.UtcNow.AddHours(1),
                 };
-                ListOfMedications.Add(medicationEntity);
+                ListOfPrescriptionMedications.Add(medicationEntity);
             }
 
-
-            await _context.Medications.AddRangeAsync(ListOfMedications);
-            prescription.Medications = ListOfMedications;
+            await _context.PrescriptionMedications.AddRangeAsync(ListOfPrescriptionMedications);
+            prescription.PrescriptionMedications = ListOfPrescriptionMedications;
             var result = await _context.SaveChangesAsync();
 
             if(result > 0)
@@ -129,10 +131,11 @@ namespace PatientManagement.Infrastructure.Repositories.Implementations
                     patientId: prescription.PatientId,
                     professionalId: prescription.ProfessionalId,
                     diagnosis: prescription.Diagnosis,
-                    medications: prescription.Medications.Select(m => new PrescribedMedication(
-                        id:m.Id,
+                    medications: ListOfPrescriptionMedications.Select(m => new PrescribedMedication(
+                        medicationId:m.Id,
                         name: m.Name,
                         dosage: m.Dosage,
+                        instruction: m.Instruction,
                         isActive: m.IsActive)).ToList(),
                     isActive: prescription.IsActive,
                     createdDate: prescription.CreatedDate);
@@ -142,12 +145,12 @@ namespace PatientManagement.Infrastructure.Repositories.Implementations
             throw new CustomException("Prescription could not be created, try again later", StatusCodes.Status500InternalServerError);
         }
 
-
         public async Task<UpdatePrescriptionResult> UpdatePrescriptionAsync(
             Guid prescriptionId,
             Guid patientId,
             Guid professionalId,
             string diagnosis,
+            string reasonForUpdate,
             List<PrescribedMedication> medications,
             CancellationToken cancellationToken)
         {
@@ -176,7 +179,9 @@ namespace PatientManagement.Infrastructure.Repositories.Implementations
                     $"Consult Admin for guide", StatusCodes.Status403Forbidden);
             }
 
-            var prescription = await _context.Prescriptions.FirstOrDefaultAsync(p => 
+            var prescription = await _context.Prescriptions
+                .Include(p => p.PrescriptionMedications)
+                .FirstOrDefaultAsync(p => 
                     p.Id == prescriptionId &&
                     p.PatientId == patientId && 
                     p.ProfessionalId == professionalId, 
@@ -185,59 +190,54 @@ namespace PatientManagement.Infrastructure.Repositories.Implementations
             if (prescription is null)
                 throw new CustomException($"Prescription with Id {prescriptionId} Not Found", StatusCodes.Status404NotFound);
 
-            var existingMedications = new List<Medication>();
-            var newMedications = new List<Medication>();
+            var existingPrescriptionMedications = prescription.PrescriptionMedications;
+            var newPrescriptionMedications = new List<PrescriptionMedication>();
             foreach (var medication in medications)
             {
-                if (medication.Id is null)
+                if (!prescription.PrescriptionMedications.Any(m => m.MedicationId == medication.MedicationId))
                 {
-                    Medication newMedication = new Medication
+                    PrescriptionMedication newPrescriptionMedication = new PrescriptionMedication
                     {
                         PatientId = patientId,
+                        MedicationId = medication.MedicationId,
                         PrescriptionId = prescription.Id,
                         ProfessionalId = professionalId,
                         Name = medication.Name,
                         Dosage = medication.Dosage,
+                        Instruction = medication.Instruction,
                         IsActive = true,
                         CreatedDate = DateTime.UtcNow.AddHours(1),
                     };
-                    newMedications.Add(newMedication);
-                    continue;
+
+                    newPrescriptionMedications.Add(newPrescriptionMedication);
                 }
+            };
 
-                var existingMedication = await _context.Medications.FirstOrDefaultAsync(
-                    m => m.Id == medication.Id
-                    && m.PatientId == patientId
-                    && m.ProfessionalId == professionalId,
-                    cancellationToken);
-
-                if (existingMedication == null)
-                {
-                    throw new CustomException($"Medication with Id {medication.Id} Not Found",
-                        StatusCodes.Status404NotFound);
-                }
-
-                existingMedication.Name = medication.Name;
-                existingMedication.Dosage = medication.Dosage;
-                existingMedication.IsActive = medication.IsActive;
-                existingMedications.Add(existingMedication);
+            if(newPrescriptionMedications.Any())
+            {
+                await _context.PrescriptionMedications.AddRangeAsync(newPrescriptionMedications);
             }
-            
-            if(newMedications.Count  > 0)
-                await _context.Medications.AddRangeAsync(newMedications); 
 
-            if(existingMedications.Count > 0)
-                _context.Medications.UpdateRange(existingMedications);
+            if(existingPrescriptionMedications is not null)
+            {
+                foreach (var item in prescription.PrescriptionMedications)
+                {
+                    var prescribedMedication = medications.FirstOrDefault(m => m.MedicationId == item.MedicationId);
+                    item.Dosage = prescribedMedication.Dosage ?? item.Dosage;
+                    item.Instruction = prescribedMedication.Instruction ?? item.Instruction;
+                    item.IsActive = prescribedMedication.IsActive;
+                    item.DateModified = DateTime.UtcNow.AddHours(1);
+                }
+            }
 
-            var allMedications = newMedications.Concat(existingMedications).ToList();
+            if(newPrescriptionMedications.Count > 0)
+                _context.PrescriptionMedications.UpdateRange(newPrescriptionMedications);
 
-            // Remove inactive medications
-            var activeMedications = allMedications.Where(m => m.IsActive).ToList();
+            var allMedications = newPrescriptionMedications.Concat(existingPrescriptionMedications).ToList();
 
-            prescription.Medications = allMedications;
             prescription.Diagnosis = diagnosis ?? prescription.Diagnosis;
             prescription.DateModified = DateTime.UtcNow.AddHours(1);
-
+            prescription.PrescriptionMedications = allMedications;
             var result = await _context.SaveChangesAsync();
 
             if (result > 0)
@@ -247,10 +247,11 @@ namespace PatientManagement.Infrastructure.Repositories.Implementations
                     patientId: prescription.PatientId,
                     professionalId: prescription.ProfessionalId,
                     diagnosis: prescription.Diagnosis,
-                    medications: activeMedications.Select(m => new PrescribedMedication(
-                        id: m.Id,
+                    medications: allMedications.Select(m => new PrescribedMedication(
+                        medicationId: m.Id,
                         name: m.Name,
                         dosage: m.Dosage,
+                        instruction: m.Instruction,
                         isActive: m.IsActive)).ToList(),
                     isActive: prescription.IsActive,
                     createdDate: prescription.CreatedDate,
@@ -258,7 +259,7 @@ namespace PatientManagement.Infrastructure.Repositories.Implementations
             }
 
             _logger.LogError($"Medications could not be updated to db, data => {JsonSerializer.Serialize(prescription)}");
-            throw new CustomException("Prescription could not be created, try again later", StatusCodes.Status500InternalServerError);
+            throw new CustomException("Prescription could not be Updated, try again later", StatusCodes.Status500InternalServerError);
         }
 
         public async Task<GetPrescriptionByIdResult> GetPrescriptionByIdAsync(
@@ -269,9 +270,9 @@ namespace PatientManagement.Infrastructure.Repositories.Implementations
                 throw new CustomException($"Invalid input", StatusCodes.Status400BadRequest);
 
             var prescription = await _context.Prescriptions
-                                            .Include(p => p.Medications.Where(m => m.IsActive))
+                                            .Include(p => p.PrescriptionMedications.Where(m => m.IsActive))
                                             .AsSplitQuery()
-                                            .FirstOrDefaultAsync(p => p.Id == id && !p.IsDeleted, cancellationToken);
+                                            .FirstOrDefaultAsync(p => p.Id == id && p.IsActive, cancellationToken);
 
             if (prescription is null)
             {
@@ -288,11 +289,12 @@ namespace PatientManagement.Infrastructure.Repositories.Implementations
                 patientId: prescription.PatientId,
                 professionalId: prescription.ProfessionalId,
                 diagnosis: prescription.Diagnosis,
-                medications: prescription?.Medications?.Select(m =>
+                medications: prescription?.PrescriptionMedications?.Select(m =>
                     new PrescribedMedication(
-                        id: m.Id,
+                        medicationId: m.Id,
                         name: m.Name,
                         dosage: m.Dosage,
+                        instruction: m.Instruction,
                         isActive: m.IsActive)).ToList(),
                 isActive: prescription.IsActive,
                 createdDate: prescription.CreatedDate,
@@ -316,9 +318,7 @@ namespace PatientManagement.Infrastructure.Repositories.Implementations
             predicate = s => s.IsActive && s.PatientId == patientId;
 
             var prescriptions = await _context.Prescriptions
-                                        .Include(x => x.Professional)
-                                        .Include(y => y.Patient)
-                                        .Include(z => z.Medications)
+                                        .Include(z => z.PrescriptionMedications)
                                         .Where(predicate)
                                         .OrderBy(x => x.CreatedDate)
                                         .Skip(skip)
@@ -341,10 +341,11 @@ namespace PatientManagement.Infrastructure.Repositories.Implementations
                             patientId: p.PatientId,
                             professionalId: p.ProfessionalId,
                             diagnosis: p.Diagnosis,
-                            medications: p.Medications?.Select(m => new PrescribedMedication(
-                                id: m.Id,
+                            medications: p.PrescriptionMedications?.Select(m => new PrescribedMedication(
+                                medicationId: m.Id,
                                 name: m.Name,
                                 dosage: m.Dosage,
+                                instruction: m.Instruction,
                                 isActive: m.IsActive)).ToList() ?? new List<PrescribedMedication>(),
                             isActive: p.IsActive,
                             createdDate: p.CreatedDate,
@@ -368,9 +369,7 @@ namespace PatientManagement.Infrastructure.Repositories.Implementations
             predicate = s => s.IsActive && s.ProfessionalId == professionalId;
             
             var prescriptions = await _context.Prescriptions
-                                        .Include(x => x.Professional)
-                                        .Include(y => y.Patient)
-                                        .Include(z => z.Medications)
+                                        .Include(p => p.PrescriptionMedications)
                                         .Where(predicate)
                                         .OrderBy(x => x.CreatedDate)
                                         .Skip(skip)
@@ -393,10 +392,11 @@ namespace PatientManagement.Infrastructure.Repositories.Implementations
                             patientId: p.PatientId,
                             professionalId: p.ProfessionalId,
                             diagnosis: p.Diagnosis,
-                            medications: p.Medications?.Select(m => new PrescribedMedication(
-                                id: m.Id,
+                            medications: p.PrescriptionMedications?.Select(m => new PrescribedMedication(
+                                medicationId: m.Id,
                                 name: m.Name,
                                 dosage: m.Dosage,
+                                instruction: m.Instruction,
                                 isActive: m.IsActive)).ToList() ?? new List<PrescribedMedication>(),
                             isActive: p.IsActive,
                             createdDate: p.CreatedDate,
@@ -435,7 +435,7 @@ namespace PatientManagement.Infrastructure.Repositories.Implementations
             var prescriptions = await _context.Prescriptions
                                         .Include(x => x.Professional)
                                         .Include(y => y.Patient)
-                                        .Include(z => z.Medications)  
+                                        .Include(z => z.PrescriptionMedications)  
                                         .Where(predicate)
                                         .OrderBy(x => x.CreatedDate)
                                         .Skip(skip)
@@ -451,17 +451,15 @@ namespace PatientManagement.Infrastructure.Repositories.Implementations
                             patientId: p.PatientId,
                             professionalId: p.ProfessionalId,
                             diagnosis: p.Diagnosis,
-                            medications: p.Medications?.Select(m => new PrescribedMedication(
-                                id: m.Id,
+                            medications: p.PrescriptionMedications?.Select(m => new PrescribedMedication(
+                                medicationId: m.Id,
                                 name: m.Name,
                                 dosage: m.Dosage,
+                                instruction: m.Instruction,
                                 isActive: m.IsActive)).ToList() ?? new List<PrescribedMedication>(),  
                             isActive: p.IsActive,
                             createdDate: p.CreatedDate,
                             dateModified: p.DateModified)).ToList());
         }
-
-
-
     }
 }

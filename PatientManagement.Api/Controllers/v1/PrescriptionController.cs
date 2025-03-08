@@ -120,9 +120,10 @@ namespace PatientManagement.Api.Controllers.v1
                 diagnosis: result.Diagnosis,
                 medications: result?.Medications?.Select(m =>
                     new PrescribedMedication(
-                        id: m.Id,
+                        medicationId: m.MedicationId,
                         name: m.Name,
                         dosage: m.Dosage,
+                        instruction: m.Instruction,
                         isActive: m.IsActive)).ToList(),
                 isActive: result.IsActive,
                 createdDate: result.CreatedDate,
@@ -163,9 +164,10 @@ namespace PatientManagement.Api.Controllers.v1
                             diagnosis: p.Diagnosis,
                             medications: p?.Medications?.Select(m =>
                                 new PrescribedMedication(
-                                    id: m.Id,
+                                    medicationId: m.MedicationId,
                                     name: m.Name,
                                     dosage: m.Dosage,
+                                     instruction: m.Instruction,
                                     isActive: m.IsActive)).ToList(),
                             isActive: p.IsActive,
                             createdDate: p.CreatedDate,
@@ -206,9 +208,10 @@ namespace PatientManagement.Api.Controllers.v1
                             diagnosis: p.Diagnosis,
                             medications: p?.Medications?.Select(m =>
                                 new PrescribedMedication(
-                                    id: m.Id,
+                                    medicationId: m.MedicationId,
                                     name: m.Name,
                                     dosage: m.Dosage,
+                                     instruction: m.Instruction,
                                     isActive: m.IsActive)).ToList(),
                             isActive: p.IsActive,
                             createdDate: p.CreatedDate,
@@ -249,9 +252,10 @@ namespace PatientManagement.Api.Controllers.v1
                             diagnosis: p.Diagnosis,
                             medications: p?.Medications?.Select(m =>
                                 new PrescribedMedication(
-                                    id: m.Id,
+                                    medicationId: m.MedicationId,
                                     name: m.Name,
                                     dosage: m.Dosage,
+                                    instruction: m.Instruction,
                                     isActive: m.IsActive)).ToList(),
                             isActive: p.IsActive,
                             createdDate: p.CreatedDate,

@@ -25,6 +25,7 @@ namespace PatientManagement.Application.Commands.Prescription.Parameters
         public Guid PatientId { get; set; }
         public Guid ProfessionalId { get; set; }
         public string? Diagnosis { get; set; }
+        public string? ReasonForUpdate { get; set; }
         public List<PrescribedMedication>? Medications { get; set; }
     }
 }

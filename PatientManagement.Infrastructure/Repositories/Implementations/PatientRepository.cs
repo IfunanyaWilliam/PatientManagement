@@ -48,7 +48,7 @@ namespace PatientManagement.Infrastructure.Repositories.Implementations
                 throw new CustomException($"Invalid input", StatusCodes.Status400BadRequest);
             }
 
-            if(age < 0 || age > 200)
+            if(age < 0 || age > 150)
                 throw new CustomException($"Age range is invalid", StatusCodes.Status400BadRequest);
 
             var user = await _userManager.FindByIdAsync(applicationUserId.ToString());
@@ -59,7 +59,7 @@ namespace PatientManagement.Infrastructure.Repositories.Implementations
                 cancellationToken);
             if(existingPatient is not null)
             {
-                throw new CustomException($"Patient with UserId already exist", StatusCodes.Status400BadRequest);
+                throw new CustomException($"Patient with UserId: {applicationUserId} already exist", StatusCodes.Status400BadRequest);
             }
 
             var patient = new Entities.Patient
@@ -127,14 +127,12 @@ namespace PatientManagement.Infrastructure.Repositories.Implementations
             if (user is null)
                 throw new CustomException($"UserId {applicationUserId} not found", StatusCodes.Status404NotFound);
 
-            var existingPatient = await _context.Patients.FirstOrDefaultAsync(p => p.ApplicationUserId == applicationUserId,
-                cancellationToken);
-            if (existingPatient is null)
+            var patient = await _context.Patients.FirstOrDefaultAsync(p => p.Id == id, cancellationToken);
+            if (patient is null)
             {
                 throw new CustomException($"Patient with Id {id} not found", StatusCodes.Status404NotFound);
             }
 
-            var patient = await _context.Patients.FirstOrDefaultAsync(p => p.Id == id, cancellationToken);
             patient.Title = title is null ? patient.Title : title;
             patient.FirstName = firstName is null ? patient.FirstName : firstName;
             patient.MiddleName = middleName is null ? patient.MiddleName : middleName;
@@ -184,7 +182,7 @@ namespace PatientManagement.Infrastructure.Repositories.Implementations
                     "Patient not found",
                     DateTime.UtcNow.AddHours(1));
 
-                throw new CustomException("Patient not found", StatusCodes.Status404NotFound);
+                throw new CustomException($"Patient with Id: {id} Not found", StatusCodes.Status404NotFound);
             }
 
             var user = await _context.ApplicationUsers.FirstOrDefaultAsync(p => p.Id == patient.ApplicationUserId, cancellationToken);
@@ -226,7 +224,7 @@ namespace PatientManagement.Infrastructure.Repositories.Implementations
                     "DeletePatient: Patient not found",
                     DateTime.UtcNow.AddHours(1));
 
-                throw new CustomException("Patient not found", StatusCodes.Status404NotFound);
+                throw new CustomException($"Patient with Id: {id} Not found", StatusCodes.Status404NotFound);
             }
 
             patient.IsDeleted = true;

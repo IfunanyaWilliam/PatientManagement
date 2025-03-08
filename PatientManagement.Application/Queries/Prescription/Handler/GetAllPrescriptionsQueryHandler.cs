@@ -56,9 +56,10 @@ namespace PatientManagement.Application.Queries.Prescription.Handler
                                 professionalId: p.ProfessionalId,
                                 diagnosis: p.Diagnosis,
                                 medications: p.Medications.Select(m => new PrescribedMedication(
-                                    id: m.Id,
+                                    medicationId: m.MedicationId,
                                     name: m.Name,
                                     dosage: m.Dosage,
+                                     instruction: m.Instruction,
                                     isActive: m.IsActive)).ToList(),
                                 isActive: p.IsActive,
                                 createdDate: p.CreatedDate,
