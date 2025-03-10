@@ -7,7 +7,7 @@ namespace PatientManagement.Application.Commands.Prescription.Handler
     using Results;
     using Common.Handlers;
     using Common.Utilities;
-    
+    using PatientManagement.Common.Parameters;
 
     public class CreatePrescriptionCommandHandler :
         ICommandHandlerWithResult<CreatePrescriptionCommandParameters, CreatePrescriptionCommandResult>
@@ -30,7 +30,10 @@ namespace PatientManagement.Application.Commands.Prescription.Handler
                 patientId: command.PatientId,
                 professionalId: command.ProfessionalId,
                 diagnosis: command.Diagnosis,
-                medications: command.Medications,
+                medications: command.Medications.Select(m => new MedicationParameters(
+                    medicationId: m.MedicationId,
+                    dosage: m.Dosage,
+                    instruction: m.Instruction)),
                 cancellationToken: ct);
 
             return new CreatePrescriptionCommandResult(
@@ -38,9 +41,8 @@ namespace PatientManagement.Application.Commands.Prescription.Handler
                 patientId: result.PatientId,
                 professionalId: result.ProfessionalId,
                 diagnosis: result.Diagnosis,
-                medications: result.Medications,
                 isActive: result.IsActive,
-                createdDate: result.CreatedDate);
+                dateCreated: result.DateCreated);
         }
     }
 }

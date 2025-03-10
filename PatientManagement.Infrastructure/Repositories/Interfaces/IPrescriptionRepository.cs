@@ -3,14 +3,16 @@ namespace PatientManagement.Infrastructure.Repositories.Interfaces
 {
     using Common.Results;
     using PatientManagement.Common.Dto;
+    using PatientManagement.Common.Parameters;
+    using PatientManagement.Domain.Prescription;
 
     public interface IPrescriptionRepository
     {
-        Task<CreatePrescriptionResult> CreatePrescriptionAsync(
+        Task<Prescription> CreatePrescriptionAsync(
             Guid patientId,
             Guid professionalId,
             string diagnosis,
-            List<PrescriptionMedicationDto> medications,
+            IEnumerable<MedicationParameters> medications,
             CancellationToken cancellationToken);
 
         Task<UpdatePrescriptionResult> UpdatePrescriptionAsync(

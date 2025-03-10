@@ -11,25 +11,22 @@ namespace PatientManagement.Application.Commands.Prescription.Results
             Guid patientId,
             Guid professionalId,
             string? diagnosis,
-            List<PrescribedMedication>? medications,
             bool isActive,
-            DateTime createdDate)
+            DateTime dateCreated)
         {
             Id = id;
             PatientId = patientId;
             ProfessionalId = professionalId;
             Diagnosis = diagnosis;
-            Medications = medications;
             IsActive = isActive;
-            CreatedDate = createdDate;
+            DateCreated = dateCreated;
         }
 
         public Guid Id { get; set; }
         public Guid PatientId { get; }
         public Guid ProfessionalId { get; }
         public string? Diagnosis { get; }
-        public List<PrescribedMedication>? Medications { get; }
         public bool IsActive { get; }
-        public DateTime CreatedDate { get; }
+        public DateTime DateCreated { get; }
     }
 }

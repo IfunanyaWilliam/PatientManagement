@@ -8,10 +8,8 @@ namespace PatientManagement.Domain.Prescription
             Guid patientId,
             Guid professionalId,
             string? diagnosis,
-            string? medications,
             bool isActive,
-            bool isDeleted,
-            DateTime createdDate,
+            DateTime dateCreated,
             DateTime dateModified)
         {
             Id = id;
@@ -19,8 +17,7 @@ namespace PatientManagement.Domain.Prescription
             ProfessionalId = professionalId;
             Diagnosis = diagnosis;
             IsActive = isActive;
-            IsDeleted = isDeleted;
-            CreatedDate = createdDate;
+            DateCreated = dateCreated;
             DateModified = dateModified;
         }
 
@@ -30,8 +27,7 @@ namespace PatientManagement.Domain.Prescription
         public Guid ProfessionalId { get; set; }
         public string? Diagnosis { get; set; }
         public bool IsActive { get; set; }
-        public bool IsDeleted { get; set; }
-        public DateTime CreatedDate { get; set; }
+        public DateTime DateCreated { get; set; }
         public DateTime DateModified { get; set; }
     }
 }

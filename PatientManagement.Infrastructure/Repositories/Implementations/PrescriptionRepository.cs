@@ -4,19 +4,19 @@ namespace PatientManagement.Infrastructure.Repositories.Implementations
     using Microsoft.AspNetCore.Identity;
     using Microsoft.Extensions.Logging;
     using Microsoft.AspNetCore.Http;
+    using Microsoft.EntityFrameworkCore;
+    using System.Linq.Expressions;
+    using System.Text.Json;
+    using System.Linq;
     using Common.Results;
     using DbContexts;
     using Common.Utilities;
-    using Microsoft.EntityFrameworkCore;
-    using System.Text.Json;
     using Interfaces;
-    using PatientManagement.Common.Dto;
-    using PatientManagement.Infrastructure.Entities;
-    using System.Linq.Expressions;
-    using PatientManagement.Domain.Prescription;
-    using System.Linq;
-    using PatientManagement.Domain.Patient;
-    using PatientManagement.Domain.Professional;
+    using Common.Dto;
+    using Domain.Patient;
+    using Domain.Prescription;
+    using Domain.Professional;
+    using Common.Parameters;
 
     public class PrescriptionRepository : IPrescriptionRepository
     {
@@ -36,15 +36,15 @@ namespace PatientManagement.Infrastructure.Repositories.Implementations
         }
 
 
-        public async Task<CreatePrescriptionResult> CreatePrescriptionAsync(
+        public async Task<Prescription> CreatePrescriptionAsync(
             Guid patientId,
             Guid professionalId,
             string diagnosis,
-            List<Common.Dto.PrescriptionMedicationDto> medications,
+            IEnumerable<MedicationParameters> medications,
             CancellationToken cancellationToken)
         {
             if (patientId == Guid.Empty || professionalId == Guid.Empty
-                || string.IsNullOrEmpty(diagnosis) || medications.Count <= 0)
+                || string.IsNullOrEmpty(diagnosis) || medications.Count() <= 0)
                 throw new CustomException($"Invalid input", StatusCodes.Status400BadRequest);
 
             var patientEntity = await _context.Patients.FirstOrDefaultAsync(p => p.Id == patientId, cancellationToken);
@@ -81,6 +81,21 @@ namespace PatientManagement.Infrastructure.Repositories.Implementations
                     $"already exists with diagnosis \"{diagnosis}\"", StatusCodes.Status409Conflict);
             }
 
+            var medicationIds = medications.Select(m => m.MedicationId).ToList();
+
+            var existingMedications = await _context.Medications
+                .Where(m => medicationIds.Contains(m.Id) && m.IsActive)
+                .ToListAsync();
+
+            var medicationIdsNotFound = medicationIds.Except(existingMedications.Select(m => m.Id));
+
+            if (medicationIdsNotFound.Any())
+            {
+                throw new CustomException(
+                    "Medications not found, medicationIds: " + string.Join(",", medicationIdsNotFound),
+                    StatusCodes.Status400BadRequest);
+            }
+
             var prescription = new Entities.Prescription
             {
                 PatientId = patientId,
@@ -89,56 +104,36 @@ namespace PatientManagement.Infrastructure.Repositories.Implementations
                 IsActive = true
             };
 
-            await _context.AddAsync(prescription);
+            await _context.AddAsync(prescription, cancellationToken);
 
-            var ListOfPrescriptionMedications = new List<PrescriptionMedication>();
-            foreach (var medication in medications)
+            var prescriptionMedications = existingMedications.Select(m => new Entities.PrescriptionMedication
             {
-                var existingMedication = await _context.Medications.FirstOrDefaultAsync(
-                    m => m.Id == medication.MedicationId
-                    && m.IsActive,
-                    cancellationToken);
+                PatientId = patientId,
+                ProfessionalId = professionalId,
+                PrescriptionId = prescription.Id,
+                MedicationId = m.Id,
+                Name = m.Name,
+                Dosage = medications.FirstOrDefault(m => m.MedicationId == m.MedicationId).Dosage,
+                Instruction = medications.FirstOrDefault(m => m.MedicationId == m.MedicationId).Instruction,
+                CreatedDate = DateTime.UtcNow,
+                IsActive = true,
+            }).ToList();
 
-                if (existingMedication is null || !existingMedication.IsActive)
-                {
-                    throw new CustomException($"Medication with Id: {medication.MedicationId} Not Found",
-                        StatusCodes.Status400BadRequest);
-                }
+            await _context.PrescriptionMedications.AddRangeAsync(prescriptionMedications, cancellationToken);
 
-                var medicationEntity = new PrescriptionMedication
-                {
-                    PatientId = patientId,
-                    MedicationId =  existingMedication.Id,
-                    PrescriptionId = prescription.Id,
-                    ProfessionalId = professionalId,
-                    Name = existingMedication.Name,
-                    Dosage = medication.Dosage,
-                    Instruction = medication.Instruction,
-                    IsActive = true,
-                    CreatedDate = DateTime.UtcNow.AddHours(1),
-                };
-                ListOfPrescriptionMedications.Add(medicationEntity);
-            }
-
-            await _context.PrescriptionMedications.AddRangeAsync(ListOfPrescriptionMedications);
-            prescription.PrescriptionMedications = ListOfPrescriptionMedications;
-            var result = await _context.SaveChangesAsync();
+            prescription.PrescriptionMedications = prescriptionMedications;
+            var result = await _context.SaveChangesAsync(cancellationToken);
 
             if(result > 0)
             {
-                return new CreatePrescriptionResult(
+                return new Prescription(
                     id: prescription.Id,
                     patientId: prescription.PatientId,
                     professionalId: prescription.ProfessionalId,
                     diagnosis: prescription.Diagnosis,
-                    medications: ListOfPrescriptionMedications.Select(m => new PrescribedMedication(
-                        medicationId:m.Id,
-                        name: m.Name,
-                        dosage: m.Dosage,
-                        instruction: m.Instruction,
-                        isActive: m.IsActive)).ToList(),
                     isActive: prescription.IsActive,
-                    createdDate: prescription.CreatedDate);
+                    dateCreated: prescription.CreatedDate,
+                    dateModified: prescription.DateModified);
             }
 
             _logger.LogError($"Prescription could not be saved to db, data => {JsonSerializer.Serialize(prescription)}");
@@ -150,7 +145,6 @@ namespace PatientManagement.Infrastructure.Repositories.Implementations
             Guid patientId,
             Guid professionalId,
             string diagnosis,
-            string reasonForUpdate,
             List<PrescribedMedication> medications,
             CancellationToken cancellationToken)
         {
@@ -191,12 +185,12 @@ namespace PatientManagement.Infrastructure.Repositories.Implementations
                 throw new CustomException($"Prescription with Id {prescriptionId} Not Found", StatusCodes.Status404NotFound);
 
             var existingPrescriptionMedications = prescription.PrescriptionMedications;
-            var newPrescriptionMedications = new List<PrescriptionMedication>();
+            var newPrescriptionMedications = new List<Entities.PrescriptionMedication>();
             foreach (var medication in medications)
             {
                 if (!prescription.PrescriptionMedications.Any(m => m.MedicationId == medication.MedicationId))
                 {
-                    PrescriptionMedication newPrescriptionMedication = new PrescriptionMedication
+                    var newPrescriptionMedication = new Entities.PrescriptionMedication
                     {
                         PatientId = patientId,
                         MedicationId = medication.MedicationId,
