@@ -132,7 +132,7 @@ namespace PatientManagement.Infrastructure.Repositories.Implementations
                     professionalId: prescription.ProfessionalId,
                     diagnosis: prescription.Diagnosis,
                     isActive: prescription.IsActive,
-                    dateCreated: prescription.CreatedDate,
+                    dateCreated: prescription.DateCreated,
                     dateModified: prescription.DateModified);
             }
 
@@ -272,7 +272,7 @@ namespace PatientManagement.Infrastructure.Repositories.Implementations
                     professionalId: prescription.ProfessionalId,
                     diagnosis: prescription.Diagnosis,
                     isActive: prescription.IsActive,
-                    dateCreated: prescription.CreatedDate,
+                    dateCreated: prescription.DateCreated,
                     dateModified: prescription.DateModified);
             }
 
@@ -280,7 +280,7 @@ namespace PatientManagement.Infrastructure.Repositories.Implementations
             throw new CustomException("Prescription could not be Updated, try again later", StatusCodes.Status500InternalServerError);
         }
 
-        public async Task<GetPrescriptionByIdResult> GetPrescriptionByIdAsync(
+        public async Task<PrescriptionMedication> GetPrescriptionByIdAsync(
             Guid id,
             CancellationToken cancellationToken)
         {
@@ -302,20 +302,20 @@ namespace PatientManagement.Infrastructure.Repositories.Implementations
                 throw new CustomException("Prescription not found", StatusCodes.Status404NotFound);
             }
 
-            return new GetPrescriptionByIdResult(
+            return new PrescriptionMedication(
                 id: prescription.Id,
                 patientId: prescription.PatientId,
                 professionalId: prescription.ProfessionalId,
+                prescriptionId: prescription.Id,
                 diagnosis: prescription.Diagnosis,
-                medications: prescription?.PrescriptionMedications?.Select(m =>
-                    new PrescribedMedication(
-                        medicationId: m.Id,
-                        name: m.MedicationName,
-                        dosage: m.Dosage,
-                        instruction: m.Instruction,
-                        isActive: m.IsActive)).ToList(),
+                medications: prescription.PrescriptionMedications?.Select(m => new PrescribedMedication(
+                                medicationId: m.Id,
+                                name: m.MedicationName,
+                                dosage: m.Dosage,
+                                instruction: m.Instruction,
+                                isActive: m.IsActive)).ToList() ?? new List<PrescribedMedication>(),
                 isActive: prescription.IsActive,
-                createdDate: prescription.CreatedDate,
+                dateCreated: prescription.DateCreated,
                 dateModified: prescription.DateModified);
         }
 
@@ -338,7 +338,7 @@ namespace PatientManagement.Infrastructure.Repositories.Implementations
             var prescriptions = await _context.Prescriptions
                                         .Include(z => z.PrescriptionMedications)
                                         .Where(predicate)
-                                        .OrderBy(x => x.CreatedDate)
+                                        .OrderBy(x => x.DateCreated)
                                         .Skip(skip)
                                         .Take(take)
                                         .ToListAsync(cancellationToken);
@@ -366,7 +366,7 @@ namespace PatientManagement.Infrastructure.Repositories.Implementations
                                 instruction: m.Instruction,
                                 isActive: m.IsActive)).ToList() ?? new List<PrescribedMedication>(),
                             isActive: p.IsActive,
-                            createdDate: p.CreatedDate,
+                            createdDate: p.DateCreated,
                             dateModified: p.DateModified)).ToList());
         }
 
@@ -389,7 +389,7 @@ namespace PatientManagement.Infrastructure.Repositories.Implementations
             var prescriptions = await _context.Prescriptions
                                         .Include(p => p.PrescriptionMedications)
                                         .Where(predicate)
-                                        .OrderBy(x => x.CreatedDate)
+                                        .OrderBy(x => x.DateCreated)
                                         .Skip(skip)
                                         .Take(take)
                                         .ToListAsync(cancellationToken);
@@ -417,7 +417,7 @@ namespace PatientManagement.Infrastructure.Repositories.Implementations
                                 instruction: m.Instruction,
                                 isActive: m.IsActive)).ToList() ?? new List<PrescribedMedication>(),
                             isActive: p.IsActive,
-                            createdDate: p.CreatedDate,
+                            createdDate: p.DateCreated,
                             dateModified: p.DateModified)).ToList());
         }
 
@@ -455,7 +455,7 @@ namespace PatientManagement.Infrastructure.Repositories.Implementations
                                         .Include(y => y.Patient)
                                         .Include(z => z.PrescriptionMedications)  
                                         .Where(predicate)
-                                        .OrderBy(x => x.CreatedDate)
+                                        .OrderBy(x => x.DateCreated)
                                         .Skip(skip)
                                         .Take(take)
                                         .ToListAsync(cancellationToken);
@@ -476,7 +476,7 @@ namespace PatientManagement.Infrastructure.Repositories.Implementations
                                 instruction: m.Instruction,
                                 isActive: m.IsActive)).ToList() ?? new List<PrescribedMedication>(),  
                             isActive: p.IsActive,
-                            createdDate: p.CreatedDate,
+                            createdDate: p.DateCreated,
                             dateModified: p.DateModified)).ToList());
         }
     }

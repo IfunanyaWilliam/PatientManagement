@@ -123,6 +123,7 @@ namespace PatientManagement.Api.Controllers.v1
                 id: result.Id,
                 patientId: result.PatientId,
                 professionalId: result.ProfessionalId,
+                prescriptionId: result.PrescriptionId,
                 diagnosis: result.Diagnosis,
                 medications: result?.Medications?.Select(m =>
                     new PrescribedMedication(
@@ -132,7 +133,7 @@ namespace PatientManagement.Api.Controllers.v1
                         instruction: m.Instruction,
                         isActive: m.IsActive)).ToList(),
                 isActive: result.IsActive,
-                createdDate: result.CreatedDate,
+                dateCreated: result.DateCreated,
                 dateModified: result.DateModified));
         }
 

@@ -9,29 +9,32 @@ namespace PatientManagement.Common.Results
             Guid id,
             Guid patientId,
             Guid professionalId,
+            Guid prescriptionId,
             string? diagnosis,
-            List<PrescribedMedication>? medications,
+            IEnumerable<PrescribedMedication>? medications,
             bool isActive,
-            DateTime createdDate,
-            DateTime dateModified)
+            DateTime dateCreated,
+            DateTime? dateModified)
         {
             Id = id;
             PatientId = patientId;
             ProfessionalId = professionalId;
+            PrescriptionId = prescriptionId;
             Diagnosis = diagnosis;
             Medications = medications;
             IsActive = isActive;
-            CreatedDate = createdDate;
+            DateCreated = dateCreated;
             DateModified = dateModified;
         }
 
-        public Guid Id { get; set; }
+        public Guid Id { get; }
         public Guid PatientId { get; }
         public Guid ProfessionalId { get; }
+        public Guid PrescriptionId { get; }
         public string? Diagnosis { get; }
-        public List<PrescribedMedication>? Medications { get; }
+        public IEnumerable<PrescribedMedication>? Medications { get; }
         public bool IsActive { get; }
-        public DateTime CreatedDate { get; }
-        public DateTime DateModified { get; }
+        public DateTime DateCreated { get; }
+        public DateTime? DateModified { get; }
     }
 }

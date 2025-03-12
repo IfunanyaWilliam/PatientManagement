@@ -23,7 +23,7 @@ namespace PatientManagement.Infrastructure.Repositories.Interfaces
             IEnumerable<MedicationParameters> medications,
             CancellationToken cancellationToken);
 
-        Task<GetPrescriptionByIdResult> GetPrescriptionByIdAsync(
+        Task<PrescriptionMedication> GetPrescriptionByIdAsync(
             Guid id,
             CancellationToken cancellationToken);
 
