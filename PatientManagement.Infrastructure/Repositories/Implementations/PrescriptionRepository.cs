@@ -112,7 +112,7 @@ namespace PatientManagement.Infrastructure.Repositories.Implementations
                 ProfessionalId = professionalId,
                 PrescriptionId = prescription.Id,
                 MedicationId = m.Id,
-                Name = m.Name,
+                MedicationName = m.Name,
                 Dosage = medications.FirstOrDefault(m => m.MedicationId == m.MedicationId).Dosage,
                 Instruction = medications.FirstOrDefault(m => m.MedicationId == m.MedicationId).Instruction,
                 CreatedDate = DateTime.UtcNow,
@@ -140,16 +140,16 @@ namespace PatientManagement.Infrastructure.Repositories.Implementations
             throw new CustomException("Prescription could not be created, try again later", StatusCodes.Status500InternalServerError);
         }
 
-        public async Task<UpdatePrescriptionResult> UpdatePrescriptionAsync(
+        public async Task<Prescription> UpdatePrescriptionAsync(
             Guid prescriptionId,
             Guid patientId,
             Guid professionalId,
             string diagnosis,
-            List<PrescribedMedication> medications,
+            IEnumerable<MedicationParameters> medications,
             CancellationToken cancellationToken)
         {
             if (patientId == Guid.Empty || professionalId == Guid.Empty
-                || string.IsNullOrEmpty(diagnosis) || medications.Count <= 0)
+                || string.IsNullOrEmpty(diagnosis) || medications.Count() <= 0)
                 throw new CustomException($"Invalid input", StatusCodes.Status400BadRequest);
 
             var patientEntity = await _context.Patients.FirstOrDefaultAsync(p => p.Id == patientId, cancellationToken);
@@ -174,7 +174,7 @@ namespace PatientManagement.Infrastructure.Repositories.Implementations
             }
 
             var prescription = await _context.Prescriptions
-                .Include(p => p.PrescriptionMedications)
+                .Include(p => p.PrescriptionMedications.Where(p => p.PrescriptionId == prescriptionId))
                 .FirstOrDefaultAsync(p => 
                     p.Id == prescriptionId &&
                     p.PatientId == patientId && 
@@ -184,19 +184,49 @@ namespace PatientManagement.Infrastructure.Repositories.Implementations
             if (prescription is null)
                 throw new CustomException($"Prescription with Id {prescriptionId} Not Found", StatusCodes.Status404NotFound);
 
+            var medicationIds = medications.Select(m => m.MedicationId).ToList();
+
+            var existingMedications = await _context.Medications
+                .Where(m => medicationIds.Contains(m.Id) && m.IsActive)
+                .ToListAsync();
+
+            var medicationIdsNotFound = medicationIds.Except(existingMedications.Select(m => m.Id));
+
+            if (medicationIdsNotFound.Any())
+            {
+                throw new CustomException(
+                    "Medications not found, medicationIds: " + string.Join(",", medicationIdsNotFound),
+                    StatusCodes.Status400BadRequest);
+            }
+
             var existingPrescriptionMedications = prescription.PrescriptionMedications;
+
+            var existingPrescriptionMedicationIds = existingPrescriptionMedications
+                          .Select(pm => pm.MedicationId)
+                          .ToList();
+
+            IEnumerable<Guid> medicationIdsToRemove = existingPrescriptionMedicationIds
+                .Except(existingMedications.Select(m => m.Id));
+
+            //Remove all prescription medications that match medication Id to remove.
+            existingPrescriptionMedications
+                    .Where(pm => !medicationIdsToRemove.Contains(pm.MedicationId))
+                    .ToList()
+                    .ForEach(pm => pm.IsActive = true);
+
             var newPrescriptionMedications = new List<Entities.PrescriptionMedication>();
             foreach (var medication in medications)
             {
-                if (!prescription.PrescriptionMedications.Any(m => m.MedicationId == medication.MedicationId))
+                if (!existingPrescriptionMedications.Any(m => m.MedicationId == medication.MedicationId))
                 {
+                    var newMedication = await _context.Medications.FirstOrDefaultAsync(m => m.Id == medication.MedicationId);
                     var newPrescriptionMedication = new Entities.PrescriptionMedication
                     {
                         PatientId = patientId,
                         MedicationId = medication.MedicationId,
                         PrescriptionId = prescription.Id,
                         ProfessionalId = professionalId,
-                        Name = medication.Name,
+                        MedicationName = newMedication.Name,
                         Dosage = medication.Dosage,
                         Instruction = medication.Instruction,
                         IsActive = true,
@@ -219,13 +249,13 @@ namespace PatientManagement.Infrastructure.Repositories.Implementations
                     var prescribedMedication = medications.FirstOrDefault(m => m.MedicationId == item.MedicationId);
                     item.Dosage = prescribedMedication.Dosage ?? item.Dosage;
                     item.Instruction = prescribedMedication.Instruction ?? item.Instruction;
-                    item.IsActive = prescribedMedication.IsActive;
+                    item.IsActive = item.IsActive;
                     item.DateModified = DateTime.UtcNow.AddHours(1);
                 }
             }
 
-            if(newPrescriptionMedications.Count > 0)
-                _context.PrescriptionMedications.UpdateRange(newPrescriptionMedications);
+            if(existingPrescriptionMedications.Count > 0)
+                _context.PrescriptionMedications.UpdateRange(existingPrescriptionMedications);
 
             var allMedications = newPrescriptionMedications.Concat(existingPrescriptionMedications).ToList();
 
@@ -236,19 +266,13 @@ namespace PatientManagement.Infrastructure.Repositories.Implementations
 
             if (result > 0)
             {
-                return new UpdatePrescriptionResult(
+                return new Prescription(
                     id: prescription.Id,
                     patientId: prescription.PatientId,
                     professionalId: prescription.ProfessionalId,
                     diagnosis: prescription.Diagnosis,
-                    medications: allMedications.Select(m => new PrescribedMedication(
-                        medicationId: m.Id,
-                        name: m.Name,
-                        dosage: m.Dosage,
-                        instruction: m.Instruction,
-                        isActive: m.IsActive)).ToList(),
                     isActive: prescription.IsActive,
-                    createdDate: prescription.CreatedDate,
+                    dateCreated: prescription.CreatedDate,
                     dateModified: prescription.DateModified);
             }
 
@@ -286,7 +310,7 @@ namespace PatientManagement.Infrastructure.Repositories.Implementations
                 medications: prescription?.PrescriptionMedications?.Select(m =>
                     new PrescribedMedication(
                         medicationId: m.Id,
-                        name: m.Name,
+                        name: m.MedicationName,
                         dosage: m.Dosage,
                         instruction: m.Instruction,
                         isActive: m.IsActive)).ToList(),
@@ -337,7 +361,7 @@ namespace PatientManagement.Infrastructure.Repositories.Implementations
                             diagnosis: p.Diagnosis,
                             medications: p.PrescriptionMedications?.Select(m => new PrescribedMedication(
                                 medicationId: m.Id,
-                                name: m.Name,
+                                name: m.MedicationName,
                                 dosage: m.Dosage,
                                 instruction: m.Instruction,
                                 isActive: m.IsActive)).ToList() ?? new List<PrescribedMedication>(),
@@ -388,7 +412,7 @@ namespace PatientManagement.Infrastructure.Repositories.Implementations
                             diagnosis: p.Diagnosis,
                             medications: p.PrescriptionMedications?.Select(m => new PrescribedMedication(
                                 medicationId: m.Id,
-                                name: m.Name,
+                                name: m.MedicationName,
                                 dosage: m.Dosage,
                                 instruction: m.Instruction,
                                 isActive: m.IsActive)).ToList() ?? new List<PrescribedMedication>(),
@@ -447,7 +471,7 @@ namespace PatientManagement.Infrastructure.Repositories.Implementations
                             diagnosis: p.Diagnosis,
                             medications: p.PrescriptionMedications?.Select(m => new PrescribedMedication(
                                 medicationId: m.Id,
-                                name: m.Name,
+                                name: m.MedicationName,
                                 dosage: m.Dosage,
                                 instruction: m.Instruction,
                                 isActive: m.IsActive)).ToList() ?? new List<PrescribedMedication>(),  

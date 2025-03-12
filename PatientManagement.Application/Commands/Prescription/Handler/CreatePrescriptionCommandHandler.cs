@@ -26,11 +26,14 @@ namespace PatientManagement.Application.Commands.Prescription.Handler
             if (command == null)
                 throw new CustomException($"Invalid input", StatusCodes.Status400BadRequest);
 
+            if(command.Medications is null)
+                throw new CustomException($"Invalid input: Medication is null", StatusCodes.Status400BadRequest);
+
             var result = await _prescriptionRepository.CreatePrescriptionAsync(
                 patientId: command.PatientId,
                 professionalId: command.ProfessionalId,
                 diagnosis: command.Diagnosis,
-                medications: command.Medications.Select(m => new MedicationParameters(
+                medications: command.Medications?.Select(m => new MedicationParameters(
                     medicationId: m.MedicationId,
                     dosage: m.Dosage,
                     instruction: m.Instruction)),

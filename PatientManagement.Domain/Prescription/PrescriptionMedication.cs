@@ -1,17 +1,16 @@
 ﻿
-namespace PatientManagement.Infrastructure.Entities
+namespace PatientManagement.Domain.Prescription
 {
     public class PrescriptionMedication
     {
         public Guid Id { get; set; }
         public Guid MedicationId { get; set; }
-        public Medication Medication { get; set; }
         public Guid PatientId { get; set; }
         public Guid ProfessionalId { get; set; }
-        public Prescription Prescription { get; set; }
         public Guid PrescriptionId { get; set; }
-        public string MedicationName { get; set; }
-        public string Dosage { get; set; }
+        public string? Diagnosis { get; set; }
+        public string? MedicationName { get; set; }
+        public string? Dosage { get; set; }
         public string? Instruction { get; set; }
         public bool IsActive { get; set; }
         public DateTime CreatedDate { get; set; } = DateTime.UtcNow.AddHours(1);

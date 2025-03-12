@@ -82,7 +82,11 @@ namespace PatientManagement.Api.Controllers.v1
                         patientId: parameters.PatientId,
                         professionalId: parameters.ProfessionalId,
                         diagnosis: parameters.Diagnosis,
-                        medications: parameters.Medications),
+                        medications: parameters.Medications?.Select(m =>
+                            new MedicationParameters(
+                                medicationId: m.MedicationId,
+                                dosage: m.Dosage,
+                                instruction: m.Instruction))),
                     ct: ct);
 
             return Ok(new UpdatePrescriptionResult(
@@ -90,7 +94,6 @@ namespace PatientManagement.Api.Controllers.v1
                 patientId: result.PatientId,
                 professionalId: result.ProfessionalId,
                 diagnosis: result.Diagnosis,
-                medications: result.Medications,
                 isActive: result.IsActive,
                 createdDate: result.CreatedDate,
                 dateModified: result.DateModified));

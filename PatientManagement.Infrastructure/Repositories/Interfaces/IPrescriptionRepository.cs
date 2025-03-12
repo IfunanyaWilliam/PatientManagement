@@ -15,12 +15,12 @@ namespace PatientManagement.Infrastructure.Repositories.Interfaces
             IEnumerable<MedicationParameters> medications,
             CancellationToken cancellationToken);
 
-        Task<UpdatePrescriptionResult> UpdatePrescriptionAsync(
+        Task<Prescription> UpdatePrescriptionAsync(
             Guid prescriptionId,
             Guid patientId,
             Guid professionalId,
             string diagnosis,
-            List<PrescribedMedication> medications,
+            IEnumerable<MedicationParameters> medications,
             CancellationToken cancellationToken);
 
         Task<GetPrescriptionByIdResult> GetPrescriptionByIdAsync(

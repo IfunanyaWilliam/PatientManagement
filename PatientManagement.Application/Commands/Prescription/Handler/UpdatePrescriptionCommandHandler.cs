@@ -39,9 +39,8 @@ namespace PatientManagement.Application.Commands.Prescription.Handler
                 patientId: result.PatientId,
                 professionalId: result.ProfessionalId,
                 diagnosis: result.Diagnosis,
-                medications: result.Medications,
                 isActive: result.IsActive,
-                createdDate: result.CreatedDate,
+                createdDate: result.DateCreated,
                 dateModified: result.DateModified);
         }
     }
