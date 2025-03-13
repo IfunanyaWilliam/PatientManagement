@@ -11,7 +11,7 @@ namespace PatientManagement.Common.Dto
             List<PrescribedMedication>? medications,
             bool isActive,
             DateTime createdDate,
-            DateTime dateModified)
+            DateTime? dateModified)
         {
             Id = id;
             PatientId = patientId;
@@ -30,6 +30,6 @@ namespace PatientManagement.Common.Dto
         public List<PrescribedMedication>? Medications { get; }
         public bool IsActive { get; }
         public DateTime CreatedDate { get; }
-        public DateTime DateModified { get; }
+        public DateTime? DateModified { get; }
     }
 }

@@ -10,6 +10,7 @@ namespace PatientManagement.Application.Queries.Prescription.Handler
     using Infrastructure.Repositories.Interfaces;
     using System.Text.Json;
     using Microsoft.Extensions.Logging;
+    using PatientManagement.Common.Results;
 
     public class GetPrescriptionByPatientIdQueryHandler 
         : IQueryHandler<GetPrescriptionByPatientIdQueryParameters, GetPrescriptionByPatientIdQueryResult>
@@ -32,7 +33,7 @@ namespace PatientManagement.Application.Queries.Prescription.Handler
             if (parameters.PatientId == Guid.Empty)
                 throw new CustomException($"Invalid input", StatusCodes.Status400BadRequest);
 
-            var result = await _prescriptionRepository.GetPrescriptionByPatientIdAsync(
+            var result = await _prescriptionRepository.GetPrescriptionsByPatientIdAsync(
                 parameters.PatientId,
                 pageNumber: parameters.PageNumber,
                 pageSize: parameters.PageSize,
@@ -45,14 +46,15 @@ namespace PatientManagement.Application.Queries.Prescription.Handler
                     "GetPrescriptionByPatientIdQueryHandler: Prescriptions not found",
                     DateTime.UtcNow.AddHours(1));
 
-                return new GetPrescriptionByPatientIdQueryResult(new List<PrescriptionDto>());
+                return new GetPrescriptionByPatientIdQueryResult(new List<GetPrescriptionResult>());
             }
 
             return new GetPrescriptionByPatientIdQueryResult(
-                prescriptions: result.Prescriptions.Select(p => new PrescriptionDto(
+                prescriptions: result.Select(p => new GetPrescriptionResult(
                             id: p.Id,
                             patientId: p.PatientId,
                             professionalId: p.ProfessionalId,
+                            prescriptionId: p.PrescriptionId,
                             diagnosis: p.Diagnosis,
                             medications: p.Medications?.Select(m => new PrescribedMedication(
                                 medicationId: m.MedicationId,
@@ -61,8 +63,8 @@ namespace PatientManagement.Application.Queries.Prescription.Handler
                                  instruction: m.Instruction,
                                 isActive: m.IsActive)).ToList() ?? new List<PrescribedMedication>(),
                             isActive: p.IsActive,
-                            createdDate: p.CreatedDate,
-                            dateModified: p.DateModified)).ToList());
+                            dateCreated: p.DateCreated,
+                            dateModified: p.DateModified)));
         }
     }
 }

@@ -27,13 +27,13 @@ namespace PatientManagement.Infrastructure.Repositories.Interfaces
             Guid id,
             CancellationToken cancellationToken);
 
-        Task<GetPrescriptionByPatientIdResult> GetPrescriptionByPatientIdAsync(
+        Task<IEnumerable<PrescriptionMedication>> GetPrescriptionsByPatientIdAsync(
             Guid patientId,
             int pageNumber,
             int pageSize,
             CancellationToken cancellationToken);
 
-        Task<GetPrescriptionByProfessionalIdResult> GetPrescriptionByProfessionalIdAsync(
+        Task<IEnumerable<PrescriptionMedication>> GetPrescriptionByProfessionalIdAsync(
             Guid professionalId,
             int pageNumber,
             int pageSize,

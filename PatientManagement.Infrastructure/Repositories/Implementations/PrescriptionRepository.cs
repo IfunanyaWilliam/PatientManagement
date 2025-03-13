@@ -319,7 +319,7 @@ namespace PatientManagement.Infrastructure.Repositories.Implementations
                 dateModified: prescription.DateModified);
         }
 
-        public async Task<GetPrescriptionByPatientIdResult> GetPrescriptionByPatientIdAsync(
+        public async Task<IEnumerable<PrescriptionMedication>> GetPrescriptionsByPatientIdAsync(
             Guid patientId,
             int pageNumber,
             int pageSize,
@@ -353,11 +353,11 @@ namespace PatientManagement.Infrastructure.Repositories.Implementations
                 return null;
             }
 
-            return new GetPrescriptionByPatientIdResult(
-                prescriptions: prescriptions.Select(p => new PrescriptionDto(
+            return  prescriptions.Select(p => new PrescriptionMedication(
                             id: p.Id,
                             patientId: p.PatientId,
                             professionalId: p.ProfessionalId,
+                            prescriptionId: p.Id,
                             diagnosis: p.Diagnosis,
                             medications: p.PrescriptionMedications?.Select(m => new PrescribedMedication(
                                 medicationId: m.Id,
@@ -366,11 +366,11 @@ namespace PatientManagement.Infrastructure.Repositories.Implementations
                                 instruction: m.Instruction,
                                 isActive: m.IsActive)).ToList() ?? new List<PrescribedMedication>(),
                             isActive: p.IsActive,
-                            createdDate: p.DateCreated,
-                            dateModified: p.DateModified)).ToList());
+                            dateCreated: p.DateCreated,
+                            dateModified: p.DateModified)).ToList();
         }
 
-        public async Task<GetPrescriptionByProfessionalIdResult> GetPrescriptionByProfessionalIdAsync(
+        public async Task<IEnumerable<PrescriptionMedication>> GetPrescriptionByProfessionalIdAsync(
             Guid professionalId,
             int pageNumber,
             int pageSize,
@@ -404,11 +404,11 @@ namespace PatientManagement.Infrastructure.Repositories.Implementations
                 return null;
             }
 
-            return new GetPrescriptionByProfessionalIdResult(
-                        prescriptions: prescriptions.Select(p => new PrescriptionDto(
+            return prescriptions.Select(p => new PrescriptionMedication(
                             id: p.Id,
                             patientId: p.PatientId,
                             professionalId: p.ProfessionalId,
+                            prescriptionId: p.Id,
                             diagnosis: p.Diagnosis,
                             medications: p.PrescriptionMedications?.Select(m => new PrescribedMedication(
                                 medicationId: m.Id,
@@ -417,8 +417,8 @@ namespace PatientManagement.Infrastructure.Repositories.Implementations
                                 instruction: m.Instruction,
                                 isActive: m.IsActive)).ToList() ?? new List<PrescribedMedication>(),
                             isActive: p.IsActive,
-                            createdDate: p.DateCreated,
-                            dateModified: p.DateModified)).ToList());
+                            dateCreated: p.DateCreated,
+                            dateModified: p.DateModified));
         }
 
         public async Task<GetAllPrescriptionsResult> GetAllPrescriptionsAsync(

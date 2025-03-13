@@ -164,10 +164,11 @@ namespace PatientManagement.Api.Controllers.v1
 
             return Ok(new GetPrescriptionByPatientIdResult(
                 prescriptions: result.Prescriptions.Select(p =>
-                        new PrescriptionDto(
+                        new GetPrescriptionResult(
                             id: p.Id,
                             patientId: p.PatientId,
                             professionalId: p.ProfessionalId,
+                            prescriptionId: p.PrescriptionId,
                             diagnosis: p.Diagnosis,
                             medications: p?.Medications?.Select(m =>
                                 new PrescribedMedication(
@@ -177,7 +178,7 @@ namespace PatientManagement.Api.Controllers.v1
                                      instruction: m.Instruction,
                                     isActive: m.IsActive)).ToList(),
                             isActive: p.IsActive,
-                            createdDate: p.CreatedDate,
+                            dateCreated: p.DateCreated,
                             dateModified: p.DateModified))));
         }
 
@@ -208,10 +209,11 @@ namespace PatientManagement.Api.Controllers.v1
 
             return Ok(new GetPrescriptionByProfessionalIdResult(
                 prescriptions: result.Prescriptions.Select(p =>
-                        new PrescriptionDto(
+                        new GetPrescriptionResult(
                             id: p.Id,
                             patientId: p.PatientId,
                             professionalId: p.ProfessionalId,
+                            prescriptionId: p.PrescriptionId,
                             diagnosis: p.Diagnosis,
                             medications: p?.Medications?.Select(m =>
                                 new PrescribedMedication(
@@ -221,7 +223,7 @@ namespace PatientManagement.Api.Controllers.v1
                                      instruction: m.Instruction,
                                     isActive: m.IsActive)).ToList(),
                             isActive: p.IsActive,
-                            createdDate: p.CreatedDate,
+                            dateCreated: p.DateCreated,
                             dateModified: p.DateModified))));
         }
 

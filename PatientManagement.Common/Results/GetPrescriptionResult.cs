@@ -1,11 +1,10 @@
-﻿
-using PatientManagement.Common.Dto;
+﻿using PatientManagement.Common.Dto;
 
-namespace PatientManagement.Domain.Prescription
+namespace PatientManagement.Common.Results
 {
-    public class PrescriptionMedication
+    public class GetPrescriptionResult
     {
-        public PrescriptionMedication(
+        public GetPrescriptionResult(
             Guid id,
             Guid patientId,
             Guid professionalId,
@@ -27,15 +26,14 @@ namespace PatientManagement.Domain.Prescription
             DateModified = dateModified;
         }
 
-
-        public Guid Id { get; set; }
-        public Guid PatientId { get; set; }
-        public Guid ProfessionalId { get; set; }
-        public Guid PrescriptionId { get; set; }
-        public string? Diagnosis { get; set; }
-        public IEnumerable<PrescribedMedication>? Medications { get; set; }
-        public bool IsActive { get; set; }
-        public DateTime DateCreated { get; set; } 
-        public DateTime? DateModified { get; set; }
+        public Guid Id { get; }
+        public Guid PatientId { get; }
+        public Guid ProfessionalId { get; }
+        public Guid PrescriptionId { get; }
+        public string? Diagnosis { get; }
+        public IEnumerable<PrescribedMedication>? Medications { get; }
+        public bool IsActive { get; }
+        public DateTime DateCreated { get; }
+        public DateTime? DateModified { get; }
     }
 }

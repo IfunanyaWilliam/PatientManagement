@@ -10,7 +10,8 @@ namespace PatientManagement.Application.Queries.Prescription.Handler
     using Common.Handlers;
     using Common.Utilities;
     using Infrastructure.Repositories.Interfaces;
-    
+    using PatientManagement.Domain.Prescription;
+    using PatientManagement.Common.Results;
 
     public class GetPrescriptionByProfessionalIdQueryHandler : 
         IQueryHandler<GetPrescriptionByProfessionalIdQueryParameters, GetPrescriptionByProfessionalIdQueryResult>
@@ -47,14 +48,15 @@ namespace PatientManagement.Application.Queries.Prescription.Handler
                     "GetPrescriptionByProfessionalIdQueryHandler: Prescriptions not found",
                     DateTime.UtcNow.AddHours(1));
 
-                return new GetPrescriptionByProfessionalIdQueryResult(new List<PrescriptionDto>());
+                return new GetPrescriptionByProfessionalIdQueryResult(new List<GetPrescriptionResult>());
             }
 
             return new GetPrescriptionByProfessionalIdQueryResult(
-                prescriptions: result.Prescriptions.Select(p => new PrescriptionDto(
+                        result.Select(p => new GetPrescriptionResult(
                             id: p.Id,
                             patientId: p.PatientId,
                             professionalId: p.ProfessionalId,
+                            prescriptionId: p.PrescriptionId,
                             diagnosis: p.Diagnosis,
                             medications: p.Medications?.Select(m => new PrescribedMedication(
                                 medicationId: m.MedicationId,
@@ -63,7 +65,7 @@ namespace PatientManagement.Application.Queries.Prescription.Handler
                                  instruction: m.Instruction,
                                 isActive: m.IsActive)).ToList() ?? new List<PrescribedMedication>(),
                             isActive: p.IsActive,
-                            createdDate: p.CreatedDate,
+                            dateCreated: p.DateCreated,
                             dateModified: p.DateModified)).ToList());
         }
     }
