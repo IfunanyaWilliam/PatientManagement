@@ -1,6 +1,4 @@
 ﻿
-using PatientManagement.Domain.ApplicationUser;
-
 namespace PatientManagement.Domain.Patient
 {
     public class Patient
@@ -9,26 +7,31 @@ namespace PatientManagement.Domain.Patient
             Guid id,
             Guid applicationUserId,
             string? title,
+            string? firstName,
+            string? middleName,
+            string? lastName,
             string? phoneNumber,
             int age,
+            string? email,
             bool isActive,
-            bool isDeleted,
-            UserRole role,
+            string userRole,
             DateTime createdDate,
-            DateTime dateModified) 
+            DateTime? dateModified) 
         {
             Id = id;
             ApplicationUserId = applicationUserId;
             Title = title;
+            FirstName = firstName;
+            MiddleName = middleName;
+            LastName = lastName;
             PhoneNumber = phoneNumber;
             Age = age;
+            Email = email;
             IsActive = isActive;
-            IsDeleted = isDeleted;
-            Role = role;
-            CreatedDate = createdDate;
+            UserRole = userRole;
+            DateCreated = createdDate;
             DateModified = dateModified;
         }
-
 
         public Guid Id { get; set; }
         public Guid ApplicationUserId { get; set; }
@@ -40,9 +43,8 @@ namespace PatientManagement.Domain.Patient
         public int Age { get; set; }
         public string? Email { get; set; }
         public bool IsActive { get; set; }
-        public bool IsDeleted { get; set; }
-        public UserRole Role { get; set; }
-        public DateTime CreatedDate { get; set; }
-        public DateTime DateModified { get; set; }
+        public string UserRole { get; set; }
+        public DateTime DateCreated { get; set; }
+        public DateTime? DateModified { get; set; }
     }
 }

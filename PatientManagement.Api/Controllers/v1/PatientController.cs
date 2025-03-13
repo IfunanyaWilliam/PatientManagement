@@ -66,7 +66,8 @@ namespace PatientManagement.Api.Controllers.v1
                 email: result.Email,
                 isActive: result.IsActive,
                 userRole: result.UserRole,
-                createdDate: result.CreatedDate));
+                dateCreated: result.DateCreated,
+                dateModified: result.DateModified));
         }
 
 

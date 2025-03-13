@@ -430,6 +430,10 @@ namespace PatientManagement.Infrastructure.Repositories.Implementations
                             dateModified: p.DateModified));
         }
 
+        //Implemnt GetPrescriptionsByMedicationId => return all prescriptionMedications where medicationId occurs
+        //request => medicationId, int pageNumber, int pageSize
+        //response => IEnumerable<PrescriptionMedication> 
+
         public async Task<IEnumerable<PrescriptionMedication>> GetAllPrescriptionsAsync(
             int pageNumber,
             int pageSize,

@@ -30,6 +30,5 @@ namespace PatientManagement.Application.Commands.Patient.Parameters
         public string? LastName { get; set; }
         public string? PhoneNumber { get; set; }
         public int Age { get; set; }
-    
     }
 }

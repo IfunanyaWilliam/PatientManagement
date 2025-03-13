@@ -17,8 +17,9 @@ namespace PatientManagement.Application.Commands.Patient.Results
             int age,
             string? email,
             bool isActive,
-            UserRole userRole,
-            DateTime createdDate)
+            string userRole,
+            DateTime dateCreated,
+            DateTime? dateModified)
         {
             Id = id;
             ApplicationUserId = applicationUserId;
@@ -31,7 +32,8 @@ namespace PatientManagement.Application.Commands.Patient.Results
             Email = email;
             IsActive = isActive;
             UserRole = userRole;
-            CreatedDate = createdDate;
+            DateCreated = dateCreated;
+            DateModified = dateModified;
         }
 
         public Guid Id { get; }
@@ -44,8 +46,8 @@ namespace PatientManagement.Application.Commands.Patient.Results
         public int Age { get; }
         public string? Email { get; }
         public bool IsActive { get; }
-        public UserRole UserRole { get; }
-        public DateTime CreatedDate { get; }
- 
+        public string UserRole { get; }
+        public DateTime DateCreated { get; }
+        public DateTime? DateModified { get; set; }
     }
 }

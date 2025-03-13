@@ -2,10 +2,11 @@
 namespace PatientManagement.Infrastructure.Repositories.Interfaces
 {
     using Common.Results;
+    using Domain.Patient;
 
     public interface IPatientRepository
     {
-        Task<CreatePatientResult> CreatePatientAsync(
+        Task<Patient> CreatePatientAsync(
             Guid applicationUserId,
             string? title,
             string? firstName,

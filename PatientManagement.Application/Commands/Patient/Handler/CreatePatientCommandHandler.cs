@@ -48,7 +48,8 @@ namespace PatientManagement.Application.Commands.Patient.Handler
                 email: result.Email,
                 isActive: result.IsActive,
                 userRole: result.UserRole,
-                createdDate: result.CreatedDate);
+                dateCreated: result.DateCreated,
+                dateModified: result.DateModified);
         }
     }
 }

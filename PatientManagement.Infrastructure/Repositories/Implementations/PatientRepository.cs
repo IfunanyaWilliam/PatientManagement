@@ -7,10 +7,12 @@ namespace PatientManagement.Infrastructure.Repositories.Implementations
     using Microsoft.Extensions.Logging;
     using System.Text.Json;
     using DbContexts;
+    using Common.Enums;
+    using Domain.Patient;
     using Common.Results;
     using Common.Utilities;
-    using Common.Enums;
     using Repositories.Interfaces;
+    
 
     public class PatientRepository : IPatientRepository
     {
@@ -29,7 +31,7 @@ namespace PatientManagement.Infrastructure.Repositories.Implementations
             _logger = logger;
         }
 
-        public async Task<CreatePatientResult> CreatePatientAsync(
+        public async Task<Patient> CreatePatientAsync(
             Guid applicationUserId,
             string? title,
             string? firstName,
@@ -81,7 +83,7 @@ namespace PatientManagement.Infrastructure.Repositories.Implementations
             
             if(result > 0)
             {
-                return new CreatePatientResult(
+                return new Patient(
                     id: patient.Id,
                     applicationUserId: patient.ApplicationUserId,
                     title: title,
@@ -92,8 +94,9 @@ namespace PatientManagement.Infrastructure.Repositories.Implementations
                     age: patient.Age,
                     email: user.Email,
                     isActive: patient.IsActive,
-                    userRole: patient.Role,
-                    createdDate: patient.CreatedDate);
+                    userRole: patient.Role.ToString(),
+                    createdDate: patient.CreatedDate,
+                    dateModified: patient.DateModified);
             }
 
             _logger.LogError($"Patient could not be saved, data => {JsonSerializer.Serialize(patient)}");
