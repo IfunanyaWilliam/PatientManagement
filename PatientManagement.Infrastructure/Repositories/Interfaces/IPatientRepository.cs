@@ -16,7 +16,7 @@ namespace PatientManagement.Infrastructure.Repositories.Interfaces
             int age,
             CancellationToken cancellationToken = default);
 
-        Task<UpdatePatientResult> UpdatePatientAsync(
+        Task<Patient> UpdatePatientAsync(
             Guid id,
             Guid applicationUserId,
             string? title,

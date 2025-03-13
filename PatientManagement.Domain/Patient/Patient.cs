@@ -15,7 +15,7 @@ namespace PatientManagement.Domain.Patient
             string? email,
             bool isActive,
             string userRole,
-            DateTime createdDate,
+            DateTime dateCreated,
             DateTime? dateModified) 
         {
             Id = id;
@@ -29,7 +29,7 @@ namespace PatientManagement.Domain.Patient
             Email = email;
             IsActive = isActive;
             UserRole = userRole;
-            DateCreated = createdDate;
+            DateCreated = dateCreated;
             DateModified = dateModified;
         }
 

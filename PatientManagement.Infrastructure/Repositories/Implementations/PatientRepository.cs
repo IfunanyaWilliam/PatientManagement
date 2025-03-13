@@ -95,7 +95,7 @@ namespace PatientManagement.Infrastructure.Repositories.Implementations
                     email: user.Email,
                     isActive: patient.IsActive,
                     userRole: patient.Role.ToString(),
-                    createdDate: patient.CreatedDate,
+                    dateCreated: patient.CreatedDate,
                     dateModified: patient.DateModified);
             }
 
@@ -103,7 +103,7 @@ namespace PatientManagement.Infrastructure.Repositories.Implementations
             throw new CustomException("Patient could not be created, try again later", StatusCodes.Status500InternalServerError);
         }
 
-        public async Task<UpdatePatientResult> UpdatePatientAsync(
+        public async Task<Patient> UpdatePatientAsync(
             Guid id,
             Guid applicationUserId,
             string? title,
@@ -149,7 +149,7 @@ namespace PatientManagement.Infrastructure.Repositories.Implementations
 
             if (result > 0)
             {
-                return new UpdatePatientResult(
+                return new Patient(
                     id: patient.Id,
                     applicationUserId: patient.ApplicationUserId,
                     title: title,
@@ -160,8 +160,8 @@ namespace PatientManagement.Infrastructure.Repositories.Implementations
                     age: patient.Age,
                     email: user.Email,
                     isActive: patient.IsActive,
-                    userRole: patient.Role,
-                    createdDate: patient.CreatedDate,
+                    userRole: patient.Role.ToString(),
+                    dateCreated: patient.CreatedDate,
                     dateModified: patient.DateModified);
             }
 

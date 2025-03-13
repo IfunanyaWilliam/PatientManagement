@@ -1,8 +1,6 @@
 ﻿
 namespace PatientManagement.Common.Results
 {
-    using Enums;
-
     public class UpdatePatientResult
     {
         public UpdatePatientResult(
@@ -16,9 +14,9 @@ namespace PatientManagement.Common.Results
             int age,
             string? email,
             bool isActive,
-            UserRole userRole,
+            string userRole,
             DateTime createdDate,
-            DateTime dateModified)
+            DateTime? dateModified)
         {
             Id = id;
             ApplicationUserId = applicationUserId;
@@ -45,8 +43,8 @@ namespace PatientManagement.Common.Results
         public int Age { get; }
         public string? Email { get; }
         public bool IsActive { get; }
-        public UserRole UserRole { get; }
+        public string UserRole { get; }
         public DateTime CreatedDate { get; }
-        public DateTime DateModified { get; }
+        public DateTime? DateModified { get; }
     }
 }
