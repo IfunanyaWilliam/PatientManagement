@@ -39,6 +39,7 @@ namespace PatientManagement.Infrastructure.Repositories.Implementations
         public async Task<Prescription> CreatePrescriptionAsync(
             Guid patientId,
             Guid professionalId,
+            string symptoms,
             string diagnosis,
             IEnumerable<MedicationParameters> medications,
             CancellationToken cancellationToken)
@@ -100,6 +101,7 @@ namespace PatientManagement.Infrastructure.Repositories.Implementations
             {
                 PatientId = patientId,
                 ProfessionalId = professionalId,
+                Symptoms = symptoms,
                 Diagnosis = diagnosis,
                 IsActive = true
             };
@@ -130,6 +132,7 @@ namespace PatientManagement.Infrastructure.Repositories.Implementations
                     id: prescription.Id,
                     patientId: prescription.PatientId,
                     professionalId: prescription.ProfessionalId,
+                    symptoms: prescription.Symptoms,
                     diagnosis: prescription.Diagnosis,
                     isActive: prescription.IsActive,
                     dateCreated: prescription.DateCreated,
@@ -144,6 +147,7 @@ namespace PatientManagement.Infrastructure.Repositories.Implementations
             Guid prescriptionId,
             Guid patientId,
             Guid professionalId,
+            string symptoms,
             string diagnosis,
             IEnumerable<MedicationParameters> medications,
             CancellationToken cancellationToken)
@@ -259,6 +263,7 @@ namespace PatientManagement.Infrastructure.Repositories.Implementations
 
             var allMedications = newPrescriptionMedications.Concat(existingPrescriptionMedications).ToList();
 
+            prescription.Symptoms = symptoms ?? prescription.Symptoms;
             prescription.Diagnosis = diagnosis ?? prescription.Diagnosis;
             prescription.DateModified = DateTime.UtcNow.AddHours(1);
             prescription.PrescriptionMedications = allMedications;
@@ -270,6 +275,7 @@ namespace PatientManagement.Infrastructure.Repositories.Implementations
                     id: prescription.Id,
                     patientId: prescription.PatientId,
                     professionalId: prescription.ProfessionalId,
+                    symptoms: prescription.Symptoms,
                     diagnosis: prescription.Diagnosis,
                     isActive: prescription.IsActive,
                     dateCreated: prescription.DateCreated,
@@ -307,6 +313,7 @@ namespace PatientManagement.Infrastructure.Repositories.Implementations
                 patientId: prescription.PatientId,
                 professionalId: prescription.ProfessionalId,
                 prescriptionId: prescription.Id,
+                symptoms: prescription.Symptoms,
                 diagnosis: prescription.Diagnosis,
                 medications: prescription.PrescriptionMedications?.Select(m => new PrescribedMedication(
                                 medicationId: m.Id,
@@ -358,6 +365,7 @@ namespace PatientManagement.Infrastructure.Repositories.Implementations
                             patientId: p.PatientId,
                             professionalId: p.ProfessionalId,
                             prescriptionId: p.Id,
+                            symptoms: p.Symptoms,
                             diagnosis: p.Diagnosis,
                             medications: p.PrescriptionMedications?.Select(m => new PrescribedMedication(
                                 medicationId: m.Id,
@@ -409,6 +417,7 @@ namespace PatientManagement.Infrastructure.Repositories.Implementations
                             patientId: p.PatientId,
                             professionalId: p.ProfessionalId,
                             prescriptionId: p.Id,
+                            symptoms: p.Symptoms,
                             diagnosis: p.Diagnosis,
                             medications: p.PrescriptionMedications?.Select(m => new PrescribedMedication(
                                 medicationId: m.Id,
@@ -421,7 +430,7 @@ namespace PatientManagement.Infrastructure.Repositories.Implementations
                             dateModified: p.DateModified));
         }
 
-        public async Task<GetAllPrescriptionsResult> GetAllPrescriptionsAsync(
+        public async Task<IEnumerable<PrescriptionMedication>> GetAllPrescriptionsAsync(
             int pageNumber,
             int pageSize,
             string searchParam,
@@ -463,11 +472,12 @@ namespace PatientManagement.Infrastructure.Repositories.Implementations
             if (!prescriptions.Any() || prescriptions == null)
                 return null;
 
-            return new GetAllPrescriptionsResult(
-                        prescriptions: prescriptions.Select(p => new PrescriptionDto(
+            return prescriptions.Select(p => new PrescriptionMedication(
                             id: p.Id,
                             patientId: p.PatientId,
                             professionalId: p.ProfessionalId,
+                            prescriptionId: p.Id,
+                            symptoms: p.Symptoms,
                             diagnosis: p.Diagnosis,
                             medications: p.PrescriptionMedications?.Select(m => new PrescribedMedication(
                                 medicationId: m.Id,
@@ -476,8 +486,8 @@ namespace PatientManagement.Infrastructure.Repositories.Implementations
                                 instruction: m.Instruction,
                                 isActive: m.IsActive)).ToList() ?? new List<PrescribedMedication>(),  
                             isActive: p.IsActive,
-                            createdDate: p.DateCreated,
-                            dateModified: p.DateModified)).ToList());
+                            dateCreated: p.DateCreated,
+                            dateModified: p.DateModified));
         }
     }
 }

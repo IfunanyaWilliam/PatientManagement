@@ -1,8 +1,6 @@
 ﻿
 namespace PatientManagement.Common.Results
 {
-    using Common.Dto;
-
     public class GetPrescriptionByProfessionalIdResult
     {
 

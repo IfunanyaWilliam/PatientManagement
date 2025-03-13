@@ -7,11 +7,11 @@ namespace PatientManagement.Application.Queries.Prescription.Handler
     using Parameters;
     using Results;
     using Common.Dto;
+    using Common.Results;
     using Common.Handlers;
     using Common.Utilities;
     using Infrastructure.Repositories.Interfaces;
-    using PatientManagement.Domain.Prescription;
-    using PatientManagement.Common.Results;
+    
 
     public class GetPrescriptionByProfessionalIdQueryHandler : 
         IQueryHandler<GetPrescriptionByProfessionalIdQueryParameters, GetPrescriptionByProfessionalIdQueryResult>
@@ -57,6 +57,7 @@ namespace PatientManagement.Application.Queries.Prescription.Handler
                             patientId: p.PatientId,
                             professionalId: p.ProfessionalId,
                             prescriptionId: p.PrescriptionId,
+                            symptoms: p.Symptoms,
                             diagnosis: p.Diagnosis,
                             medications: p.Medications?.Select(m => new PrescribedMedication(
                                 medicationId: m.MedicationId,

@@ -11,6 +11,7 @@ namespace PatientManagement.Infrastructure.Repositories.Interfaces
         Task<Prescription> CreatePrescriptionAsync(
             Guid patientId,
             Guid professionalId,
+            string symptoms,
             string diagnosis,
             IEnumerable<MedicationParameters> medications,
             CancellationToken cancellationToken);
@@ -19,6 +20,7 @@ namespace PatientManagement.Infrastructure.Repositories.Interfaces
             Guid prescriptionId,
             Guid patientId,
             Guid professionalId,
+            string symptoms,
             string diagnosis,
             IEnumerable<MedicationParameters> medications,
             CancellationToken cancellationToken);
@@ -39,7 +41,7 @@ namespace PatientManagement.Infrastructure.Repositories.Interfaces
             int pageSize,
             CancellationToken cancellationToken);
 
-        Task<GetAllPrescriptionsResult> GetAllPrescriptionsAsync(
+        Task<IEnumerable<PrescriptionMedication>> GetAllPrescriptionsAsync(
             int pageNumber,
             int pageSize,
             string searchParam,

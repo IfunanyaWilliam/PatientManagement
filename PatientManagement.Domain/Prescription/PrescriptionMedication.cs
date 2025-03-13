@@ -10,6 +10,7 @@ namespace PatientManagement.Domain.Prescription
             Guid patientId,
             Guid professionalId,
             Guid prescriptionId,
+            string symptoms,
             string? diagnosis,
             IEnumerable<PrescribedMedication>? medications,
             bool isActive,
@@ -20,6 +21,7 @@ namespace PatientManagement.Domain.Prescription
             PatientId = patientId;
             ProfessionalId = professionalId;
             PrescriptionId = prescriptionId;
+            Symptoms = symptoms;
             Diagnosis = diagnosis;
             Medications = medications;
             IsActive = isActive;
@@ -32,6 +34,7 @@ namespace PatientManagement.Domain.Prescription
         public Guid PatientId { get; set; }
         public Guid ProfessionalId { get; set; }
         public Guid PrescriptionId { get; set; }
+        public string Symptoms { get; set; }
         public string? Diagnosis { get; set; }
         public IEnumerable<PrescribedMedication>? Medications { get; set; }
         public bool IsActive { get; set; }

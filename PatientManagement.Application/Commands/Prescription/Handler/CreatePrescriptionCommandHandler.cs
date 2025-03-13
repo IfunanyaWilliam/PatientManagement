@@ -7,7 +7,7 @@ namespace PatientManagement.Application.Commands.Prescription.Handler
     using Results;
     using Common.Handlers;
     using Common.Utilities;
-    using PatientManagement.Common.Parameters;
+    using Common.Parameters;
 
     public class CreatePrescriptionCommandHandler :
         ICommandHandlerWithResult<CreatePrescriptionCommandParameters, CreatePrescriptionCommandResult>
@@ -32,6 +32,7 @@ namespace PatientManagement.Application.Commands.Prescription.Handler
             var result = await _prescriptionRepository.CreatePrescriptionAsync(
                 patientId: command.PatientId,
                 professionalId: command.ProfessionalId,
+                symptoms: command.Symptoms,
                 diagnosis: command.Diagnosis,
                 medications: command.Medications?.Select(m => new MedicationParameters(
                     medicationId: m.MedicationId,
@@ -43,6 +44,7 @@ namespace PatientManagement.Application.Commands.Prescription.Handler
                 id: result.Id,
                 patientId: result.PatientId,
                 professionalId: result.ProfessionalId,
+                symptoms: result.Symptoms,
                 diagnosis: result.Diagnosis,
                 isActive: result.IsActive,
                 dateCreated: result.DateCreated);

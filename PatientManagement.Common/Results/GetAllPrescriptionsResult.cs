@@ -4,11 +4,11 @@ namespace PatientManagement.Common.Results
     using Common.Dto;
     public class GetAllPrescriptionsResult
     {
-        public GetAllPrescriptionsResult(IEnumerable<PrescriptionDto> prescriptions)
+        public GetAllPrescriptionsResult(IEnumerable<GetPrescriptionResult> prescriptions)
         {
             Prescriptions = prescriptions;
         }
 
-        public IEnumerable<PrescriptionDto> Prescriptions { get; }
+        public IEnumerable<GetPrescriptionResult> Prescriptions { get; }
     }
 }

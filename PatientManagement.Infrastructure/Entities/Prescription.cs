@@ -8,6 +8,7 @@ namespace PatientManagement.Infrastructure.Entities
         public Patient Patient { get; set; }
         public Guid ProfessionalId { get; set; }
         public Professional Professional { get; set; }
+        public string Symptoms { get; set; }
         public string? Diagnosis { get; set; }
         public bool IsActive { get; set; }
         public DateTime DateCreated { get; set; } = DateTime.UtcNow.AddHours(1);

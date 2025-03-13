@@ -30,6 +30,7 @@ namespace PatientManagement.Application.Commands.Prescription.Handler
                 prescriptionId: command.PrescriptionId,
                 patientId: command.PatientId,
                 professionalId: command.ProfessionalId,
+                symptoms: command.Symptoms,
                 diagnosis: command.Diagnosis,
                 medications: command.Medications,
                 cancellationToken: ct);

@@ -1,16 +1,17 @@
 ﻿
 namespace PatientManagement.Application.Queries.Prescription.Handler
 {
-    using PatientManagement.Common.Utilities;
-    using Microsoft.AspNetCore.Http;
-    using Parameters;
-    using Results;
-    using Common.Handlers;
-    using Common.Dto;
-    using Infrastructure.Repositories.Interfaces;
     using System.Text.Json;
+    using Microsoft.AspNetCore.Http;
     using Microsoft.Extensions.Logging;
-    using PatientManagement.Common.Results;
+    using Results;
+    using Common.Dto;
+    using Parameters;
+    using Common.Handlers;
+    using Common.Results;
+    using Common.Utilities;
+    using Infrastructure.Repositories.Interfaces;
+    
 
     public class GetPrescriptionByPatientIdQueryHandler 
         : IQueryHandler<GetPrescriptionByPatientIdQueryParameters, GetPrescriptionByPatientIdQueryResult>
@@ -55,6 +56,7 @@ namespace PatientManagement.Application.Queries.Prescription.Handler
                             patientId: p.PatientId,
                             professionalId: p.ProfessionalId,
                             prescriptionId: p.PrescriptionId,
+                            symptoms: p.Symptoms,
                             diagnosis: p.Diagnosis,
                             medications: p.Medications?.Select(m => new PrescribedMedication(
                                 medicationId: m.MedicationId,
