@@ -1,34 +1,32 @@
 ﻿
 namespace PatientManagement.Common.Results
 {
-    using Common.Dto;
-
     public class CreatePrescriptionResult
     {
         public CreatePrescriptionResult(
             Guid id,
             Guid patientId,
             Guid professionalId,
+            string symptoms,
             string? diagnosis,
-            List<PrescribedMedication>? medications,
             bool isActive,
-            DateTime createdDate)
+            DateTime dateCreated)
         {
             Id = id;
             PatientId = patientId;
             ProfessionalId = professionalId;
+            Symptoms = symptoms;
             Diagnosis = diagnosis;
-            Medications = medications;
             IsActive = isActive;
-            CreatedDate = createdDate;
+            DateCreated = dateCreated;
         }
 
         public Guid Id { get; set; }
         public Guid PatientId { get; }
         public Guid ProfessionalId { get; }
+        public string Symptoms { get; }
         public string? Diagnosis { get; }
-        public List<PrescribedMedication>? Medications { get; }
         public bool IsActive { get; }
-        public DateTime CreatedDate { get; }
+        public DateTime DateCreated { get; }
     }
 }

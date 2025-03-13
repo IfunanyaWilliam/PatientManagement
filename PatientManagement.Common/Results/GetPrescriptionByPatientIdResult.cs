@@ -6,11 +6,11 @@ namespace PatientManagement.Common.Results
 
     public class GetPrescriptionByPatientIdResult
     {
-        public GetPrescriptionByPatientIdResult(IEnumerable<PrescriptionDto> prescriptions)
+        public GetPrescriptionByPatientIdResult(IEnumerable<GetPrescriptionResult> prescriptions)
         {
             Prescriptions = prescriptions;
         }
 
-        public IEnumerable<PrescriptionDto> Prescriptions { get; }
+        public IEnumerable<GetPrescriptionResult> Prescriptions { get; }
     }
 }

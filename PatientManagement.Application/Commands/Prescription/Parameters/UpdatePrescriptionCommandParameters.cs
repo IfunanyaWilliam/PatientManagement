@@ -3,6 +3,7 @@ namespace PatientManagement.Application.Commands.Prescription.Parameters
 {
     using Common.Dto;
     using Common.Contracts;
+    using PatientManagement.Common.Parameters;
 
     public class UpdatePrescriptionCommandParameters : ICommand
     {
@@ -10,12 +11,14 @@ namespace PatientManagement.Application.Commands.Prescription.Parameters
             Guid prescriptionId,
             Guid patientId,
             Guid professionalId,
+            string symptoms,
             string? diagnosis,
-            List<PrescribedMedication>? medications)
+            IEnumerable<MedicationParameters>? medications)
         {
             PrescriptionId = prescriptionId;
             PatientId = patientId;
             ProfessionalId = professionalId;
+            Symptoms = symptoms;
             Diagnosis = diagnosis;
             Medications = medications;
         }
@@ -24,8 +27,9 @@ namespace PatientManagement.Application.Commands.Prescription.Parameters
         public Guid PrescriptionId { get; set; }
         public Guid PatientId { get; set; }
         public Guid ProfessionalId { get; set; }
+        public string Symptoms { get; set; }
         public string? Diagnosis { get; set; }
         public string? ReasonForUpdate { get; set; }
-        public List<PrescribedMedication>? Medications { get; set; }
+        public IEnumerable<MedicationParameters>? Medications { get; set; }
     }
 }

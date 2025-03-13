@@ -32,6 +32,7 @@ namespace PatientManagement.Application.Queries.Prescription.Handler
                 id: prescription.Id,
                 patientId: prescription.PatientId,
                 professionalId: prescription.ProfessionalId,
+                prescriptionId: prescription.PrescriptionId,
                 diagnosis: prescription.Diagnosis,
                 medications: prescription?.Medications?.Select(m =>
                     new PrescribedMedication(
@@ -41,7 +42,7 @@ namespace PatientManagement.Application.Queries.Prescription.Handler
                          instruction: m.Instruction,
                         isActive: m.IsActive)).ToList(),
                 isActive: prescription.IsActive,
-                createdDate: prescription.CreatedDate,
+                dateCreated: prescription.DateCreated,
                 dateModified: prescription.DateModified);
         }
     }

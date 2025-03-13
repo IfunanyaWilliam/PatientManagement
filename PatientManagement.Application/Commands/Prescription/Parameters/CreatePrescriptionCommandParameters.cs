@@ -2,18 +2,20 @@
 namespace PatientManagement.Application.Commands.Prescription.Parameters
 {
     using PatientManagement.Common.Contracts;
-    using PatientManagement.Common.Dto;
+    using PatientManagement.Common.Parameters;
 
     public class CreatePrescriptionCommandParameters : ICommand
     {
         public CreatePrescriptionCommandParameters(
             Guid patientId,
             Guid professionalId,
+            string symptoms,
             string? diagnosis,
-            List<PrescriptionMedicationDto>? medications)
+            IEnumerable<MedicationParameters>? medications)
         {
             PatientId = patientId;
             ProfessionalId = professionalId;
+            Symptoms = symptoms;
             Diagnosis = diagnosis;
             Medications = medications;
         }
@@ -21,7 +23,8 @@ namespace PatientManagement.Application.Commands.Prescription.Parameters
 
         public Guid PatientId { get; set; }
         public Guid ProfessionalId { get; set; }
+        public string Symptoms { get; set; }
         public string? Diagnosis { get; set; }
-        public List<PrescriptionMedicationDto>? Medications { get; set; }
+        public IEnumerable<MedicationParameters>? Medications { get; set; }
     }
 }

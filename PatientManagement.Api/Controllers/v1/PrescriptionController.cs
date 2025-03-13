@@ -48,18 +48,23 @@ namespace PatientManagement.Api.Controllers.v1
                     command: new CreatePrescriptionCommandParameters(
                         patientId: parameters.PatientId,
                         professionalId: parameters.ProfessionalId,
+                        symptoms: parameters.Symptoms,
                         diagnosis: parameters.Diagnosis,
-                        medications: parameters.Medications),
+                        medications: parameters.Medications?.Select(m => 
+                            new MedicationParameters(
+                                medicationId: m.MedicationId,
+                                dosage: m.Dosage,
+                                instruction: m.Instruction))),
                     ct: ct);
 
             return Ok(new CreatePrescriptionResult(
                 id: result.Id,
                 patientId: result.PatientId,
                 professionalId: result.ProfessionalId,
+                symptoms: result.Symptoms,
                 diagnosis: result.Diagnosis,
-                medications: result.Medications,
                 isActive: result.IsActive,
-                createdDate: result.CreatedDate));
+                dateCreated: result.DateCreated));
         }
 
         [HttpPut]
@@ -78,8 +83,13 @@ namespace PatientManagement.Api.Controllers.v1
                         prescriptionId: parameters.PrescriptionId,
                         patientId: parameters.PatientId,
                         professionalId: parameters.ProfessionalId,
+                        symptoms: parameters.Symptoms,
                         diagnosis: parameters.Diagnosis,
-                        medications: parameters.Medications),
+                        medications: parameters.Medications?.Select(m =>
+                            new MedicationParameters(
+                                medicationId: m.MedicationId,
+                                dosage: m.Dosage,
+                                instruction: m.Instruction))),
                     ct: ct);
 
             return Ok(new UpdatePrescriptionResult(
@@ -87,7 +97,6 @@ namespace PatientManagement.Api.Controllers.v1
                 patientId: result.PatientId,
                 professionalId: result.ProfessionalId,
                 diagnosis: result.Diagnosis,
-                medications: result.Medications,
                 isActive: result.IsActive,
                 createdDate: result.CreatedDate,
                 dateModified: result.DateModified));
@@ -117,6 +126,7 @@ namespace PatientManagement.Api.Controllers.v1
                 id: result.Id,
                 patientId: result.PatientId,
                 professionalId: result.ProfessionalId,
+                prescriptionId: result.PrescriptionId,
                 diagnosis: result.Diagnosis,
                 medications: result?.Medications?.Select(m =>
                     new PrescribedMedication(
@@ -126,7 +136,7 @@ namespace PatientManagement.Api.Controllers.v1
                         instruction: m.Instruction,
                         isActive: m.IsActive)).ToList(),
                 isActive: result.IsActive,
-                createdDate: result.CreatedDate,
+                dateCreated: result.DateCreated,
                 dateModified: result.DateModified));
         }
 
@@ -157,10 +167,12 @@ namespace PatientManagement.Api.Controllers.v1
 
             return Ok(new GetPrescriptionByPatientIdResult(
                 prescriptions: result.Prescriptions.Select(p =>
-                        new PrescriptionDto(
+                        new GetPrescriptionResult(
                             id: p.Id,
                             patientId: p.PatientId,
                             professionalId: p.ProfessionalId,
+                            prescriptionId: p.PrescriptionId,
+                            symptoms: p.Symptoms,
                             diagnosis: p.Diagnosis,
                             medications: p?.Medications?.Select(m =>
                                 new PrescribedMedication(
@@ -170,7 +182,7 @@ namespace PatientManagement.Api.Controllers.v1
                                      instruction: m.Instruction,
                                     isActive: m.IsActive)).ToList(),
                             isActive: p.IsActive,
-                            createdDate: p.CreatedDate,
+                            dateCreated: p.DateCreated,
                             dateModified: p.DateModified))));
         }
 
@@ -201,10 +213,12 @@ namespace PatientManagement.Api.Controllers.v1
 
             return Ok(new GetPrescriptionByProfessionalIdResult(
                 prescriptions: result.Prescriptions.Select(p =>
-                        new PrescriptionDto(
+                        new GetPrescriptionResult(
                             id: p.Id,
                             patientId: p.PatientId,
                             professionalId: p.ProfessionalId,
+                            prescriptionId: p.PrescriptionId,
+                            symptoms: p.Symptoms,
                             diagnosis: p.Diagnosis,
                             medications: p?.Medications?.Select(m =>
                                 new PrescribedMedication(
@@ -214,7 +228,7 @@ namespace PatientManagement.Api.Controllers.v1
                                      instruction: m.Instruction,
                                     isActive: m.IsActive)).ToList(),
                             isActive: p.IsActive,
-                            createdDate: p.CreatedDate,
+                            dateCreated: p.DateCreated,
                             dateModified: p.DateModified))));
         }
 
@@ -241,14 +255,16 @@ namespace PatientManagement.Api.Controllers.v1
                     new { message = "Your request could not be processed now, try again later." });
 
             if (result.Prescriptions == null || !result.Prescriptions.Any())
-                return Ok(new GetAllPrescriptionsResult(new List<Common.Dto.PrescriptionDto>()));
+                return Ok(new GetAllPrescriptionsResult(new List<GetPrescriptionResult>()));
 
             return Ok(new GetAllPrescriptionsResult(
                    prescriptions: result.Prescriptions.Select(p => 
-                        new PrescriptionDto(
+                        new GetPrescriptionResult(
                             id: p.Id,
                             patientId: p.PatientId,
                             professionalId: p.ProfessionalId,
+                            prescriptionId: p.PrescriptionId,
+                            symptoms: p.Symptoms,
                             diagnosis: p.Diagnosis,
                             medications: p?.Medications?.Select(m =>
                                 new PrescribedMedication(
@@ -258,7 +274,7 @@ namespace PatientManagement.Api.Controllers.v1
                                     instruction: m.Instruction,
                                     isActive: m.IsActive)).ToList(),
                             isActive: p.IsActive,
-                            createdDate: p.CreatedDate,
+                            dateCreated: p.DateCreated,
                             dateModified: p.DateModified))));
         }
     }

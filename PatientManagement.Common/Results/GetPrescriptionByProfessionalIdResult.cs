@@ -1,16 +1,14 @@
 ﻿
 namespace PatientManagement.Common.Results
 {
-    using Common.Dto;
-
     public class GetPrescriptionByProfessionalIdResult
     {
 
-        public GetPrescriptionByProfessionalIdResult(IEnumerable<PrescriptionDto> prescriptions)
+        public GetPrescriptionByProfessionalIdResult(IEnumerable<GetPrescriptionResult> prescriptions)
         {
             Prescriptions = prescriptions;
         }
 
-        public IEnumerable<PrescriptionDto> Prescriptions { get; }
+        public IEnumerable<GetPrescriptionResult> Prescriptions { get; }
     }
 }

@@ -10,7 +10,6 @@ namespace PatientManagement.Common.Results
             Guid patientId,
             Guid professionalId,
             string? diagnosis,
-            List<PrescribedMedication>? medications,
             bool isActive,
             DateTime createdDate,
             DateTime dateModified)
@@ -19,7 +18,6 @@ namespace PatientManagement.Common.Results
             PatientId = patientId;
             ProfessionalId = professionalId;
             Diagnosis = diagnosis;
-            Medications = medications;
             IsActive = isActive;
             CreatedDate = createdDate;
             DateModified = dateModified;
@@ -29,7 +27,6 @@ namespace PatientManagement.Common.Results
         public Guid PatientId { get; }
         public Guid ProfessionalId { get; }
         public string? Diagnosis { get; }
-        public List<PrescribedMedication>? Medications { get; }
         public bool IsActive { get; }
         public DateTime CreatedDate { get; }
         public DateTime DateModified { get; }

@@ -1,5 +1,5 @@
 ﻿
-namespace PatientManagement.Domain.Medication
+namespace PatientManagement.Domain.Prescription
 {
     public class Medication
     {
@@ -8,7 +8,6 @@ namespace PatientManagement.Domain.Medication
             string? name,
             string? description,
             bool isActive,
-            bool isDeleted,
             DateTime createdDate,
             DateTime dateModified)
         {
@@ -16,7 +15,6 @@ namespace PatientManagement.Domain.Medication
             Name = name;
             Description = description;
             IsActive = isActive;
-            IsDeleted = isDeleted;
             CreatedDate = createdDate;
             DateModified = dateModified;
         }
@@ -25,7 +23,6 @@ namespace PatientManagement.Domain.Medication
         public string? Name { get; set; }
         public string? Description { get; set; }
         public bool IsActive { get; set; }
-        public bool IsDeleted { get; set; }
         public DateTime CreatedDate { get; set; }
         public DateTime DateModified { get; set; }
     }

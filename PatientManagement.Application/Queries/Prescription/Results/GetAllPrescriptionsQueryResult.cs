@@ -3,14 +3,15 @@ namespace PatientManagement.Application.Queries.Prescription.Results
 {
     using Common.Contracts;
     using Common.Dto;
+    using PatientManagement.Common.Results;
 
     public class GetAllPrescriptionsQueryResult : IQueryResult
     {
-        public GetAllPrescriptionsQueryResult(IEnumerable<PrescriptionDto> prescriptions)
+        public GetAllPrescriptionsQueryResult(IEnumerable<GetPrescriptionResult> prescriptions)
         {
             Prescriptions = prescriptions;
         }
 
-        public IEnumerable<PrescriptionDto> Prescriptions { get; }
+        public IEnumerable<GetPrescriptionResult> Prescriptions { get; }
     }
 }

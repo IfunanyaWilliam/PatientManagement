@@ -10,6 +10,7 @@ namespace PatientManagement.Application.Queries.Prescription.Handler
     using PatientManagement.Common.Utilities;
     using PatientManagement.Common.Dto;
     using Infrastructure.Repositories.Interfaces;
+    using PatientManagement.Common.Results;
 
     public class GetAllPrescriptionsQueryHandler 
         : IQueryHandler<GetAllPrescriptionsQueryParameters, GetAllPrescriptionsQueryResult>
@@ -46,14 +47,16 @@ namespace PatientManagement.Application.Queries.Prescription.Handler
                     "GetPrescriptionsByProfessionalIdHandler: Prescriptions not found",
                     DateTime.UtcNow.AddHours(1));
 
-                return new GetAllPrescriptionsQueryResult(new List<PrescriptionDto>());
+                return new GetAllPrescriptionsQueryResult(new List<GetPrescriptionResult>());
             }
 
             return new GetAllPrescriptionsQueryResult(
-                          prescriptions: result.Prescriptions.Select(p => new PrescriptionDto(
+                          prescriptions: result.Select(p => new GetPrescriptionResult(
                                 id: p.Id,
                                 patientId: p.PatientId,
                                 professionalId: p.ProfessionalId,
+                                prescriptionId: p.PrescriptionId,
+                                symptoms: p.Symptoms,
                                 diagnosis: p.Diagnosis,
                                 medications: p.Medications.Select(m => new PrescribedMedication(
                                     medicationId: m.MedicationId,
@@ -62,7 +65,7 @@ namespace PatientManagement.Application.Queries.Prescription.Handler
                                      instruction: m.Instruction,
                                     isActive: m.IsActive)).ToList(),
                                 isActive: p.IsActive,
-                                createdDate: p.CreatedDate,
+                                dateCreated: p.DateCreated,
                                 dateModified: p.DateModified)));
         }
     }

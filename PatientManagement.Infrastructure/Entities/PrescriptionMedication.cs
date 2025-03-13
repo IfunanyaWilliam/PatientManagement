@@ -10,7 +10,7 @@ namespace PatientManagement.Infrastructure.Entities
         public Guid ProfessionalId { get; set; }
         public Prescription Prescription { get; set; }
         public Guid PrescriptionId { get; set; }
-        public string Name { get; set; }
+        public string MedicationName { get; set; }
         public string Dosage { get; set; }
         public string? Instruction { get; set; }
         public bool IsActive { get; set; }

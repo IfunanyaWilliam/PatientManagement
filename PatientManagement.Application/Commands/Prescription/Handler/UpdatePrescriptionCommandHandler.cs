@@ -30,6 +30,7 @@ namespace PatientManagement.Application.Commands.Prescription.Handler
                 prescriptionId: command.PrescriptionId,
                 patientId: command.PatientId,
                 professionalId: command.ProfessionalId,
+                symptoms: command.Symptoms,
                 diagnosis: command.Diagnosis,
                 medications: command.Medications,
                 cancellationToken: ct);
@@ -39,9 +40,8 @@ namespace PatientManagement.Application.Commands.Prescription.Handler
                 patientId: result.PatientId,
                 professionalId: result.ProfessionalId,
                 diagnosis: result.Diagnosis,
-                medications: result.Medications,
                 isActive: result.IsActive,
-                createdDate: result.CreatedDate,
+                createdDate: result.DateCreated,
                 dateModified: result.DateModified);
         }
     }
