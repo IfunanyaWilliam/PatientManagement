@@ -17,7 +17,7 @@ namespace PatientManagement.Infrastructure.Entities
         public bool IsActive { get; set; }
         public bool IsDeleted { get; set; }
         public UserRole Role { get; set; }
-        public DateTime CreatedDate { get; set; } = DateTime.UtcNow.AddHours(1);
+        public DateTime DateCreated { get; set; } = DateTime.UtcNow.AddHours(1);
         public DateTime DateModified { get; set; }
     }
 }

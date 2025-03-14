@@ -33,6 +33,29 @@ namespace PatientManagement.Api.Controllers.v1
             _queryExecutor = queryExecutor;
         }
 
+        /// <summary>
+        ///     POST: /api/v1/prescription/CreatePrescription
+        /// </summary>
+        /// <remarks>
+        ///     Add a prescription.
+        /// </remarks>
+        /// <param name="parameters"></param>
+        /// <param name="ct"></param>
+        /// <response code="200">
+        ///     Operation was successful.
+        /// </response>
+        /// <response code="400">
+        ///     Bad Request.
+        /// </response>
+        /// <response code = "500" >
+        ///     Internal Server Error.
+        /// </response>
+        /// <response code = "401" >
+        ///     Unauthorized.
+        /// </response>
+        /// <response code = "403" >
+        ///     Forbidden.
+        /// </response>
         [HttpPost]
         [PermissionAuthorize(permissionOperator: PermissionOperator.Or, "ManagePatientRecords", "ManageMedicalRecords")]
         [ProducesResponseType(typeof(CreatePrescriptionResult), StatusCodes.Status200OK)]
@@ -67,6 +90,29 @@ namespace PatientManagement.Api.Controllers.v1
                 dateCreated: result.DateCreated));
         }
 
+        /// <summary>
+        ///     PUT: /api/v1/prescription/UpdatePrescription
+        /// </summary>
+        /// <remarks>
+        ///     Update a prescription.
+        /// </remarks>
+        /// <param name="parameters"></param>
+        /// <param name="ct"></param>
+        /// <response code="200">
+        ///     Operation was successful.
+        /// </response>
+        /// <response code="400">
+        ///     Bad Request.
+        /// </response>
+        /// <response code = "500" >
+        ///     Internal Server Error.
+        /// </response>
+        /// <response code = "401" >
+        ///     Unauthorized.
+        /// </response>
+        /// <response code = "403" >
+        ///     Forbidden.
+        /// </response>
         [HttpPut]
         [PermissionAuthorize(permissionOperator: PermissionOperator.Or, "ManagePatientRecords", "ManageMedicalRecords")]
         [ProducesResponseType(typeof(UpdatePrescriptionResult), StatusCodes.Status200OK)]
@@ -103,10 +149,34 @@ namespace PatientManagement.Api.Controllers.v1
         }
 
 
+        /// <summary>
+        ///     GET: /api/v1/prescription/{id}
+        /// </summary>
+        /// <remarks>
+        ///     Get a prescription by Id.
+        /// </remarks>
+        /// <param name="id"></param>
+        /// <param name="ct"></param>
+        /// <response code="200">
+        ///     Operation was successful.
+        /// </response>
+        /// <response code="400">
+        ///     Bad Request.
+        /// </response>
+        /// <response code = "500" >
+        ///     Internal Server Error.
+        /// </response>
+        /// <response code = "401" >
+        ///     Unauthorized.
+        /// </response>
+        /// <response code = "403" >
+        ///     Forbidden.
+        /// </response>
         [HttpGet("{id}")]
         [PermissionAuthorize(permissionOperator: PermissionOperator.Or, "ViewMedicalRecords", "ManagePatientRecords", "ManageMedicalRecords")]
         [ProducesResponseType(typeof(GetPrescriptionByIdResult), StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetPrescriptionByIdAsync(Guid id, 
+        public async Task<IActionResult> GetPrescriptionByIdAsync(
+            [FromRoute] Guid id, 
             CancellationToken ct = default)
         {
             if (id == Guid.Empty)
@@ -140,11 +210,37 @@ namespace PatientManagement.Api.Controllers.v1
                 dateModified: result.DateModified));
         }
 
+
+        /// <summary>
+        ///     GET: /api/v1/prescription/{patientId}
+        /// </summary>
+        /// <remarks>
+        ///     Get a prescription by patientId.
+        /// </remarks>
+        /// <param name="patientId"></param>
+        /// <param name="pageNumber"></param>
+        /// <param name="pageSize"></param>
+        /// <param name="ct"></param>
+        /// <response code="200">
+        ///     Operation was successful.
+        /// </response>
+        /// <response code="400">
+        ///     Bad Request.
+        /// </response>
+        /// <response code = "500" >
+        ///     Internal Server Error.
+        /// </response>
+        /// <response code = "401" >
+        ///     Unauthorized.
+        /// </response>
+        /// <response code = "403" >
+        ///     Forbidden.
+        /// </response>
         [HttpGet("{patientId}")]
         [PermissionAuthorize(permissionOperator: PermissionOperator.Or, "ViewMedicalRecords", "ManagePatientRecords", "ManageMedicalRecords")]
         [ProducesResponseType(typeof(GetPrescriptionByPatientIdResult), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetPrescriptionByPatientIdAsync(
-            Guid patientId,
+            [FromRoute]  Guid patientId,
             [FromQuery] int pageNumber = 1,
             [FromQuery] int pageSize = 10,
             CancellationToken ct = default)
@@ -186,11 +282,37 @@ namespace PatientManagement.Api.Controllers.v1
                             dateModified: p.DateModified))));
         }
 
+
+        /// <summary>
+        ///     GET: /api/v1/prescription/{professionalId}
+        /// </summary>
+        /// <remarks>
+        ///     Get a prescription by professionalId.
+        /// </remarks>
+        /// <param name="professionalId"></param>
+        /// <param name="pageNumber"></param>
+        /// <param name="pageSize"></param>
+        /// <param name="ct"></param>
+        /// <response code="200">
+        ///     Operation was successful.
+        /// </response>
+        /// <response code="400">
+        ///     Bad Request.
+        /// </response>
+        /// <response code = "500" >
+        ///     Internal Server Error.
+        /// </response>
+        /// <response code = "401" >
+        ///     Unauthorized.
+        /// </response>
+        /// <response code = "403" >
+        ///     Forbidden.
+        /// </response>
         [HttpGet("{professionalId}")]
         [PermissionAuthorize(permissionOperator: PermissionOperator.Or, "ManagePatientRecords", "ManageMedicalRecords")]
         [ProducesResponseType(typeof(GetPrescriptionByProfessionalIdResult), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetPrescriptionByProfessionalIdAsync(
-            Guid professionalId,
+            [FromRoute] Guid professionalId,
             [FromQuery] int pageNumber = 1,
             [FromQuery] int pageSize = 10,
             CancellationToken ct = default)
@@ -232,7 +354,33 @@ namespace PatientManagement.Api.Controllers.v1
                             dateModified: p.DateModified))));
         }
 
-        [HttpGet]
+
+        /// <summary>
+        ///     GET: /api/v1/prescription/all
+        /// </summary>
+        /// <remarks>
+        ///     Gets all prescriptions
+        /// </remarks>
+        /// <param name="pageNumber"></param>
+        /// <param name="pageSize"></param>
+        /// <param name="searchParam"></param>
+        /// <param name="ct"></param>
+        /// <response code="200">
+        ///     Operation was successful.
+        /// </response>
+        /// <response code="200">
+        ///     Operation was successful.
+        /// </response>
+        /// <response code = "500">
+        ///     Internal Server Error.
+        /// </response>
+        /// <response code = "401" >
+        ///     Unauthorized.
+        /// </response>
+        /// <response code = "403" >
+        ///     Forbidden.
+        /// </response>
+        [HttpGet("all")]
         [PermissionAuthorize(permissionOperator: PermissionOperator.Or, "ManagePatientRecords", "ManageMedicalRecords")]
         [ProducesResponseType(typeof(GetAllPrescriptionsResult), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetAllPrescriptionsAsync(
@@ -248,11 +396,6 @@ namespace PatientManagement.Api.Controllers.v1
                         pageSize: pageSize,
                         searchParam: searchParam),
                     ct: ct);
-
-            if (result == null)
-                return StatusCode(
-                    StatusCodes.Status500InternalServerError,
-                    new { message = "Your request could not be processed now, try again later." });
 
             if (result.Prescriptions == null || !result.Prescriptions.Any())
                 return Ok(new GetAllPrescriptionsResult(new List<GetPrescriptionResult>()));
@@ -277,5 +420,8 @@ namespace PatientManagement.Api.Controllers.v1
                             dateCreated: p.DateCreated,
                             dateModified: p.DateModified))));
         }
+
+        //TO DO
+        //add DeactivatePresction endpoint
     }
 }

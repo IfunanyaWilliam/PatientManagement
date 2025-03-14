@@ -22,6 +22,23 @@
             _commandExecutorWithResult = commandExecutorWithResult;
         }
 
+        /// <summary>
+        ///     POST: /api/v1/Account
+        /// </summary>
+        /// <remarks>
+        ///     Add a patient.
+        /// </remarks>
+        /// <param name="parameters"></param>
+        /// <param name="ct"></param>
+        /// <response code="200">
+        ///     Operation was successful.
+        /// </response>
+        /// <response code="400">
+        ///     Bad Request.
+        /// </response>
+        /// <response code = "500" >
+        ///     Internal Server Error.
+        /// </response>
         [HttpPost]
         [AllowAnonymous]
         [ProducesResponseType(typeof(CreateUserResult), StatusCodes.Status200OK)]

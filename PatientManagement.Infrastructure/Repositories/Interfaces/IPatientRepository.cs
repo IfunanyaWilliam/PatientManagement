@@ -27,8 +27,14 @@ namespace PatientManagement.Infrastructure.Repositories.Interfaces
             int age,
             CancellationToken cancellationToken = default);
 
-        Task<GetPatientResult> GetPatientAsync(
+        Task<Patient> GetPatientAsync(
             Guid id,
+            CancellationToken cancellationToken = default);
+
+        Task<IEnumerable<Patient>> GetAllPatientsAsync(
+            int pageNumber,
+            int pageSize,
+            string searchParam,
             CancellationToken cancellationToken = default);
 
         Task<bool> DeletePatientAsync(Guid id);

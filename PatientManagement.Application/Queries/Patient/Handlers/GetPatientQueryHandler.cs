@@ -3,12 +3,13 @@ namespace PatientManagement.Application.Queries.Patient.Handlers
 {
     using System.Threading;
     using System.Threading.Tasks;
+    using Microsoft.AspNetCore.Http;
     using Infrastructure.Repositories.Interfaces;
+    using Common.Handlers;
+    using Common.Utilities;
     using Parameters;
     using Results;
-    using Common.Handlers;
-    using PatientManagement.Common.Utilities;
-    using Microsoft.AspNetCore.Http;
+    
 
     public class GetPatientQueryHandler : IQueryHandler<GetPatientQueryParameters, GetPatientQueryResult>
     {
@@ -29,7 +30,7 @@ namespace PatientManagement.Application.Queries.Patient.Handlers
             var patient = await _patientRepository.GetPatientAsync(parameters.PatientId);
 
             return new GetPatientQueryResult(
-                id: parameters.PatientId,
+                id: patient.Id,
                 applicationUserId: patient.ApplicationUserId,
                 title: patient.Title,
                 firstName: patient.FirstName,
@@ -40,7 +41,7 @@ namespace PatientManagement.Application.Queries.Patient.Handlers
                 email: patient.Email,
                 isActive: patient.IsActive,
                 userRole: patient.UserRole,
-                createdDate: patient.CreatedDate, 
+                dateCreated: patient.DateCreated, 
                 dateModified: patient.DateModified);
         }
     }
