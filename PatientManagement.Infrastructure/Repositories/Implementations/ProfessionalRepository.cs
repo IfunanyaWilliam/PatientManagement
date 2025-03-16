@@ -156,5 +156,47 @@ namespace PatientManagement.Infrastructure.Repositories.Implementations
             _logger.LogError($"ProfessionalStatus could not be updated , data => {JsonSerializer.Serialize(professionalId)}");
             throw new CustomException("ProfessionalStatus could not be updated, try again later", StatusCodes.Status500InternalServerError);
         }
+
+        public async Task<Professional> GetProfessionalByIdAsync(
+            Guid id,
+            CancellationToken cancellationToken)
+        {
+            if (id == Guid.Empty)
+                throw new CustomException($"Invalid input", StatusCodes.Status400BadRequest);
+
+            var professional = await _context.Professionals.FirstOrDefaultAsync(p => p.Id == id && p.IsActive, cancellationToken);
+
+            if(professional == null || professional.IsDeleted)
+                throw new CustomException($"Professional with Id {id} not found", StatusCodes.Status404NotFound);
+
+            var user = await _userManager.FindByIdAsync(professional.ApplicationUserId.ToString());
+            if (user is null)
+                throw new CustomException($"User associated with professioalId {id} not found", StatusCodes.Status404NotFound);
+
+            if (!professional.IsActive)
+                throw new CustomException($"Professional with Id {id} is not active, contact Admin for support", StatusCodes.Status400BadRequest);
+
+            //Don't return suspended message to user
+            if(professional.ProfessionalStatus == ProfessionalStatus.Suspended)
+                throw new CustomException($"Professional with Id {id} is not active, contact Admin for support", StatusCodes.Status400BadRequest);
+
+            return new Professional(
+                id: professional.Id,
+                applicationUserId: professional.ApplicationUserId,
+                title: professional.Title,
+                firstName: professional.FirstName,
+                middleName: professional.MiddleName,
+                lastName: professional.LastName,
+                phoneNumber: professional.PhoneNumber,
+                age: professional.Age,
+                qualification: professional.Qualification,
+                license: professional.License,
+                email: user.Email,
+                isActive: professional.IsActive,
+                userRole: professional.Role.ToString(),
+                professionalStatus: professional.ProfessionalStatus.ToString(),
+                dateCreated: professional.DateCreated,
+                dateModified: professional.DateModified);
+        }
     }
 }

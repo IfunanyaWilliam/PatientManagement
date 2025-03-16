@@ -2,8 +2,7 @@
 namespace PatientManagement.Application.Queries.Prescription.Results
 {
     using Common.Contracts;
-    using Common.Dto;
-    using PatientManagement.Common.Results;
+    using Common.Results;
 
     public class GetAllPrescriptionsQueryResult : IQueryResult
     {
