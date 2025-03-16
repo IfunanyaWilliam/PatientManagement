@@ -32,6 +32,29 @@ namespace PatientManagement.Api.Controllers.v1
         }
 
 
+        /// <summary>
+        ///     POST: /api/v1/patient
+        /// </summary>
+        /// <remarks>
+        ///     Add a patient.
+        /// </remarks>
+        /// <param name="parameters"></param>
+        /// <param name="ct"></param>
+        /// <response code="200">
+        ///     Operation was successful.
+        /// </response>
+        /// <response code="400">
+        ///     Bad Request.
+        /// </response>
+        /// <response code = "500" >
+        ///     Internal Server Error.
+        /// </response>
+        /// <response code = "401" >
+        ///     Unauthorized.
+        /// </response>
+        /// <response code = "403" >
+        ///     Forbidden.
+        /// </response>
         [HttpPost]
         [PermissionAuthorize(permissionOperator: PermissionOperator.Or, "CreatePatient", "ManageMedicalRecords")]
         [ProducesResponseType(typeof(CreatePatientResult), StatusCodes.Status200OK)]
@@ -66,10 +89,34 @@ namespace PatientManagement.Api.Controllers.v1
                 email: result.Email,
                 isActive: result.IsActive,
                 userRole: result.UserRole,
-                createdDate: result.CreatedDate));
+                dateCreated: result.DateCreated,
+                dateModified: result.DateModified));
         }
 
 
+        /// <summary>
+        ///     PUT: /api/v1/patient
+        /// </summary>
+        /// <remarks>
+        ///     Update a patient.
+        /// </remarks>
+        /// <param name="parameters"></param>
+        /// <param name="ct"></param>
+        /// <response code="200">
+        ///     Operation was successful.
+        /// </response>
+        /// <response code="400">
+        ///     Bad Request.
+        /// </response>
+        /// <response code = "500" >
+        ///     Internal Server Error.
+        /// </response>
+        /// <response code = "401" >
+        ///     Unauthorized.
+        /// </response>
+        /// <response code = "403" >
+        ///     Forbidden.
+        /// </response>
         [HttpPut]
         [PermissionAuthorize(permissionOperator: PermissionOperator.Or, "ViewMedicalRecords", "ManageMedicalRecords")]
         [ProducesResponseType(typeof(UpdatePatientResult), StatusCodes.Status200OK)]
@@ -109,10 +156,36 @@ namespace PatientManagement.Api.Controllers.v1
                 dateModified: result.DateModified));
         }
 
+
+        /// <summary>
+        ///     GET: /api/v1/patient/id
+        /// </summary>
+        /// <remarks>
+        ///     Get a patient based on Id.
+        /// </remarks>
+        /// <param name="id"></param>
+        /// <param name="ct"></param>
+        /// <response code="200">
+        ///     Operation was successful.
+        /// </response>
+        /// <response code="400">
+        ///     Bad Request.
+        /// </response>
+        /// <response code = "500" >
+        ///     Internal Server Error.
+        /// </response>
+        /// <response code = "401" >
+        ///     Unauthorized.
+        /// </response>
+        /// <response code = "403" >
+        ///     Forbidden.
+        /// </response>
         [HttpGet("{id}")]
         [PermissionAuthorize(permissionOperator: PermissionOperator.Or, "ViewMedicalRecords", "ManagePatientRecords", "ManageMedicalRecords")]
         [ProducesResponseType(typeof(GetPatientResult), StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetPatient(Guid id, CancellationToken ct = default)
+        public async Task<IActionResult> GetPatient(
+            [FromRoute] Guid id, 
+            CancellationToken ct = default)
         {
             if (id == Guid.Empty)
                 return BadRequest("Patient Id is required");
@@ -139,15 +212,102 @@ namespace PatientManagement.Api.Controllers.v1
                 email: result.Email,
                 isActive: result.IsActive,
                 userRole: result.UserRole,
-                createdDate: result.CreatedDate,
+                dateCreated: result.CreatedDate,
                 dateModified: result.DateModified));
         }
 
+
+        /// <summary>
+        ///     GET: /api/v1/patient/all
+        /// </summary>
+        /// <remarks>
+        ///     Get all patients
+        /// </remarks>
+        /// <param name="pageNumber"></param>
+        /// <param name="pageSize"></param>
+        /// <param name="searchParam"></param>
+        /// <param name="ct"></param>
+        /// <response code="200">
+        ///     Operation was successful.
+        /// </response>
+        /// <response code="400">
+        ///     Bad Request.
+        /// </response>
+        /// <response code = "500">
+        ///     Internal Server Error.
+        /// </response>
+        /// /// <response code = "401" >
+        ///     Unauthorized.
+        /// </response>
+        /// <response code = "403" >
+        ///     Forbidden.
+        /// </response>
+        [HttpGet("all")]
+        [PermissionAuthorize(permissionOperator: PermissionOperator.Or, "ViewMedicalRecords", "ManagePatientRecords", "ManageMedicalRecords")]
+        [ProducesResponseType(typeof(GetAllPatientsResult), StatusCodes.Status200OK)]
+        public async Task<GetAllPatientsResult> GetAllPatients(
+            [FromQuery] int pageNumber = 1,
+            [FromQuery] int pageSize = 10,
+            [FromQuery] string searchParam = null,
+            CancellationToken ct = default)
+        {
+            var result = await _queryExecutor
+                .ExecuteAsync<GetAllPatientsQueryParameters, GetAllPatientsQueryResult>(
+                    parameters: new GetAllPatientsQueryParameters(
+                        pageNumber: pageNumber,
+                        pageSize: pageSize,
+                        searchParam: searchParam),
+                    ct: ct);
+
+            if (result.Patients is null)
+                return new GetAllPatientsResult(new List<GetPatientResult>());
+
+            return new GetAllPatientsResult(
+                    result.Patients.Select(p => new GetPatientResult(
+                        id: p.Id,
+                        applicationUserId: p.ApplicationUserId,
+                        title: p.Title,
+                        firstName: p.FirstName,
+                        middleName: p.MiddleName,
+                        lastName: p.LastName,
+                        phoneNumber: p.PhoneNumber,
+                        age: p.Age,
+                        email: p.Email,
+                        isActive: p.IsActive,
+                        userRole: p.UserRole,
+                        dateCreated: p.DateCreated,
+                        dateModified: p.DateModified)));
+        }
+
+
+        /// <summary>
+        ///     GET: /api/v1/patient/id
+        /// </summary>
+        /// <remarks>
+        ///     Delete a patients using patient Id
+        /// </remarks>
+        /// <param name="id"></param>
+        /// <param name="ct"></param>
+        /// <response code="200">
+        ///     Operation was successful.
+        /// </response>
+        /// <response code="400">
+        ///     Bad Request.
+        /// </response>
+        /// <response code = "500">
+        ///     Internal Server Error.
+        /// </response>
+        /// <response code = "401" >
+        ///     Unauthorized.
+        /// </response>
+        /// <response code = "403" >
+        ///     Forbidden.
+        /// </response>
         [HttpDelete("{id}")]
         [PermissionAuthorize(permission: "DeleteMedicalRecords")]
         [ProducesResponseType(typeof(DeletePatientResult), StatusCodes.Status200OK)]
         public async Task<IActionResult> DeletePatientAsync(
-            Guid id,
+            [FromRoute] Guid id,
             CancellationToken ct = default)
         {
             if (id == Guid.Empty)

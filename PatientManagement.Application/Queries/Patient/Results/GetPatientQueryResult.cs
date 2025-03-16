@@ -2,7 +2,6 @@
 namespace PatientManagement.Application.Queries.Patient.Results
 {
     using Common.Contracts;
-    using PatientManagement.Common.Enums;
 
     public class GetPatientQueryResult : IQueryResult
     {
@@ -17,9 +16,9 @@ namespace PatientManagement.Application.Queries.Patient.Results
             int age,
             string? email,
             bool isActive,
-            UserRole userRole,
-            DateTime createdDate,
-            DateTime dateModified)
+            string userRole,
+            DateTime dateCreated,
+            DateTime? dateModified)
         {
             Id = id;
             ApplicationUserId = applicationUserId;
@@ -32,7 +31,7 @@ namespace PatientManagement.Application.Queries.Patient.Results
             Email = email;
             IsActive = isActive;
             UserRole = userRole;
-            CreatedDate = createdDate;
+            CreatedDate = dateCreated;
             DateModified = dateModified;
         }
 
@@ -47,8 +46,8 @@ namespace PatientManagement.Application.Queries.Patient.Results
         public string? Email { get; }
         public bool IsActive { get; }
         public bool IsDeleted { get; }
-        public UserRole UserRole { get; }
+        public string UserRole { get; }
         public DateTime CreatedDate { get; }
-        public DateTime DateModified { get; }
+        public DateTime? DateModified { get; }
     }
 }

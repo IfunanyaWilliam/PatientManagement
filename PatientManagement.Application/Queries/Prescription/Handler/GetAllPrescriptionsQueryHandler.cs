@@ -44,7 +44,7 @@ namespace PatientManagement.Application.Queries.Prescription.Handler
             {
                 _logger.LogError("Internal Server Error {@Param}, {@Error}, {@DateTimeUtc}",
                     $"Body: {JsonSerializer.Serialize(parameters)}",
-                    "GetPrescriptionsByProfessionalIdHandler: Prescriptions not found",
+                    "GetAllPrescriptionsQueryHandler: Prescriptions not found",
                     DateTime.UtcNow.AddHours(1));
 
                 return new GetAllPrescriptionsQueryResult(new List<GetPrescriptionResult>());

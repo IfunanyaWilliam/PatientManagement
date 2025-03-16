@@ -23,13 +23,29 @@ namespace PatientManagement.Api.Controllers.v1
             _queryExecutor = queryExecutor;
         }
 
-
+        /// <summary>
+        ///     POST: /api/v1/Authentication
+        /// </summary>
+        /// <remarks>
+        ///     Add a patient.
+        /// </remarks>
+        /// <param name="parameters"></param>
+        /// <param name="ct"></param>
+        /// <response code="200">
+        ///     Operation was successful.
+        /// </response>
+        /// <response code="400">
+        ///     Bad Request.
+        /// </response>
+        /// <response code = "500" >
+        ///     Internal Server Error.
+        /// </response>
         [HttpPost]
         [AllowAnonymous]
         [ProducesResponseType(typeof(GetAuthTokenResult), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetAuthTokenAsync(
             GetAuthTokenParameter parameters,
-            CancellationToken cancellationToken = default)
+            CancellationToken ct = default)
         {
             if (parameters == null)
                 return BadRequest("Invalid parameters");
@@ -39,7 +55,7 @@ namespace PatientManagement.Api.Controllers.v1
                     parameters: new GetAuthTokenQueryParameters(
                         email: parameters.Email,
                         password: parameters.Password),
-                    ct: cancellationToken);
+                    ct: ct);
 
             if (result == null
                 || result.AccessToken == null
@@ -55,12 +71,30 @@ namespace PatientManagement.Api.Controllers.v1
             ));
         }
 
+
+        /// <summary>
+        ///     POST: /api/v1/Authentication
+        /// </summary>
+        /// <remarks>
+        ///     Add a patient.
+        /// </remarks>
+        /// <param name="parameters"></param>
+        /// <param name="ct"></param>
+        /// <response code="200">
+        ///     Operation was successful.
+        /// </response>
+        /// <response code="400">
+        ///     Bad Request.
+        /// </response>
+        /// <response code = "500" >
+        ///     Internal Server Error.
+        /// </response>
         [HttpPost]
         [AllowAnonymous]
         [ProducesResponseType(typeof(GetAuthTokenResult), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetRefreshTokenAsync(
             GetRefreshTokenParameters parameters,
-            CancellationToken cancellationToken = default)
+            CancellationToken ct = default)
         {
             if (parameters == null)
                 return BadRequest("Invalid parameters");
@@ -69,7 +103,7 @@ namespace PatientManagement.Api.Controllers.v1
                 .ExecuteAsync<GetRefreshTokenQueryParameters, GetAuthTokenQueryResult>(
                     parameters: new GetRefreshTokenQueryParameters(
                         refreshToken: parameters.RefreshToken),
-                    ct: cancellationToken);
+                    ct: ct);
 
             if (result == null
                 || result.AccessToken == null

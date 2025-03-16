@@ -1,11 +1,10 @@
 ﻿
 namespace PatientManagement.Common.Results
 {
-    using Common.Enums;
     public class GetPatientResult
     {
         public GetPatientResult(
-           Guid id,
+            Guid id,
             Guid applicationUserId,
             string? title,
             string? firstName,
@@ -15,9 +14,9 @@ namespace PatientManagement.Common.Results
             int age,
             string? email,
             bool isActive,
-            UserRole userRole,
-            DateTime createdDate,
-            DateTime dateModified)
+            string userRole,
+            DateTime dateCreated,
+            DateTime? dateModified)
         {
             Id = id;
             ApplicationUserId = applicationUserId;
@@ -30,7 +29,7 @@ namespace PatientManagement.Common.Results
             Email = email;
             IsActive = isActive;
             UserRole = userRole;
-            CreatedDate = createdDate;
+            DateCreated = dateCreated;
             DateModified = dateModified;
         }
 
@@ -44,9 +43,8 @@ namespace PatientManagement.Common.Results
         public int Age { get; }
         public string? Email { get; }
         public bool IsActive { get; }
-        public bool IsDeleted { get; }
-        public UserRole UserRole { get; }
-        public DateTime CreatedDate { get; }
-        public DateTime DateModified { get; }
+        public string UserRole { get; }
+        public DateTime DateCreated { get; }
+        public DateTime? DateModified { get; }
     }
 }

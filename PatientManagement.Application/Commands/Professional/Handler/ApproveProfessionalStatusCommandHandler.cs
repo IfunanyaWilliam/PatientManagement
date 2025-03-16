@@ -34,19 +34,19 @@ namespace PatientManagement.Application.Commands.Professional.Handler
                 id: result.Id,
                 applicationUserId: result.ApplicationUserId,
                 title: result.Title,
-                firstName: result.FirstName,
-                middleName: result.MiddleName,
-                lastName: result.LastName,
-                phoneNumber: result.PhoneNumber,
+                firstName: result?.FirstName,
+                middleName: result?.MiddleName,
+                lastName: result?.LastName,
+                phoneNumber: result?.PhoneNumber,
                 age: result.Age,
-                qualification: result.Qualification,
-                license: result.License,
+                qualification: result?.Qualification,
+                license: result?.License,
                 email: result.Email,
                 isActive: result.IsActive,
                 userRole: result.UserRole,
                 professionalStatus: result.ProfessionalStatus,
-                createdDate: result.CreatedDate,
-                dateModified: result.DateModified);
+                dateCreated: result.DateCreated,
+                dateModified: result?.DateModified);
         }
     }
 }

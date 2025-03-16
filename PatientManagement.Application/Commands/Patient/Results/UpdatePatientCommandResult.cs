@@ -1,8 +1,7 @@
 ﻿
 namespace PatientManagement.Application.Commands.Patient.Results
 {
-    using Common.Enums;
-    using PatientManagement.Common.Contracts;
+    using Common.Contracts;
 
     public class UpdatePatientCommandResult : ICommandResult
     {
@@ -17,9 +16,9 @@ namespace PatientManagement.Application.Commands.Patient.Results
             int age,
             string? email,
             bool isActive,
-            UserRole userRole,
+            string userRole,
             DateTime createdDate,
-            DateTime dateModified)
+            DateTime? dateModified)
         {
             Id = id;
             ApplicationUserId = applicationUserId;
@@ -46,8 +45,8 @@ namespace PatientManagement.Application.Commands.Patient.Results
         public int Age { get; }
         public string? Email { get; }
         public bool IsActive { get; }
-        public UserRole UserRole { get; }
+        public string UserRole { get; }
         public DateTime CreatedDate { get; }
-        public DateTime DateModified { get; }
+        public DateTime? DateModified { get; }
     }
 }

@@ -7,10 +7,13 @@ namespace PatientManagement.Infrastructure.Repositories.Implementations
     using Microsoft.Extensions.Logging;
     using System.Text.Json;
     using DbContexts;
+    using Common.Enums;
+    using Domain.Patient;
     using Common.Results;
     using Common.Utilities;
-    using Common.Enums;
     using Repositories.Interfaces;
+    using System.Linq.Expressions;
+    using System.Linq;
 
     public class PatientRepository : IPatientRepository
     {
@@ -29,7 +32,7 @@ namespace PatientManagement.Infrastructure.Repositories.Implementations
             _logger = logger;
         }
 
-        public async Task<CreatePatientResult> CreatePatientAsync(
+        public async Task<Patient> CreatePatientAsync(
             Guid applicationUserId,
             string? title,
             string? firstName,
@@ -81,7 +84,7 @@ namespace PatientManagement.Infrastructure.Repositories.Implementations
             
             if(result > 0)
             {
-                return new CreatePatientResult(
+                return new Patient(
                     id: patient.Id,
                     applicationUserId: patient.ApplicationUserId,
                     title: title,
@@ -92,15 +95,16 @@ namespace PatientManagement.Infrastructure.Repositories.Implementations
                     age: patient.Age,
                     email: user.Email,
                     isActive: patient.IsActive,
-                    userRole: patient.Role,
-                    createdDate: patient.CreatedDate);
+                    userRole: patient.Role.ToString(),
+                    dateCreated: patient.DateCreated,
+                    dateModified: patient.DateModified);
             }
 
             _logger.LogError($"Patient could not be saved, data => {JsonSerializer.Serialize(patient)}");
             throw new CustomException("Patient could not be created, try again later", StatusCodes.Status500InternalServerError);
         }
 
-        public async Task<UpdatePatientResult> UpdatePatientAsync(
+        public async Task<Patient> UpdatePatientAsync(
             Guid id,
             Guid applicationUserId,
             string? title,
@@ -146,7 +150,7 @@ namespace PatientManagement.Infrastructure.Repositories.Implementations
 
             if (result > 0)
             {
-                return new UpdatePatientResult(
+                return new Patient(
                     id: patient.Id,
                     applicationUserId: patient.ApplicationUserId,
                     title: title,
@@ -157,8 +161,8 @@ namespace PatientManagement.Infrastructure.Repositories.Implementations
                     age: patient.Age,
                     email: user.Email,
                     isActive: patient.IsActive,
-                    userRole: patient.Role,
-                    createdDate: patient.CreatedDate,
+                    userRole: patient.Role.ToString(),
+                    dateCreated: patient.DateCreated,
                     dateModified: patient.DateModified);
             }
 
@@ -166,14 +170,14 @@ namespace PatientManagement.Infrastructure.Repositories.Implementations
             throw new CustomException("Patient could not be updated, try again later", StatusCodes.Status500InternalServerError);
         }
 
-        public async Task<GetPatientResult> GetPatientAsync(
+        public async Task<Patient> GetPatientAsync(
             Guid id,
             CancellationToken cancellationToken = default)
         {
             if (id == Guid.Empty)
                 throw new CustomException($"Invalid input", StatusCodes.Status400BadRequest);
 
-            var patient = await _context.Patients.FirstOrDefaultAsync(x => x.Id == id && !x.IsDeleted, cancellationToken);
+            var patient = await _context.Patients.FirstOrDefaultAsync(x => x.Id == id && !x.IsDeleted && x.IsActive, cancellationToken);
 
             if (patient == null)
             {
@@ -197,7 +201,7 @@ namespace PatientManagement.Infrastructure.Repositories.Implementations
                 throw new CustomException($"Corresponding user not found for patient with Id {id}", StatusCodes.Status404NotFound);
             }
 
-            return new GetPatientResult(
+            return new Patient(
                 id: id,
                 applicationUserId: patient.ApplicationUserId,
                 title: patient.Title,
@@ -208,9 +212,55 @@ namespace PatientManagement.Infrastructure.Repositories.Implementations
                 age: patient.Age,
                 email: user.Email,
                 isActive: patient.IsActive,
-                userRole: patient.Role,
-                createdDate: patient.CreatedDate,
+                userRole: patient.Role.ToString(),
+                dateCreated: patient.DateCreated,
                 dateModified: patient.DateModified);
+        }
+
+        public async Task<IEnumerable<Patient>> GetAllPatientsAsync(
+            int pageNumber,
+            int pageSize,
+            string searchParam,
+            CancellationToken cancellationToken)
+        {
+            var skip = (pageNumber - 1) * pageSize;
+            var take = pageSize;
+
+            Expression<Func<Entities.Patient, bool>> predicate = s => s.IsActive;
+
+            if (!string.IsNullOrEmpty(searchParam))
+            {
+                var searchParamLower = searchParam.ToLower();
+                predicate = s => s.IsActive && ((s.FirstName != null && s.FirstName.ToLower().Contains(searchParamLower)) ||
+                                                (s.MiddleName != null && s.MiddleName.ToLower().Contains(searchParamLower)) ||
+                                                (s.LastName != null && s.LastName.ToLower().Contains(searchParamLower)));
+            }
+
+            var prescriptions = await _context.Patients
+                                        .Include(a => a.ApplicationUser)
+                                        .Where(predicate)
+                                        .OrderBy(x => x.DateCreated)
+                                        .Skip(skip)
+                                        .Take(take)
+                                        .ToListAsync(cancellationToken);
+
+            if (prescriptions is null)
+                return new List<Patient>();
+
+            return prescriptions.Select(p => new Patient(
+                id: p.Id,
+                applicationUserId: p.ApplicationUserId,
+                title: p.Title,
+                firstName: p.FirstName,
+                middleName: p.MiddleName,
+                lastName: p.LastName,
+                phoneNumber: p.PhoneNumber,
+                age: p.Age,
+                email: p.ApplicationUser.Email,
+                isActive: p.IsActive,
+                userRole: p.ApplicationUser.Role.ToString(),
+                dateCreated: p.DateCreated,
+                dateModified: p.DateModified));
         }
 
         public async Task<bool> DeletePatientAsync(Guid id)

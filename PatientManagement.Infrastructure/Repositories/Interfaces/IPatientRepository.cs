@@ -1,11 +1,11 @@
 ﻿
 namespace PatientManagement.Infrastructure.Repositories.Interfaces
 {
-    using Common.Results;
+    using Domain.Patient;
 
     public interface IPatientRepository
     {
-        Task<CreatePatientResult> CreatePatientAsync(
+        Task<Patient> CreatePatientAsync(
             Guid applicationUserId,
             string? title,
             string? firstName,
@@ -15,7 +15,7 @@ namespace PatientManagement.Infrastructure.Repositories.Interfaces
             int age,
             CancellationToken cancellationToken = default);
 
-        Task<UpdatePatientResult> UpdatePatientAsync(
+        Task<Patient> UpdatePatientAsync(
             Guid id,
             Guid applicationUserId,
             string? title,
@@ -26,8 +26,14 @@ namespace PatientManagement.Infrastructure.Repositories.Interfaces
             int age,
             CancellationToken cancellationToken = default);
 
-        Task<GetPatientResult> GetPatientAsync(
+        Task<Patient> GetPatientAsync(
             Guid id,
+            CancellationToken cancellationToken = default);
+
+        Task<IEnumerable<Patient>> GetAllPatientsAsync(
+            int pageNumber,
+            int pageSize,
+            string searchParam,
             CancellationToken cancellationToken = default);
 
         Task<bool> DeletePatientAsync(Guid id);

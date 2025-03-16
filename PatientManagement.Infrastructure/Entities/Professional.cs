@@ -7,7 +7,7 @@ namespace PatientManagement.Infrastructure.Entities
     {
         public Guid Id { get; set; }
         public Guid ApplicationUserId { get; set; }
-        public ApplicationUser? ApplicationUser { get; set; }
+        public ApplicationUser ApplicationUser { get; set; }
         public string? Title { get; set; }
         public string? FirstName { get; set; }
         public string? MiddleName { get; set; }
@@ -20,7 +20,7 @@ namespace PatientManagement.Infrastructure.Entities
         public bool IsDeleted { get; set; }
         public UserRole Role { get; set; }
         public ProfessionalStatus ProfessionalStatus { get; set; }
-        public DateTime CreatedDate { get; set; } = DateTime.UtcNow.AddHours(1);
+        public DateTime DateCreated { get; set; } = DateTime.UtcNow.AddHours(1);
         public DateTime DateModified { get; set; }
     }
 }
