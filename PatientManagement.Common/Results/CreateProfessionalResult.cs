@@ -1,13 +1,10 @@
 ﻿
 namespace PatientManagement.Common.Results
 {
-    using Enums;
-
-
     public class CreateProfessionalResult
     {
         public CreateProfessionalResult(
-            Guid id,
+           Guid id,
             Guid applicationUserId,
             string? title,
             string? firstName,
@@ -17,10 +14,12 @@ namespace PatientManagement.Common.Results
             int age,
             string? qualification,
             string? license,
-            string? email,
+            string email,
             bool isActive,
-            UserRole userRole,
-            DateTime createdDate)
+            string userRole,
+            string professionalStatus,
+            DateTime dateCreated,
+            DateTime? dateModified)
         {
             Id = id;
             ApplicationUserId = applicationUserId;
@@ -35,22 +34,27 @@ namespace PatientManagement.Common.Results
             Email = email;
             IsActive = isActive;
             UserRole = userRole;
-            CreatedDate = createdDate;
+            ProfessionalStatus = professionalStatus;
+            DateCreated = dateCreated;
+            DateModified = dateModified;
         }
 
-        public Guid Id { get; }
-        public Guid ApplicationUserId { get; }
-        public string? Title { get; }
+
+        public Guid Id { get; set; }
+        public Guid ApplicationUserId { get; set; }
+        public string? Title { get; set; }
         public string? FirstName { get; }
         public string? MiddleName { get; }
         public string? LastName { get; }
-        public string? PhoneNumber { get; }
-        public int Age { get; }
+        public string? PhoneNumber { get; set; }
+        public int Age { get; set; }
         public string? Qualification { get; set; }
         public string? License { get; set; }
-        public string? Email { get; }
-        public bool IsActive { get; }
-        public UserRole UserRole { get; }
-        public DateTime CreatedDate { get; }
+        public string? Email { get; set; }
+        public bool IsActive { get; set; }
+        public string UserRole { get; set; }
+        public string ProfessionalStatus { get; set; }
+        public DateTime DateCreated { get; set; }
+        public DateTime? DateModified { get; set; }
     }
 }

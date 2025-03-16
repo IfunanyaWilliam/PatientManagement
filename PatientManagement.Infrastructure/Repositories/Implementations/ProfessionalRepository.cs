@@ -11,6 +11,7 @@ namespace PatientManagement.Infrastructure.Repositories.Implementations
     using Common.Enums;
     using Common.Utilities;
     using Infrastructure.Repositories.Interfaces;
+    using Domain.Professional;
 
     public class ProfessionalRepository : IProfessionalRepository
     {
@@ -29,7 +30,7 @@ namespace PatientManagement.Infrastructure.Repositories.Implementations
             _logger = logger;
         }
 
-        public async Task<CreateProfessionalResult> CreateProfessionalAsync(
+        public async Task<Professional> CreateProfessionalAsync(
             Guid applicationUserId,
             string? title,
             string? firstName,
@@ -88,21 +89,23 @@ namespace PatientManagement.Infrastructure.Repositories.Implementations
 
             if (result > 0)
             {
-                return new CreateProfessionalResult(
+                return new Professional(
                     id: professional.Id,
                     applicationUserId: professional.ApplicationUserId,
                     title: professional.Title,
-                    firstName: professional.FirstName,
-                    middleName: professional.MiddleName,
-                    lastName: professional.LastName,
-                    phoneNumber: professional.PhoneNumber,
+                    firstName: professional?.FirstName,
+                    middleName: professional?.MiddleName,
+                    lastName: professional?.LastName,
+                    phoneNumber: professional?.PhoneNumber,
                     age: professional.Age,
                     qualification: professional.Qualification,
-                    license: professional.License,
+                    license: professional?.License,
                     email: user.Email,
                     isActive: professional.IsActive,
-                    userRole: professional.Role,
-                createdDate: professional.CreatedDate);
+                    userRole: professional.Role.ToString(),
+                    professionalStatus: professional.ProfessionalStatus.ToString(),
+                dateCreated: professional.DateCreated,
+                dateModified: professional.DateModified);
             }
 
             _logger.LogError($"Professional could not be saved to db, data => {JsonSerializer.Serialize(professional)}");
@@ -146,7 +149,7 @@ namespace PatientManagement.Infrastructure.Repositories.Implementations
                     isActive: professional.IsActive,
                     userRole: professional.Role,
                     professionalStatus: professional.ProfessionalStatus,
-                    createdDate: professional.CreatedDate,
+                    createdDate: professional.DateCreated,
                     dateModified: professional.DateModified);
             }
 

@@ -1,7 +1,6 @@
 ﻿
 namespace PatientManagement.Infrastructure.Repositories.Interfaces
 {
-    using Common.Results;
     using Domain.Patient;
 
     public interface IPatientRepository

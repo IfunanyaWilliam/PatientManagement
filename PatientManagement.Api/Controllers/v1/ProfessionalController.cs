@@ -31,6 +31,29 @@ namespace PatientManagement.Api.Controllers.v1
         }
 
 
+        /// <summary>
+        ///     POST: /api/v1/professional/
+        /// </summary>
+        /// <remarks>
+        ///     Create a professional
+        /// </remarks>
+        /// <param name="parameters"></param>
+        /// <param name="ct"></param>
+        /// <response code="200">
+        ///     Operation was successful.
+        /// </response>
+        /// <response code="400">
+        ///     Bad Request.
+        /// </response>
+        /// <response code = "500">
+        ///     Internal Server Error.
+        /// </response>
+        /// /// <response code = "401" >
+        ///     Unauthorized.
+        /// </response>
+        /// <response code = "403" >
+        ///     Forbidden.
+        /// </response>
         [HttpPost]
         [PermissionAuthorize(permissionOperator: PermissionOperator.Or, "ManageProfessionalRecords", "ManageMedicalRecords")]
         [ProducesResponseType(typeof(CreateProfessionalResult), StatusCodes.Status200OK)]
@@ -70,7 +93,9 @@ namespace PatientManagement.Api.Controllers.v1
                 email: result.Email,
                 isActive: result.IsActive,
                 userRole: result.UserRole,
-                createdDate: result.CreatedDate));
+                professionalStatus: result.ProfessionalStatus,
+                dateCreated: result.DateCreated,
+                dateModified: result.DateModified));
         }
 
         [HttpPut]
