@@ -2,7 +2,6 @@
 namespace PatientManagement.Infrastructure.Repositories.Interfaces
 {
     using Common.Enums;
-    using Common.Results;
     using Domain.Professional;
 
     public interface IProfessionalRepository
@@ -20,7 +19,7 @@ namespace PatientManagement.Infrastructure.Repositories.Interfaces
             UserRole userRole,
             CancellationToken cancellationToken = default);
 
-        Task<ApproveProfessionalStatusResult> ApproveProfessionalStatusAsync(
+        Task<Professional> ApproveProfessionalStatusAsync(
             Guid professionalId);
 
     }

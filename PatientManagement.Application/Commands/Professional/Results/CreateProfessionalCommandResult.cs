@@ -6,7 +6,7 @@ namespace PatientManagement.Application.Commands.Professional.Results
     public class CreateProfessionalCommandResult : ICommandResult
     {
         public CreateProfessionalCommandResult(
-           Guid id,
+            Guid id,
             Guid applicationUserId,
             string? title,
             string? firstName,

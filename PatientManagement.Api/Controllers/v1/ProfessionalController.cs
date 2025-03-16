@@ -98,6 +98,30 @@ namespace PatientManagement.Api.Controllers.v1
                 dateModified: result.DateModified));
         }
 
+
+        /// <summary>
+        ///     PUT: /api/v1/professional/
+        /// </summary>
+        /// <remarks>
+        ///     Create a professional
+        /// </remarks>
+        /// <param name="parameters"></param>
+        /// <param name="ct"></param>
+        /// <response code="200">
+        ///     Operation was successful.
+        /// </response>
+        /// <response code="400">
+        ///     Bad Request.
+        /// </response>
+        /// <response code = "500">
+        ///     Internal Server Error.
+        /// </response>
+        /// /// <response code = "401" >
+        ///     Unauthorized.
+        /// </response>
+        /// <response code = "403" >
+        ///     Forbidden.
+        /// </response>
         [HttpPut]
         [PermissionAuthorize(permission: "ManageMedicalRecords")]
         [ProducesResponseType(typeof(ApproveProfessionalStatusResult), StatusCodes.Status200OK)]
@@ -118,19 +142,19 @@ namespace PatientManagement.Api.Controllers.v1
                 id: result.Id,
                 applicationUserId: result.ApplicationUserId,
                 title: result.Title,
-                firstName: result.FirstName,
-                middleName: result.MiddleName,
-                lastName: result.LastName,
-                phoneNumber: result.PhoneNumber,
+                firstName: result?.FirstName,
+                middleName: result?.MiddleName,
+                lastName: result?.LastName,
+                phoneNumber: result?.PhoneNumber,
                 age: result.Age,
-                qualification: result.Qualification,
-                license: result.License,
+                qualification: result?.Qualification,
+                license: result?.License,
                 email: result.Email,
                 isActive: result.IsActive,
                 userRole: result.UserRole,
                 professionalStatus: result.ProfessionalStatus,
-                createdDate: result.CreatedDate,
-                dateModified: result.DateModified));
+                dateCreated: result.DateCreated,
+                dateModified: result?.DateModified));
         }
     }
 }

@@ -1,7 +1,6 @@
 ﻿
 namespace PatientManagement.Application.Commands.Professional.Results
 {
-    using Common.Enums;
     using Common.Contracts;
 
     public class ApproveProfessionalStatusCommandResult : ICommandResult
@@ -17,12 +16,12 @@ namespace PatientManagement.Application.Commands.Professional.Results
             int age,
             string? qualification,
             string? license,
-            string? email,
+            string email,
             bool isActive,
-            UserRole userRole,
-            ProfessionalStatus professionalStatus,
-            DateTime createdDate,
-            DateTime dateModified)
+            string userRole,
+            string professionalStatus,
+            DateTime dateCreated,
+            DateTime? dateModified)
         {
             Id = id;
             ApplicationUserId = applicationUserId;
@@ -38,25 +37,26 @@ namespace PatientManagement.Application.Commands.Professional.Results
             IsActive = isActive;
             UserRole = userRole;
             ProfessionalStatus = professionalStatus;
-            CreatedDate = createdDate;
+            DateCreated = dateCreated;
             DateModified = dateModified;
         }
 
-        public Guid Id { get; }
-        public Guid ApplicationUserId { get; }
-        public string? Title { get; }
+
+        public Guid Id { get; set; }
+        public Guid ApplicationUserId { get; set; }
+        public string? Title { get; set; }
         public string? FirstName { get; }
         public string? MiddleName { get; }
         public string? LastName { get; }
-        public string? PhoneNumber { get; }
-        public int Age { get; }
-        public string? Qualification { get; }
-        public string? License { get; }
-        public string? Email { get; }
-        public bool IsActive { get; }
-        public UserRole UserRole { get; }
-        public ProfessionalStatus ProfessionalStatus { get; }
-        public DateTime CreatedDate { get; }
-        public DateTime DateModified { get; }
+        public string? PhoneNumber { get; set; }
+        public int Age { get; set; }
+        public string? Qualification { get; set; }
+        public string? License { get; set; }
+        public string? Email { get; set; }
+        public bool IsActive { get; set; }
+        public string UserRole { get; set; }
+        public string ProfessionalStatus { get; set; }
+        public DateTime DateCreated { get; set; }
+        public DateTime? DateModified { get; set; }
     }
 }
