@@ -2,6 +2,7 @@
 namespace PatientManagement.Infrastructure.Repositories.Implementations
 {
     using System.Text.Json;
+    using System.Linq.Expressions;
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Identity;
     using Microsoft.Extensions.Logging;
@@ -197,6 +198,58 @@ namespace PatientManagement.Infrastructure.Repositories.Implementations
                 professionalStatus: professional.ProfessionalStatus.ToString(),
                 dateCreated: professional.DateCreated,
                 dateModified: professional.DateModified);
+        }
+
+        public async Task<IEnumerable<Professional>> GetAllProfessionalsAsync(
+            int pageNumber,
+            int pageSize,
+            string searchParam,
+            CancellationToken cancellationToken)
+        {
+            var skip = (pageNumber - 1) * pageSize;
+            var take = pageSize;
+
+            Expression<Func<Entities.Professional, bool>> predicate = s => s.IsActive;
+
+            if (!string.IsNullOrEmpty(searchParam))
+            {
+                var searchParamLower = searchParam.ToLower();
+
+                predicate = s => s.IsActive && (
+                        (s.FirstName != null && s.FirstName.ToLower().Contains(searchParamLower)) ||
+                        (s.MiddleName != null && s.MiddleName.ToLower().Contains(searchParamLower)) ||
+                        (s.LastName != null && s.LastName.ToLower().Contains(searchParamLower)) ||
+                        (s.Qualification != null && s.Qualification.ToLower().Contains(searchParamLower)));
+            }
+
+            var professionals = await _context.Professionals
+                                        .Include(y => y.ApplicationUser)
+                                        .Where(predicate)
+                                        .OrderBy(x => x.DateCreated)
+                                        .Skip(skip)
+                                        .Take(take)
+                                        .ToListAsync(cancellationToken);
+
+            if (!professionals.Any() || professionals is null)
+                return null;
+
+            return professionals.Select(p => new Professional(
+                        id: p.Id,
+                        applicationUserId: p.ApplicationUserId,
+                        title: p.Title,
+                        firstName: p.FirstName,
+                        middleName: p.MiddleName,
+                        lastName: p.LastName,
+                        phoneNumber: p.PhoneNumber,
+                        age: p.Age,
+                        qualification: p.Qualification,
+                        license: p.License,
+                        email: p.ApplicationUser.Email,
+                        isActive: p.IsActive,
+                        userRole: p.Role.ToString(),
+                        professionalStatus: p.ProfessionalStatus.ToString(),
+                        dateCreated: p.DateCreated,
+                        dateModified: p.DateModified));
         }
     }
 }

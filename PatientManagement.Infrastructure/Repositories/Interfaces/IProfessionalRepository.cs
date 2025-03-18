@@ -27,5 +27,11 @@ namespace PatientManagement.Infrastructure.Repositories.Interfaces
         Task<Professional> GetProfessionalByIdAsync(
             Guid id,
             CancellationToken cancellationToken);
+
+        Task<IEnumerable<Professional>> GetAllProfessionalsAsync(
+            int pageNumber,
+            int pageSize,
+            string searchParam,
+            CancellationToken cancellationToken);
     }
 }

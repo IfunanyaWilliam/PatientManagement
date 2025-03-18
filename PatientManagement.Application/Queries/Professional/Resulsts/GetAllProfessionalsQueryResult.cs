@@ -3,9 +3,21 @@ namespace PatientManagement.Application.Queries.Professional.Resulsts
 {
     using Common.Contracts;
 
-    public class GetProfessionalByIdQueryResult : IQueryResult
+
+    public class GetAllProfessionalsQueryResult : IQueryResult
     {
-        public GetProfessionalByIdQueryResult(
+        public GetAllProfessionalsQueryResult(IEnumerable<ProfessionalResult> professionals)
+        {
+            Professionals = professionals;
+        }
+
+        public IEnumerable<ProfessionalResult> Professionals { get; }
+    }
+
+
+    public class ProfessionalResult
+    {
+        public ProfessionalResult(
             Guid id,
             Guid applicationUserId,
             string? title,
@@ -40,7 +52,6 @@ namespace PatientManagement.Application.Queries.Professional.Resulsts
             DateCreated = dateCreated;
             DateModified = dateModified;
         }
-
 
         public Guid Id { get; }
         public Guid ApplicationUserId { get; }

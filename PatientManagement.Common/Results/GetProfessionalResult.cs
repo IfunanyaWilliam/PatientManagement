@@ -1,9 +1,9 @@
 ﻿
 namespace PatientManagement.Common.Results
 {
-    public class GetProfessionlaByIdResult
+    public class GetProfessionalResult
     {
-        public GetProfessionlaByIdResult(
+        public GetProfessionalResult(
             Guid id,
             Guid applicationUserId,
             string? title,
@@ -38,7 +38,6 @@ namespace PatientManagement.Common.Results
             DateCreated = dateCreated;
             DateModified = dateModified;
         }
-
 
         public Guid Id { get; set; }
         public Guid ApplicationUserId { get; set; }
