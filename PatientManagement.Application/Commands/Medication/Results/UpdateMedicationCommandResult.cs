@@ -3,10 +3,9 @@ namespace PatientManagement.Application.Commands.Medication.Results
 {
     using Common.Contracts;
 
-
-    public class CreateMedicationCommandResult : ICommandResult
+    public class UpdateMedicationCommandResult : ICommandResult
     {
-        public CreateMedicationCommandResult(
+        public UpdateMedicationCommandResult(
             Guid id,
             string name,
             string description,
@@ -21,7 +20,6 @@ namespace PatientManagement.Application.Commands.Medication.Results
             CreatedDate = createdDate;
             DateModified = dateModified;
         }
-
 
         public Guid Id { get; }
         public string Name { get; }

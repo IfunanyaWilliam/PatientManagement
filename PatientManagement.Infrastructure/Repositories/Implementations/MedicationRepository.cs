@@ -68,7 +68,63 @@ namespace PatientManagement.Infrastructure.Repositories.Implementations
             throw new CustomException("Medication could not be created, try again later", StatusCodes.Status500InternalServerError);
         }
 
+        public async Task<Medication> UpdateMedicationAsync(
+            Guid medicationId,
+            string name,
+            string description,
+            CancellationToken cancellationToken)
+        {
+            if (string.IsNullOrWhiteSpace(name) || string.IsNullOrWhiteSpace(description))
+            {
+                throw new CustomException($"Invalid input", StatusCodes.Status400BadRequest);
+            }
 
+            var existingMedication = await _context.Medications.FirstOrDefaultAsync(m => m.Id == medicationId && m.IsActive, cancellationToken);
+
+            if (existingMedication == null)
+                throw new CustomException($"Medication with Id: {medicationId} Not Found", StatusCodes.Status404NotFound);
+
+            existingMedication.Name = name.Trim();
+            existingMedication.Description = description.Trim();
+            existingMedication.DateModified = DateTime.UtcNow;
+            _context.Medications.Update(existingMedication);
+            var result = await _context.SaveChangesAsync();
+
+            if (result > 0)
+            {
+                return new Medication(
+                    id: existingMedication.Id,
+                    name: existingMedication.Name,
+                    isActive: existingMedication.IsActive,
+                    description: existingMedication.Description,
+                    createdDate: existingMedication.CreatedDate,
+                    dateModified: existingMedication.DateModified);
+            }
+
+            _logger.LogError($"Medication could not be saved to db, data => {JsonSerializer.Serialize(existingMedication)}");
+            throw new CustomException("Medication could not be updated, try again later", StatusCodes.Status500InternalServerError);
+        }
+
+        public async Task<Medication> GetMedicationByIdAsync(
+            Guid id,
+            CancellationToken cancellationToken)
+        {
+            if (id == Guid.Empty)
+                throw new CustomException($"Invalid input", StatusCodes.Status400BadRequest);
+
+            var medication = await _context.Medications.FirstOrDefaultAsync(m => m.Id == id && m.IsActive, cancellationToken);
+
+            if(medication == null)
+                throw new CustomException($"Professional with Id {id} not found", StatusCodes.Status404NotFound);
+
+            return new Medication(
+                id: medication.Id,
+                name: medication.Name,
+                isActive: medication.IsActive,
+                description: medication.Description,
+                createdDate: medication.CreatedDate,
+                dateModified: medication.DateModified);
+        }
 
     }
 }

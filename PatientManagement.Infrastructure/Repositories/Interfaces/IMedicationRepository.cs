@@ -10,5 +10,15 @@ namespace PatientManagement.Infrastructure.Repositories.Interfaces
             string name,
             string description,
             CancellationToken cancellationToken);
+
+        Task<Medication> UpdateMedicationAsync(
+            Guid medicationId,
+            string name,
+            string description,
+            CancellationToken cancellationToken);
+
+        Task<Medication> GetMedicationByIdAsync(
+            Guid id,
+            CancellationToken cancellationToken);
     }
 }
