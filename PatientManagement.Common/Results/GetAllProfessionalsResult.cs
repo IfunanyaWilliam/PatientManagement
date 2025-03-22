@@ -3,11 +3,11 @@ namespace PatientManagement.Common.Results
 {
     public class GetAllProfessionalsResult
     {
-        public GetAllProfessionalsResult(IEnumerable<GetProfessionalResult> professionals)
+        public GetAllProfessionalsResult(IEnumerable<GetProfessionalsResult> professionals)
         {
             Professionals = professionals;
         }
 
-        public IEnumerable<GetProfessionalResult> Professionals { get; }
+        public IEnumerable<GetProfessionalsResult> Professionals { get; }
     }
 }

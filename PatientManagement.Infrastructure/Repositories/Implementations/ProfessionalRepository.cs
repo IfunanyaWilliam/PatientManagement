@@ -209,17 +209,16 @@ namespace PatientManagement.Infrastructure.Repositories.Implementations
             var skip = (pageNumber - 1) * pageSize;
             var take = pageSize;
 
-            Expression<Func<Entities.Professional, bool>> predicate = s => s.IsActive;
+            Expression<Func<Entities.Professional, bool>> predicate = s => !s.IsDeleted;
 
             if (!string.IsNullOrEmpty(searchParam))
             {
                 var searchParamLower = searchParam.ToLower();
 
-                predicate = s => s.IsActive && (
-                        (s.FirstName != null && s.FirstName.ToLower().Contains(searchParamLower)) ||
-                        (s.MiddleName != null && s.MiddleName.ToLower().Contains(searchParamLower)) ||
-                        (s.LastName != null && s.LastName.ToLower().Contains(searchParamLower)) ||
-                        (s.Qualification != null && s.Qualification.ToLower().Contains(searchParamLower)));
+                predicate = s =>    (s.FirstName != null && s.FirstName.ToLower().Contains(searchParamLower)) ||
+                                    (s.MiddleName != null && s.MiddleName.ToLower().Contains(searchParamLower)) ||
+                                    (s.LastName != null && s.LastName.ToLower().Contains(searchParamLower)) ||
+                                    (s.Qualification != null && s.Qualification.ToLower().Contains(searchParamLower));
             }
 
             var professionals = await _context.Professionals

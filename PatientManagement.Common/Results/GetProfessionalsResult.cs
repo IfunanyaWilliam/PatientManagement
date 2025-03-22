@@ -1,9 +1,9 @@
 ﻿
 namespace PatientManagement.Common.Results
 {
-    public class GetProfessionalResult
+    public class GetProfessionalsResult
     {
-        public GetProfessionalResult(
+        public GetProfessionalsResult(
             Guid id,
             Guid applicationUserId,
             string? title,

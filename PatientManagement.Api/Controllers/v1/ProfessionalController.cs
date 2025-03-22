@@ -251,7 +251,7 @@ namespace PatientManagement.Api.Controllers.v1
         [HttpGet("all")]
         [PermissionAuthorize(permissionOperator: PermissionOperator.Or, "ViewMedicalRecords", "ManageProfessionalRecords", "ManageMedicalRecords")]
         [ProducesResponseType(typeof(GetAllProfessionalsResult), StatusCodes.Status200OK)]
-        public async Task<ActionResult<GetAllProfessionalsResult>> GetAllProfessional(
+        public async Task<ActionResult<GetAllProfessionalsResult>> GetAllProfessionals(
             [FromQuery] int pageNumber = 1,
             [FromQuery] int pageSize = 10,
             [FromQuery] string searchParam = null,
@@ -266,11 +266,11 @@ namespace PatientManagement.Api.Controllers.v1
                     ct: ct);
 
             if (result == null)
-                return new GetAllProfessionalsResult(new List<GetProfessionalResult>());
+                return new GetAllProfessionalsResult(new List<GetProfessionalsResult>());
 
             return Ok(new GetAllProfessionalsResult(
                 professionals: result.Professionals.Select(p =>
-                        new GetProfessionalResult(
+                        new GetProfessionalsResult(
                             id: p.Id,
                             applicationUserId: p.ApplicationUserId,
                             title: p.Title,
