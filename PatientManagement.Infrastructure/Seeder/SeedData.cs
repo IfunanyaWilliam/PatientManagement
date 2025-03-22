@@ -147,7 +147,7 @@ namespace PatientManagement.Infrastructure.Seeder
                 new Entities.Medication
                 {
                     Id = Guid.NewGuid(),
-                    Name = "Paracetamol",
+                    Name = "Diclofenac Xtra",
                     Description = "Pain reliever",
                     IsActive = true,
                     CreatedDate = DateTime.UtcNow.AddHours(1),

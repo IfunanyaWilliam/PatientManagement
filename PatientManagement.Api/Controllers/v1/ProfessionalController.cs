@@ -11,10 +11,8 @@ namespace PatientManagement.Api.Controllers.v1
     using Common.Parameters;
     using Common.Results;
     using Common.Enums;
-    using PatientManagement.Application.Queries.Professional.Parameters;
-    using PatientManagement.Application.Queries.Professional.Resulsts;
-    using PatientManagement.Application.Queries.Patient.Parameters;
-    using PatientManagement.Application.Queries.Patient.Results;
+    using Application.Queries.Professional.Parameters;
+    using Application.Queries.Professional.Resulsts;
 
     [ApiController]
     [Authorize]

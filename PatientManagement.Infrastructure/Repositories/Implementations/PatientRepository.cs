@@ -1,19 +1,19 @@
 ﻿
 namespace PatientManagement.Infrastructure.Repositories.Implementations
 {
-    using Microsoft.AspNetCore.Identity;
+    using System.Linq;
+    using System.Text.Json;
+    using System.Linq.Expressions;
     using Microsoft.AspNetCore.Http;
+    using Microsoft.AspNetCore.Identity;
     using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.Logging;
-    using System.Text.Json;
-    using DbContexts;
-    using Common.Enums;
-    using Domain.Patient;
-    using Common.Results;
-    using Common.Utilities;
     using Repositories.Interfaces;
-    using System.Linq.Expressions;
-    using System.Linq;
+    using Common.Utilities;
+    using Domain.Patient;
+    using Common.Enums;
+    using DbContexts;
+          
 
     public class PatientRepository : IPatientRepository
     {
@@ -45,8 +45,8 @@ namespace PatientManagement.Infrastructure.Repositories.Implementations
             if(applicationUserId == Guid.Empty)
                 throw new CustomException($"Invalid input", StatusCodes.Status400BadRequest);
 
-            if(string.IsNullOrEmpty(title) || string.IsNullOrEmpty(firstName) || string.IsNullOrEmpty(middleName) 
-                || string.IsNullOrEmpty(lastName) || string.IsNullOrEmpty(phoneNumber))
+            if(string.IsNullOrWhiteSpace(title) || string.IsNullOrWhiteSpace(firstName) || string.IsNullOrWhiteSpace(middleName) 
+                || string.IsNullOrWhiteSpace(lastName) || string.IsNullOrWhiteSpace(phoneNumber))
             {
                 throw new CustomException($"Invalid input", StatusCodes.Status400BadRequest);
             }
@@ -118,8 +118,8 @@ namespace PatientManagement.Infrastructure.Repositories.Implementations
             if (applicationUserId == Guid.Empty)
                 throw new CustomException($"Invalid input", StatusCodes.Status400BadRequest);
 
-            if (string.IsNullOrEmpty(title) || string.IsNullOrEmpty(title) || string.IsNullOrEmpty(title)
-                || string.IsNullOrEmpty(title) || string.IsNullOrEmpty(title))
+            if (string.IsNullOrEmpty(title) || string.IsNullOrWhiteSpace(title) || string.IsNullOrWhiteSpace(title)
+                || string.IsNullOrWhiteSpace(title) || string.IsNullOrWhiteSpace(title))
             {
                 throw new CustomException($"Invalid input", StatusCodes.Status400BadRequest);
             }
@@ -228,7 +228,7 @@ namespace PatientManagement.Infrastructure.Repositories.Implementations
 
             Expression<Func<Entities.Patient, bool>> predicate = s => s.IsActive;
 
-            if (!string.IsNullOrEmpty(searchParam))
+            if (!string.IsNullOrWhiteSpace(searchParam))
             {
                 var searchParamLower = searchParam.ToLower();
                 predicate = s => s.IsActive && ((s.FirstName != null && s.FirstName.ToLower().Contains(searchParamLower)) ||

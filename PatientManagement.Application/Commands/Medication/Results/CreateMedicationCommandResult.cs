@@ -1,12 +1,15 @@
 ﻿
-namespace PatientManagement.Domain.Prescription
+namespace PatientManagement.Application.Commands.Medication.Results
 {
-    public class Medication
+    using Common.Contracts;
+
+
+    public class CreateMedicationCommandResult : ICommandResult
     {
-        public Medication(
+        public CreateMedicationCommandResult(
             Guid id,
-            string? name,
-            string? description,
+            string name,
+            string description,
             bool isActive,
             DateTime createdDate,
             DateTime? dateModified)
@@ -19,9 +22,10 @@ namespace PatientManagement.Domain.Prescription
             DateModified = dateModified;
         }
 
+
         public Guid Id { get; set; }
-        public string? Name { get; set; }
-        public string? Description { get; set; }
+        public string Name { get; set; }
+        public string Description { get; set; }
         public bool IsActive { get; set; }
         public DateTime CreatedDate { get; set; }
         public DateTime? DateModified { get; set; }
