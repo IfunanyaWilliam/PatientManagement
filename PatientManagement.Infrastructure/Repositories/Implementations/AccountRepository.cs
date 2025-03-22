@@ -10,6 +10,7 @@ namespace PatientManagement.Infrastructure.Repositories.Implementations
     using Microsoft.AspNetCore.Http;
     using PatientManagement.Common.Utilities;
 
+
     public class AccountRepository : IAccountRepository
     {
         private readonly AppDbContext _context;

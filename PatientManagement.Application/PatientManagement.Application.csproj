@@ -10,8 +10,6 @@
     <Folder Include="Queries\Account\Handler\" />
     <Folder Include="Queries\Account\Parameters\" />
     <Folder Include="Queries\Account\Results\" />
-    <Folder Include="Queries\Professional\Handlers\" />
-    <Folder Include="Queries\Professional\Resulsts\" />
   </ItemGroup>
 
   <ItemGroup>

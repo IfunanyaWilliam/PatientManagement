@@ -1,8 +1,10 @@
 ﻿
 namespace PatientManagement.Infrastructure.Repositories.Interfaces
 {
+    using System.Threading.Tasks;
     using Common.Enums;
     using Domain.Professional;
+    
 
     public interface IProfessionalRepository
     {
@@ -20,7 +22,16 @@ namespace PatientManagement.Infrastructure.Repositories.Interfaces
             CancellationToken cancellationToken = default);
 
         Task<Professional> ApproveProfessionalStatusAsync(
-            Guid professionalId);
+        Guid professionalId);
 
+        Task<Professional> GetProfessionalByIdAsync(
+            Guid id,
+            CancellationToken cancellationToken);
+
+        Task<IEnumerable<Professional>> GetAllProfessionalsAsync(
+            int pageNumber,
+            int pageSize,
+            string searchParam,
+            CancellationToken cancellationToken);
     }
 }

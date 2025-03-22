@@ -7,11 +7,12 @@ namespace PatientManagement.Infrastructure.Seeder
     using PatientManagement.Common.Enums;
     using Microsoft.EntityFrameworkCore;
     using PatientManagement.Infrastructure.Services.Interfaces;
+    using System.Data;
 
     public static class SeedData
     {
         public static async Task Seed(
-            UserManager<ApplicationUser> userManager,
+            UserManager<Entities.ApplicationUser> userManager,
             AppDbContext dbContext,
             RoleManager<IdentityRole<Guid>> roleManager,
             IEncryptionService encryptionService)
@@ -19,7 +20,9 @@ namespace PatientManagement.Infrastructure.Seeder
             dbContext.Database.EnsureCreated();
             await SeedPermissions(dbContext, encryptionService);
             await SeedRolesAndUsers(userManager, roleManager, dbContext, encryptionService);
-            await SeedEntities(dbContext);
+            await SeedMedications(dbContext);
+            await SeedPatient(userManager, dbContext);
+            await SeedProfessional(userManager, dbContext);
         }
 
         private static async Task SeedPermissions(AppDbContext dbContext, IEncryptionService encryptionService)
@@ -126,12 +129,12 @@ namespace PatientManagement.Infrastructure.Seeder
                 }
             }
         }
-
-        private static async Task SeedEntities(AppDbContext dbContext)
+        
+        private static async Task SeedMedications(AppDbContext dbContext)
         {
-            List<Medication> medications = new List<Medication>
+            List<Entities.Medication> medications = new List<Entities.Medication>
             {
-                new Medication
+                new Entities.Medication
                 {
                     Id = Guid.NewGuid(),
                     Name = "Paracetamol",
@@ -141,7 +144,7 @@ namespace PatientManagement.Infrastructure.Seeder
                     DateModified = null
                 },
 
-                new Medication
+                new Entities.Medication
                 {
                     Id = Guid.NewGuid(),
                     Name = "Paracetamol",
@@ -151,7 +154,7 @@ namespace PatientManagement.Infrastructure.Seeder
                     DateModified = null
                 },
 
-                new Medication
+                new Entities.Medication
                 {
                     Id = Guid.NewGuid(),
                     Name = "Paracetamol Extra",
@@ -161,7 +164,7 @@ namespace PatientManagement.Infrastructure.Seeder
                     DateModified = null
                 },
 
-                new Medication
+                new Entities.Medication
                 {
                     Id = Guid.NewGuid(),
                     Name = "Vitamin C",
@@ -171,7 +174,7 @@ namespace PatientManagement.Infrastructure.Seeder
                     DateModified = null
                 },
 
-                new Medication
+                new Entities.Medication
                 {
                     Id = Guid.NewGuid(),
                     Name = "Leonart",
@@ -183,8 +186,82 @@ namespace PatientManagement.Infrastructure.Seeder
             };
 
             await dbContext.Medications.AddRangeAsync(medications);
-
             await dbContext.SaveChangesAsync();
+        }
+
+        public static async Task SeedPatient(
+            UserManager<Entities.ApplicationUser> userManager,
+            AppDbContext dbContext)
+        {
+            var patientUser = new Entities.ApplicationUser
+            {
+                Email = "mberede.dike@abc.com",
+                UserName = "mberede.dike@abc.com",
+                EmailConfirmed = true,
+                CreatedDate = DateTime.UtcNow.AddHours(1)
+            };
+
+            string password = "Password!@1";
+
+            var result = await userManager.CreateAsync(patientUser, password);
+            if (result.Succeeded)
+            {
+                await userManager.AddToRoleAsync(patientUser, UserRole.Professional.ToString());
+                var patient = new Entities.Patient
+                {
+                    ApplicationUserId = patientUser.Id,
+                    Title = "Engr.",
+                    FirstName = "Mberede",
+                    MiddleName = "Nyiri",
+                    LastName = "Dike",
+                    PhoneNumber = "09087899887",
+                    Age = 25,
+                    IsActive = true,
+                    IsDeleted = false,
+                    Role = UserRole.Patient
+                };
+
+                await dbContext.Patients.AddAsync(patient);
+                await dbContext.SaveChangesAsync();
+            }
+        }
+        
+        public static async Task SeedProfessional(
+            UserManager<ApplicationUser> userManager,
+            AppDbContext dbContext)
+        {
+            Entities.ApplicationUser professionalUser = new Entities.ApplicationUser
+            {
+                Email = "mberede.Amadike@abc.com",
+                UserName = "mberede.Amadike@abc.com",
+                EmailConfirmed = true,
+                CreatedDate = DateTime.UtcNow.AddHours(1)
+            };
+
+            string password = "Password!@4";
+            var result = await userManager.CreateAsync(professionalUser, password);
+            if (result.Succeeded)
+            {
+                await userManager.AddToRoleAsync(professionalUser, UserRole.Professional.ToString());
+                var professional = new Entities.Professional
+                {
+                    ApplicationUserId = professionalUser.Id,
+                    Title = "Dr",
+                    FirstName = "Mbere",
+                    MiddleName = "Kaeji",
+                    LastName = "Amadike",
+                    PhoneNumber = "07098898767",
+                    Age = 28,
+                    Qualification = "MBBS",
+                    License = "NG-MBBS-250914",
+                    IsActive = true,
+                    IsDeleted = false,
+                    Role = UserRole.Professional,
+                    ProfessionalStatus = ProfessionalStatus.Active
+                };
+                dbContext.Professionals.Add(professional);
+                await dbContext.SaveChangesAsync();
+            }
         }
     }
 }
