@@ -1,8 +1,7 @@
 ﻿
 namespace PatientManagement.Infrastructure.Repositories.Interfaces
 {
-    using PatientManagement.Domain.Prescription;
-
+    using Domain.Prescription;
 
     public interface IMedicationRepository
     {
@@ -19,6 +18,12 @@ namespace PatientManagement.Infrastructure.Repositories.Interfaces
 
         Task<Medication> GetMedicationByIdAsync(
             Guid id,
+            CancellationToken cancellationToken);
+
+        Task<IEnumerable<Medication>> GetAllMedicationsAsync(
+            int pageNumber,
+            int pageSize,
+            string searchParam,
             CancellationToken cancellationToken);
     }
 }

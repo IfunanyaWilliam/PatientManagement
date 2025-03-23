@@ -7,15 +7,14 @@ namespace PatientManagement.Api.Controllers.v1
     using Microsoft.AspNetCore.Authorization;
     using Application.Commands.Medication.Parameters;
     using Application.Commands.Medication.Results;
+    using Application.Queries.Medication.Parameters;
+    using Application.Queries.Medication.Results;
     using Infrastructure.PolicyProvider;
     using Common.Contracts;
     using Common.Parameters;
     using Common.Results;
     using Common.Enums;
-    using PatientManagement.Application.Queries.Patient.Parameters;
-    using PatientManagement.Application.Queries.Patient.Results;
-    using PatientManagement.Application.Queries.Medication.Parameters;
-    using PatientManagement.Application.Queries.Medication.Results;
+    
 
     [ApiController]
     [Authorize]
@@ -178,8 +177,67 @@ namespace PatientManagement.Api.Controllers.v1
                 name: result.Name,
                 isActive: result.IsActive,
                 description: result.Description,
-                createdDate: result.CreatedDate,
+                createdDate: result.DateCreated,
                 dateModified: result.DateModified));
+        }
+
+
+        /// <summary>
+        ///     GET: /api/v1/medication/all
+        /// </summary>
+        /// <remarks>
+        ///     Get all medications
+        /// </remarks>
+        /// <param name="pageNumber"></param>
+        /// <param name="pageSize"></param>
+        /// <param name="searchParam"></param>
+        /// <param name="ct"></param>
+        /// <response code="200">
+        ///     Operation was successful.
+        /// </response>
+        /// <response code="400">
+        ///     Bad Request.
+        /// </response>
+        /// <response code = "500">
+        ///     Internal Server Error.
+        /// </response>
+        /// /// <response code = "401" >
+        ///     Unauthorized.
+        /// </response>
+        /// <response code = "403" >
+        ///     Forbidden.
+        /// </response>
+        [HttpGet("all")]
+        [PermissionAuthorize(permissionOperator: PermissionOperator.Or, "ViewMedicalRecords", "ManagePatientRecords", "ManageMedicalRecords")]
+        [ProducesResponseType(typeof(GetAllMedicationsResult), StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetAllMedications(
+            [FromQuery] int pageNumber = 1,
+            [FromQuery] int pageSize = 10,
+            [FromQuery] string searchParam = null,
+            CancellationToken ct = default)
+        {
+            var result = await _queryExecutor
+                .ExecuteAsync<GetAllMedicationsQueryParameters, GetAllMedicationsQueryResult>(
+                    parameters: new GetAllMedicationsQueryParameters(
+                        pageNumber: pageNumber,
+                        pageSize: pageSize,
+                        searchParam: searchParam),
+                    ct: ct);
+
+            if (result.Medications is null || !result.Medications.Any())
+            {
+                return Ok(new GetAllMedicationsResult(new List<GetMedicationsResult>()));
+            }
+
+            return Ok(new GetAllMedicationsResult(
+                result.Medications.Select(m =>
+                      new GetMedicationsResult(
+                          id: m.Id,
+                          name: m.Name,
+                          description: m.Description,
+                          isActive: m.IsActive,
+                          dateCreated: m.DateCreated,
+                          dateModified: m.DateModified))));
         }
     }
 }

@@ -3,9 +3,22 @@ namespace PatientManagement.Application.Queries.Medication.Results
 {
     using Common.Contracts;
 
-    public class GetMedicationByIdQueryResult : IQueryResult
+
+    public class GetAllMedicationsQueryResult : IQueryResult
     {
-        public GetMedicationByIdQueryResult(
+        public GetAllMedicationsQueryResult(
+            IEnumerable<GetMedicationsQueryResult> medications)
+        {
+            Medications = medications;
+        }
+
+        public IEnumerable<GetMedicationsQueryResult>? Medications { get; }
+    }
+
+
+    public class GetMedicationsQueryResult
+    {
+        public GetMedicationsQueryResult(
             Guid id,
             string? name,
             string? description,

@@ -1,11 +1,20 @@
 ﻿
-namespace PatientManagement.Application.Queries.Medication.Results
+namespace PatientManagement.Common.Results
 {
-    using Common.Contracts;
-
-    public class GetMedicationByIdQueryResult : IQueryResult
+    public class GetAllMedicationsResult
     {
-        public GetMedicationByIdQueryResult(
+        public GetAllMedicationsResult(IEnumerable<GetMedicationsResult> medications)
+        {
+            Medications = medications;
+        }
+
+        public IEnumerable<GetMedicationsResult>? Medications { get; }
+    }
+
+
+    public class GetMedicationsResult
+    {
+        public GetMedicationsResult(
             Guid id,
             string? name,
             string? description,

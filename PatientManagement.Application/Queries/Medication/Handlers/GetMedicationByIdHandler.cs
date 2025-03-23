@@ -37,7 +37,7 @@ namespace PatientManagement.Application.Queries.Medication.Handlers
                 name: medication.Name,
                 isActive: medication.IsActive,
                 description: medication.Description,
-                createdDate: medication.CreatedDate,
+                dateCreated: medication.DateCreated,
                 dateModified: medication.DateModified);
         }
     }

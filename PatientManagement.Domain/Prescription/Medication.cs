@@ -8,14 +8,14 @@ namespace PatientManagement.Domain.Prescription
             string? name,
             string? description,
             bool isActive,
-            DateTime createdDate,
+            DateTime dateCreated,
             DateTime? dateModified)
         {
             Id = id;
             Name = name;
             Description = description;
             IsActive = isActive;
-            CreatedDate = createdDate;
+            DateCreated = dateCreated;
             DateModified = dateModified;
         }
 
@@ -23,7 +23,7 @@ namespace PatientManagement.Domain.Prescription
         public string? Name { get; set; }
         public string? Description { get; set; }
         public bool IsActive { get; set; }
-        public DateTime CreatedDate { get; set; }
+        public DateTime DateCreated { get; set; }
         public DateTime? DateModified { get; set; }
     }
 }

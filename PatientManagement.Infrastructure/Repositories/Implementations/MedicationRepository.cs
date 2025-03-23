@@ -9,6 +9,8 @@ namespace PatientManagement.Infrastructure.Repositories.Implementations
     using Common.Utilities;
     using Domain.Prescription;
     using Interfaces;
+    using System.Linq.Expressions;
+    using System.Linq;
 
     public class MedicationRepository : IMedicationRepository
     {
@@ -47,7 +49,7 @@ namespace PatientManagement.Infrastructure.Repositories.Implementations
                 Name = trimName,
                 Description = trimDescription,
                 IsActive = true,
-                CreatedDate = DateTime.UtcNow,
+                DateCreated = DateTime.UtcNow,
             };
 
             await _context.Medications.AddAsync(medication);
@@ -60,7 +62,7 @@ namespace PatientManagement.Infrastructure.Repositories.Implementations
                     name: medication.Name,
                     isActive:medication.IsActive,
                     description: medication.Description,
-                    createdDate: medication.CreatedDate,
+                    dateCreated: medication.DateCreated,
                     dateModified: medication.DateModified);
             }
 
@@ -97,7 +99,7 @@ namespace PatientManagement.Infrastructure.Repositories.Implementations
                     name: existingMedication.Name,
                     isActive: existingMedication.IsActive,
                     description: existingMedication.Description,
-                    createdDate: existingMedication.CreatedDate,
+                    dateCreated: existingMedication.DateCreated,
                     dateModified: existingMedication.DateModified);
             }
 
@@ -122,9 +124,48 @@ namespace PatientManagement.Infrastructure.Repositories.Implementations
                 name: medication.Name,
                 isActive: medication.IsActive,
                 description: medication.Description,
-                createdDate: medication.CreatedDate,
+                dateCreated: medication.DateCreated,
                 dateModified: medication.DateModified);
         }
 
+        public async Task<IEnumerable<Medication>> GetAllMedicationsAsync(
+            int pageNumber,
+            int pageSize,
+            string searchParam,
+            CancellationToken cancellationToken)
+        {
+            var skip = (pageNumber - 1) * pageSize;
+            var take = pageSize;
+
+            Expression<Func<Entities.Medication, bool>> predicate = s => s.IsActive;
+
+            if (!string.IsNullOrWhiteSpace(searchParam))
+            {
+                var searchParamLower = searchParam.Trim().ToLower();
+
+                predicate = s => (s.Name != null && s.Name.ToLower().Contains(searchParamLower) ||
+                                 (s.Description != null && s.Description.ToLower().Contains(searchParamLower)));
+            }
+
+            var medications = await _context.Medications
+                                        .Where(predicate)
+                                        .OrderBy(x => x.DateCreated)
+                                        .Skip(skip)
+                                        .Take(take)
+                                        .ToListAsync(cancellationToken);
+
+            if(medications is null || !medications.Any())
+            {
+                return new List<Medication>();
+            }
+
+            return medications.Select(m => new Medication(
+                id: m.Id,
+                name: m.Name,
+                isActive: m.IsActive,
+                description: m.Description,
+                dateCreated: m.DateCreated,
+                dateModified: m.DateModified));
+        }
     }
 }

@@ -40,7 +40,7 @@ namespace PatientManagement.Application.Commands.Medication.Handler
                 name: result.Name,
                 description: result.Description,
                 isActive: result.IsActive,
-                createdDate: result.CreatedDate,
+                createdDate: result.DateCreated,
                 dateModified: result.DateModified);
         }
     }
