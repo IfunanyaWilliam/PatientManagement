@@ -6,7 +6,7 @@ namespace PatientManagement.Application.Commands.Prescription.Handler
     using Common.Handlers;
     using Infrastructure.Repositories.Interfaces;
     using Microsoft.AspNetCore.Http;
-    using PatientManagement.Common.Utilities;
+    using Common.Utilities;
 
     public class UpdatePrescriptionCommandHandler :
         ICommandHandlerWithResult<UpdatePrescriptionCommandParameters, UpdatePrescriptionCommandResult>

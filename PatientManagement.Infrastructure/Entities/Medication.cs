@@ -8,6 +8,6 @@ namespace PatientManagement.Infrastructure.Entities
         public string Description { get; set; }
         public bool IsActive { get; set; }
         public DateTime? DateModified { get; set; }
-        public DateTime CreatedDate { get; set; } = DateTime.UtcNow.AddHours(1);
+        public DateTime DateCreated { get; set; } = DateTime.UtcNow.AddHours(1);
     }
 }

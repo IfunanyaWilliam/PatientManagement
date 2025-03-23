@@ -47,9 +47,9 @@ namespace PatientManagement.Infrastructure.Repositories.Implementations
             if (applicationUserId == Guid.Empty)
                 throw new CustomException($"Invalid input", StatusCodes.Status400BadRequest);
 
-            if (string.IsNullOrEmpty(title) || string.IsNullOrEmpty(firstName) || string.IsNullOrEmpty(middleName)
-                || string.IsNullOrEmpty(lastName) || string.IsNullOrEmpty(phoneNumber) || string.IsNullOrEmpty(qualification)
-                || string.IsNullOrEmpty(license))
+            if (string.IsNullOrWhiteSpace(title) || string.IsNullOrWhiteSpace(firstName) || string.IsNullOrWhiteSpace(middleName)
+                || string.IsNullOrWhiteSpace(lastName) || string.IsNullOrWhiteSpace(phoneNumber) || string.IsNullOrWhiteSpace(qualification)
+                || string.IsNullOrWhiteSpace(license))
             {
                 throw new CustomException($"Invalid input", StatusCodes.Status400BadRequest);
             }
@@ -211,7 +211,7 @@ namespace PatientManagement.Infrastructure.Repositories.Implementations
 
             Expression<Func<Entities.Professional, bool>> predicate = s => !s.IsDeleted;
 
-            if (!string.IsNullOrEmpty(searchParam))
+            if (!string.IsNullOrWhiteSpace(searchParam))
             {
                 var searchParamLower = searchParam.ToLower();
 

@@ -41,6 +41,7 @@ namespace PatientManagement.Infrastructure.Extensions
             services.AddScoped<IPermissionRepository, PermissionRepository>();
             services.AddScoped<ITokenRepository, TokenRepository>();
             services.AddScoped<IAuthenticationService, AuthenticationService>();
+            services.AddScoped<IMedicationRepository, MedicationRepository>();
 
             // Overrides the DefaultAuthorizationPolicyProvider
             services.AddScoped<IAuthorizationHandler, PermissionAuthorizationHandler>();

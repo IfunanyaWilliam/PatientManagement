@@ -140,17 +140,17 @@ namespace PatientManagement.Infrastructure.Seeder
                     Name = "Paracetamol",
                     Description = "Pain reliever",
                     IsActive = true,
-                    CreatedDate = DateTime.UtcNow.AddHours(1),
+                    DateCreated = DateTime.UtcNow.AddHours(1),
                     DateModified = null
                 },
 
                 new Entities.Medication
                 {
                     Id = Guid.NewGuid(),
-                    Name = "Paracetamol",
+                    Name = "Diclofenac Xtra",
                     Description = "Pain reliever",
                     IsActive = true,
-                    CreatedDate = DateTime.UtcNow.AddHours(1),
+                    DateCreated = DateTime.UtcNow.AddHours(1),
                     DateModified = null
                 },
 
@@ -160,7 +160,7 @@ namespace PatientManagement.Infrastructure.Seeder
                     Name = "Paracetamol Extra",
                     Description = "Acute Pain reliever",
                     IsActive = true,
-                    CreatedDate = DateTime.UtcNow.AddHours(1),
+                    DateCreated = DateTime.UtcNow.AddHours(1),
                     DateModified = null
                 },
 
@@ -170,7 +170,7 @@ namespace PatientManagement.Infrastructure.Seeder
                     Name = "Vitamin C",
                     Description = "Mineral supplement",
                     IsActive = true,
-                    CreatedDate = DateTime.UtcNow.AddHours(1),
+                    DateCreated = DateTime.UtcNow.AddHours(1),
                     DateModified = null
                 },
 
@@ -180,7 +180,7 @@ namespace PatientManagement.Infrastructure.Seeder
                     Name = "Leonart",
                     Description = "Kills Plasmodium in blood stream",
                     IsActive = true,
-                    CreatedDate = DateTime.UtcNow.AddHours(1),
+                    DateCreated = DateTime.UtcNow.AddHours(1),
                     DateModified = null
                 }
             };

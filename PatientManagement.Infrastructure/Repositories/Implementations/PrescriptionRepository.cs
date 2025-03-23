@@ -8,14 +8,11 @@ namespace PatientManagement.Infrastructure.Repositories.Implementations
     using System.Linq.Expressions;
     using System.Text.Json;
     using System.Linq;
-    using Common.Results;
     using DbContexts;
     using Common.Utilities;
     using Interfaces;
     using Common.Dto;
-    using Domain.Patient;
     using Domain.Prescription;
-    using Domain.Professional;
     using Common.Parameters;
 
     public class PrescriptionRepository : IPrescriptionRepository
@@ -44,8 +41,8 @@ namespace PatientManagement.Infrastructure.Repositories.Implementations
             IEnumerable<MedicationParameters> medications,
             CancellationToken cancellationToken)
         {
-            if (patientId == Guid.Empty || professionalId == Guid.Empty
-                || string.IsNullOrEmpty(diagnosis) || medications.Count() <= 0)
+            if (patientId == Guid.Empty || professionalId == Guid.Empty || string.IsNullOrWhiteSpace(diagnosis)
+                || string.IsNullOrWhiteSpace(diagnosis) || medications.Count() <= 0)
                 throw new CustomException($"Invalid input", StatusCodes.Status400BadRequest);
 
             var patientEntity = await _context.Patients.FirstOrDefaultAsync(p => p.Id == patientId, cancellationToken);
@@ -152,8 +149,8 @@ namespace PatientManagement.Infrastructure.Repositories.Implementations
             IEnumerable<MedicationParameters> medications,
             CancellationToken cancellationToken)
         {
-            if (patientId == Guid.Empty || professionalId == Guid.Empty
-                || string.IsNullOrEmpty(diagnosis) || medications.Count() <= 0)
+            if (patientId == Guid.Empty || professionalId == Guid.Empty || string.IsNullOrWhiteSpace(diagnosis)
+                || string.IsNullOrWhiteSpace(diagnosis) || medications.Count() <= 0)
                 throw new CustomException($"Invalid input", StatusCodes.Status400BadRequest);
 
             var patientEntity = await _context.Patients.FirstOrDefaultAsync(p => p.Id == patientId, cancellationToken);
@@ -445,7 +442,7 @@ namespace PatientManagement.Infrastructure.Repositories.Implementations
 
             Expression<Func<Entities.Prescription, bool>> predicate = s => s.IsActive;
 
-            if (!string.IsNullOrEmpty(searchParam))
+            if (!string.IsNullOrWhiteSpace(searchParam))
             {
                 var searchParamLower = searchParam.ToLower(); 
                 predicate = s => s.IsActive && (

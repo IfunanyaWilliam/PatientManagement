@@ -1,9 +1,20 @@
 ﻿
-namespace PatientManagement.Domain.Prescription
+namespace PatientManagement.Common.Results
 {
-    public class Medication
+    public class GetAllMedicationsResult
     {
-        public Medication(
+        public GetAllMedicationsResult(IEnumerable<GetMedicationsResult> medications)
+        {
+            Medications = medications;
+        }
+
+        public IEnumerable<GetMedicationsResult>? Medications { get; }
+    }
+
+
+    public class GetMedicationsResult
+    {
+        public GetMedicationsResult(
             Guid id,
             string? name,
             string? description,

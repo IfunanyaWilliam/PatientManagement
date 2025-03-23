@@ -1,21 +1,21 @@
 ﻿
-namespace PatientManagement.Domain.Prescription
+namespace PatientManagement.Common.Results
 {
-    public class Medication
+    public class GetMedicationByIdResult
     {
-        public Medication(
+        public GetMedicationByIdResult(
             Guid id,
             string? name,
             string? description,
             bool isActive,
-            DateTime dateCreated,
+            DateTime createdDate,
             DateTime? dateModified)
         {
             Id = id;
             Name = name;
             Description = description;
             IsActive = isActive;
-            DateCreated = dateCreated;
+            CreatedDate = createdDate;
             DateModified = dateModified;
         }
 
@@ -23,7 +23,7 @@ namespace PatientManagement.Domain.Prescription
         public string? Name { get; set; }
         public string? Description { get; set; }
         public bool IsActive { get; set; }
-        public DateTime DateCreated { get; set; }
+        public DateTime CreatedDate { get; set; }
         public DateTime? DateModified { get; set; }
     }
 }
