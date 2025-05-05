@@ -3,7 +3,6 @@ namespace PatientManagement.Api.Extensions
 {
     using Asp.Versioning;
     using Application.Extensions;
-    using Common.Extensions;
     using Infrastructure.Extensions;
 
 
@@ -33,7 +32,6 @@ namespace PatientManagement.Api.Extensions
             services.AddSwaggerConfiguration();
 
             services.AddApplicationDependencies();
-            services.AddDependenciesFromCommon();
             services.AddInfrastructureDependencies();
         }
     }

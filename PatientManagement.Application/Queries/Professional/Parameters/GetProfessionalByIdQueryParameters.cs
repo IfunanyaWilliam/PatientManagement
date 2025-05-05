@@ -1,7 +1,7 @@
 ﻿
 namespace PatientManagement.Application.Queries.Professional.Parameters
 {
-    using Common.Contracts;
+    using Interfaces.Queries;
 
     public class GetProfessionalByIdQueryParameters : IQueryParameters
     {

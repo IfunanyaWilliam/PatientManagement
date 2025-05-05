@@ -6,8 +6,7 @@ namespace PatientManagement.Api.Middlewares
     using Microsoft.IdentityModel.Tokens;
     using System.IdentityModel.Tokens.Jwt;
     using Microsoft.AspNetCore.Authorization;
-    using Common.Utilities;
-
+    using Application.Utilities;
 
     public class AuthenticationDebugMiddleware
     {

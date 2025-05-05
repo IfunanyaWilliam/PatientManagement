@@ -4,13 +4,12 @@ namespace PatientManagement.Application.Queries.Medication.Handlers
     using System.Threading;
     using System.Threading.Tasks;
     using Microsoft.AspNetCore.Http;
-    using Infrastructure.Repositories.Interfaces;
-    using Common.Utilities;
-    using Common.Handlers;
     using Parameters;
     using Results;
-    
-    
+    using Interfaces.Repositories;
+    using Utilities;
+    using Interfaces.Handlers;
+
     public class GetMedicationByIdHandler : IQueryHandler<GetMedicationByIdQueryParameters, GetMedicationByIdQueryResult>
     {
         private readonly IMedicationRepository _medicationRepository;

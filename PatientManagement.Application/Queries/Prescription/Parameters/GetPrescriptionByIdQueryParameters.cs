@@ -1,7 +1,7 @@
 ﻿
 namespace PatientManagement.Application.Queries.Prescription.Parameters
 {
-    using Common.Contracts;
+    using Interfaces.Queries;
 
     public class GetPrescriptionByIdQueryParameters : IQueryParameters
     {

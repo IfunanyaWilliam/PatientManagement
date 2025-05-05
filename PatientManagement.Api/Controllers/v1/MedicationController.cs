@@ -10,10 +10,10 @@ namespace PatientManagement.Api.Controllers.v1
     using Application.Queries.Medication.Parameters;
     using Application.Queries.Medication.Results;
     using Infrastructure.PolicyProvider;
-    using Common.Contracts;
-    using Common.Parameters;
-    using Common.Results;
-    using Common.Enums;
+    using Application.Interfaces.Commands;
+    using Application.Interfaces.Queries;
+    using Parameters;
+    using Results;
     
 
     [ApiController]

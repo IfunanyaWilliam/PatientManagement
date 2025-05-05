@@ -3,7 +3,7 @@ namespace PatientManagement.Infrastructure.Entities
 {
     public class RefreshToken
     {
-        public Guid Id { get; set; } = Guid.NewGuid();
+        public Guid Id { get; set; }
         public Guid ApplicationUserId { get; set; }
         public ApplicationUser ApplicationUser { get; set; }
         public string Token { get; set; }

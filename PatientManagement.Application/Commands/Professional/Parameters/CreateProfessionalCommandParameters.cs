@@ -1,8 +1,8 @@
 ﻿
 namespace PatientManagement.Application.Commands.Professional.Parameters
 {
-    using Common.Contracts;
-    using Common.Enums;
+    using Domain.ApplicationUser;
+    using Interfaces.Commands;
 
     public class CreateProfessionalCommandParameters : ICommand
     {

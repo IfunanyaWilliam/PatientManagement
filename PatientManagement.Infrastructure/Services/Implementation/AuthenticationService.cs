@@ -4,22 +4,25 @@ namespace PatientManagement.Infrastructure.Services.Implementation
     using System.Text;
     using System.Security.Claims;
     using Microsoft.AspNetCore.Http;
+    using Microsoft.Extensions.Logging;
     using System.Security.Cryptography;
     using System.IdentityModel.Tokens.Jwt;
     using Microsoft.IdentityModel.Tokens;
     using Microsoft.AspNetCore.Identity;
     using Microsoft.Extensions.Configuration;
-    using Entities;
-    using Interfaces;
-    using Common.Results;
+    using Application.Interfaces.Repositories;
+    using Application.Interfaces.Services;
+    using Application.Utilities;
+    using Domain.Authentication;
+    using Domain.RefreshToken;
     using PolicyProvider;
-    using Common.Utilities;
-    using Repositories.Interfaces;
-    using Microsoft.Extensions.Logging;
+    using Interfaces;
+    
+    
 
     public class AuthenticationService : IAuthenticationService
     {
-        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly UserManager<Entities.ApplicationUser> _userManager;
         private readonly IConfiguration _configuration;
         private readonly ITokenRepository _refreshTokenRepository;
         private readonly IPermissionRepository _permissionRepository;
@@ -28,7 +31,7 @@ namespace PatientManagement.Infrastructure.Services.Implementation
 
 
         public AuthenticationService(
-            UserManager<ApplicationUser> userManager,
+            UserManager<Entities.ApplicationUser> userManager,
             IConfiguration configuration,
             ITokenRepository refreshTokenRepository,
             IPermissionRepository permissionRepository,
@@ -43,7 +46,7 @@ namespace PatientManagement.Infrastructure.Services.Implementation
             _logger = logger;
         }
         
-        public async Task<AuthenticationResult> GetAuthTokenAsync(string email, string password)
+        public async Task<AuthenticationResultDto> GetAuthTokenAsync(string email, string password)
         {
             var user = await _userManager.FindByEmailAsync(email);
             if (user == null || !await _userManager.CheckPasswordAsync(user, password))
@@ -60,12 +63,12 @@ namespace PatientManagement.Infrastructure.Services.Implementation
                 return null;
             }
 
-            return new AuthenticationResult(
+            return new AuthenticationResultDto(
                 accessToken: accessToken,
                 refreshToken: refreshToken);
         }
 
-        public async Task<AuthenticationResult> RefreshTokenAsync(string refreshToken)
+        public async Task<AuthenticationResultDto> RefreshTokenAsync(string refreshToken)
         {
             var storedToken = await _refreshTokenRepository.GetByTokenAsync(refreshToken);
 
@@ -75,7 +78,7 @@ namespace PatientManagement.Infrastructure.Services.Implementation
                 throw new CustomException($"Invalid credentials", StatusCodes.Status400BadRequest);
             }
 
-            var user = storedToken.ApplicationUser;
+            var user = await _userManager.FindByEmailAsync(storedToken?.ApplicationUser?.Email);
             var roles = await _userManager.GetRolesAsync(user);
 
             var accessToken = await GenerateAccessToken(user, roles);
@@ -83,29 +86,25 @@ namespace PatientManagement.Infrastructure.Services.Implementation
 
             storedToken.IsRevoked = true;
             storedToken.DateModified = DateTime.UtcNow;
-            var result = await _refreshTokenRepository.UpdateAsync(storedToken);
+            var result = await _refreshTokenRepository.UpdateAsync(storedToken.Token);
 
             if(!result)
                 return null;
 
-            return new AuthenticationResult(
+            return new AuthenticationResultDto(
                 accessToken: accessToken,
                 refreshToken: newRefreshToken);
         }
 
         public async Task InvalidateRefreshTokenAsync(string refreshToken)
         {
-            var storedToken = await _refreshTokenRepository.GetByTokenAsync(refreshToken);
-
-            if (storedToken != null)
+            if (refreshToken != null)
             {
-                storedToken.IsRevoked = true;
-                storedToken.DateModified = DateTime.UtcNow;
-                await _refreshTokenRepository.UpdateAsync(storedToken);
+                await _refreshTokenRepository.UpdateAsync(refreshToken);
             }
         }
 
-        private async Task<string> GenerateAccessToken(ApplicationUser user, IList<string> roles)
+        private async Task<string> GenerateAccessToken(Entities.ApplicationUser user, IList<string> roles)
         {
             var claims = new List<Claim>
             {
@@ -143,14 +142,14 @@ namespace PatientManagement.Infrastructure.Services.Implementation
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
-        private async Task<string> GenerateRefreshToken(ApplicationUser user)
+        private async Task<string> GenerateRefreshToken(Entities.ApplicationUser user)
         {
             var randomBytes = new byte[64];
             using var rng = RandomNumberGenerator.Create();
             rng.GetBytes(randomBytes);
             var refreshTokenString = Convert.ToBase64String(randomBytes);
 
-            var refreshToken = new RefreshToken
+            var refreshToken = new RefreshTokenDto
             {
                 Token = refreshTokenString,
                 ApplicationUserId = user.Id,

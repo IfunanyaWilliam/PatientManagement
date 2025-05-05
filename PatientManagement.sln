@@ -3,15 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PatientManagement.Api", "PatientManagement.Api\PatientManagement.Api.csproj", "{3DB134FE-3E8C-4253-A7F2-5E6FEC68D41F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PatientManagement.Api", "PatientManagement.Api\PatientManagement.Api.csproj", "{3DB134FE-3E8C-4253-A7F2-5E6FEC68D41F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PatientManagement.Domain", "PatientManagement.Domain\PatientManagement.Domain.csproj", "{9D951A14-291C-42A5-8B20-78AF55FDF871}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PatientManagement.Domain", "PatientManagement.Domain\PatientManagement.Domain.csproj", "{9D951A14-291C-42A5-8B20-78AF55FDF871}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PatientManagement.Application", "PatientManagement.Application\PatientManagement.Application.csproj", "{BD32C5A0-779C-4F60-A63A-FB906D2A0235}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PatientManagement.Application", "PatientManagement.Application\PatientManagement.Application.csproj", "{BD32C5A0-779C-4F60-A63A-FB906D2A0235}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PatientManagement.Infrastructure", "PatientManagement.Infrastructure\PatientManagement.Infrastructure.csproj", "{183C9905-377C-4B18-BFD8-B047C7496E51}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PatientManagement.Common", "PatientManagement.Common\PatientManagement.Common.csproj", "{BA393284-E80F-454F-8D88-C7A357CE2947}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PatientManagement.Infrastructure", "PatientManagement.Infrastructure\PatientManagement.Infrastructure.csproj", "{183C9905-377C-4B18-BFD8-B047C7496E51}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -35,10 +33,6 @@ Global
 		{183C9905-377C-4B18-BFD8-B047C7496E51}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{183C9905-377C-4B18-BFD8-B047C7496E51}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{183C9905-377C-4B18-BFD8-B047C7496E51}.Release|Any CPU.Build.0 = Release|Any CPU
-		{BA393284-E80F-454F-8D88-C7A357CE2947}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{BA393284-E80F-454F-8D88-C7A357CE2947}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{BA393284-E80F-454F-8D88-C7A357CE2947}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{BA393284-E80F-454F-8D88-C7A357CE2947}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

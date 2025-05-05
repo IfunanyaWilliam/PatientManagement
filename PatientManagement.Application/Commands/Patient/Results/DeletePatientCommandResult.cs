@@ -1,7 +1,8 @@
 ﻿
 namespace PatientManagement.Application.Commands.Patient.Results
 {
-    using Common.Contracts;
+    using Interfaces.Commands;
+
     public class DeletePatientCommandResult : ICommandResult
     {
         public DeletePatientCommandResult(bool isDeleted)

@@ -1,7 +1,7 @@
 ﻿
 namespace PatientManagement.Application.Queries.Medication.Results
 {
-    using Common.Contracts;
+    using Interfaces.Queries;
 
 
     public class GetAllMedicationsQueryResult : IQueryResult

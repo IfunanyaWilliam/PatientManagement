@@ -1,8 +1,8 @@
 ﻿
 namespace PatientManagement.Application.Commands.Prescription.Parameters
 {
-    using PatientManagement.Common.Contracts;
-    using PatientManagement.Common.Parameters;
+    using Interfaces.Commands;
+    using Queries.Prescription.Dto;
 
     public class CreatePrescriptionCommandParameters : ICommand
     {

@@ -1,8 +1,8 @@
 ﻿
 namespace PatientManagement.Application.Queries.Prescription.Results
 {
-    using Common.Contracts;
-    using PatientManagement.Common.Dto;
+    using Interfaces.Queries;
+    using Domain.Prescription;
 
     public class GetPrescriptionByIdQueryResult : IQueryResult
     {

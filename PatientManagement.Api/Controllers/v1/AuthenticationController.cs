@@ -6,9 +6,9 @@ namespace PatientManagement.Api.Controllers.v1
     using Microsoft.AspNetCore.Authorization;
     using Application.Queries.Authentication.Parameters;
     using Application.Queries.Authentication.Results;
-    using Common.Contracts;
-    using Common.Parameters;
-    using Common.Results;
+    using PatientManagement.Api.Parameters;
+    using PatientManagement.Api.Results;
+    using Application.Interfaces.Queries;
 
     [ApiController]
     [Authorize]

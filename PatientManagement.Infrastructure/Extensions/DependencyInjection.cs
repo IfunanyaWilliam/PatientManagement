@@ -8,12 +8,12 @@ namespace PatientManagement.Infrastructure.Extensions
     using Microsoft.Extensions.DependencyInjection;
     using DbContexts;
     using Entities;
-    using Repositories.Interfaces;
     using Repositories.Implementations;
     using Services.Implementation;
     using Services.Interfaces;
     using PolicyProvider;
-
+    using Application.Interfaces.Repositories;
+    using Application.Interfaces.Services;
 
     public static class DependencyInjection
     {

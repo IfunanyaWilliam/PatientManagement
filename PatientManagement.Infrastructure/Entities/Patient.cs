@@ -1,7 +1,7 @@
 ﻿
 namespace PatientManagement.Infrastructure.Entities
 {
-    using Common.Enums;
+    using Domain.ApplicationUser;
 
     public class Patient
     {

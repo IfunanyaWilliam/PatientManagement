@@ -2,7 +2,6 @@
 namespace PatientManagement.Infrastructure.PolicyProvider
 {
     using Microsoft.AspNetCore.Authorization;
-    using Common.Enums;
 
 
     public class PermissionAuthorizeAttribute : AuthorizeAttribute

@@ -1,7 +1,7 @@
 ﻿
 namespace PatientManagement.Application.Commands.Medication.Parameters
 {
-    using Common.Contracts;
+    using Interfaces.Commands;
 
     public class UpdateMedicationCommandParameters : ICommand
     {

@@ -2,8 +2,8 @@
 namespace PatientManagement.Api.Middlewares
 {
     using System.Text.Json;
-    using PatientManagement.Common.Results;
-    using PatientManagement.Common.Utilities;
+    using PatientManagement.Api.Results;
+    using Application.Utilities;
 
     public class ExceptionMiddleware
     {

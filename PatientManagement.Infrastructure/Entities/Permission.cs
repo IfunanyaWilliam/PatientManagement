@@ -5,7 +5,7 @@ namespace PatientManagement.Infrastructure.Entities
     {
         public Guid Id { get; set; } = Guid.NewGuid();
         public string EncryptedName { get; set; }
-        public DateTime CreateDate { get; set; } = DateTime.UtcNow;
+        public DateTime DateCreated { get; set; } = DateTime.UtcNow;
         public DateTime DateModified { get; set; }
     }
 }

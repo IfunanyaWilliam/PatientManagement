@@ -1,8 +1,7 @@
 ﻿
 namespace PatientManagement.Application.Commands.Prescription.Results
 {
-    using Common.Dto;
-    using PatientManagement.Common.Contracts;
+    using Interfaces.Commands;
 
     public class UpdatePrescriptionCommandResult : ICommandResult
     {

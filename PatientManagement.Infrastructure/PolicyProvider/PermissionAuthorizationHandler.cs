@@ -3,8 +3,7 @@ namespace PatientManagement.Infrastructure.PolicyProvider
 {
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Authorization;
-    using Common.Enums;
-    using Common.Utilities;
+    using PatientManagement.Application.Utilities;
 
     public class PermissionAuthorizationHandler : AuthorizationHandler<PermissionRequirement>
     {

@@ -1,7 +1,7 @@
 ﻿
 namespace PatientManagement.Application.Commands.Patient.Parameters
 {
-    using Common.Contracts;
+    using Interfaces.Commands;
 
     public class CreatePatientCommandParameters : ICommand
     {

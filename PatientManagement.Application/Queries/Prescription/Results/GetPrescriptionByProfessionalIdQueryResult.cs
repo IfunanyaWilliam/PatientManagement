@@ -1,16 +1,15 @@
 ﻿
 namespace PatientManagement.Application.Queries.Prescription.Results
 {
-    using Common.Contracts;
-    using PatientManagement.Common.Results;
+    using Interfaces.Queries;
 
     public class GetPrescriptionByProfessionalIdQueryResult : IQueryResult
     {
-        public GetPrescriptionByProfessionalIdQueryResult(IEnumerable<GetPrescriptionResult> prescriptions)
+        public GetPrescriptionByProfessionalIdQueryResult(IEnumerable<GetPrescriptionQueryResult> prescriptions)
         {
             Prescriptions = prescriptions;
         }
 
-        public IEnumerable<GetPrescriptionResult> Prescriptions { get; }
+        public IEnumerable<GetPrescriptionQueryResult> Prescriptions { get; }
     }
 }

@@ -1,8 +1,8 @@
 ﻿
 namespace PatientManagement.Application.Commands.Prescription.Results
 {
-    using Common.Contracts;
-    using Common.Dto;
+    using Interfaces.Commands;
+
 
     public class CreatePrescriptionCommandResult : ICommandResult
     {

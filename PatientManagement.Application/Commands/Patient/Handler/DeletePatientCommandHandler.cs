@@ -3,9 +3,9 @@ namespace PatientManagement.Application.Commands.Patient.Handler
 {
     using Parameters;
     using Results;
-    using Common.Handlers;
-    using Infrastructure.Repositories.Interfaces;
     using Microsoft.Extensions.Logging;
+    using Interfaces.Repositories;
+    using Interfaces.Handlers;
 
     public class DeletePatientCommandHandler :
         ICommandHandlerWithResult<DeletePatientCommandParameters, DeletePatientCommandResult>

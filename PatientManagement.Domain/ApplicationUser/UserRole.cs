@@ -6,6 +6,7 @@ namespace PatientManagement.Domain.ApplicationUser
     {
         Patient = 1,
         Professional = 2,
-        Administrator = 3
+        Administrator = 3,
+        SuperAdministrator = 4
     }
 }

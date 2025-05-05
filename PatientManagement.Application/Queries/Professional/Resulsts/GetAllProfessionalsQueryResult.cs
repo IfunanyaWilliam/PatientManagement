@@ -1,8 +1,7 @@
 ﻿
 namespace PatientManagement.Application.Queries.Professional.Resulsts
 {
-    using Common.Contracts;
-
+    using Interfaces.Queries;
 
     public class GetAllProfessionalsQueryResult : IQueryResult
     {

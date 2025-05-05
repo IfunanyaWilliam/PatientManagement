@@ -5,9 +5,9 @@
     using Microsoft.AspNetCore.Authorization;
     using Application.Commands.Account.Paremeters;
     using Application.Commands.Account.Result;
-    using Common.Contracts;
-    using Common.Parameters;
-    using Common.Results;
+    using Application.Interfaces.Commands;
+    using Parameters;
+    using Results;
 
     [ApiController]
     [ApiVersion("1.0")]

@@ -3,9 +3,9 @@ namespace PatientManagement.Infrastructure.Repositories.Implementations
 {
     using Microsoft.EntityFrameworkCore;
     using DbContexts;
-    using Entities;
-    using Interfaces;
     using Services.Interfaces;
+    using PatientManagement.Domain.Permission;
+    using Application.Interfaces.Repositories;
 
     public class PermissionRepository : IPermissionRepository
     {
@@ -22,7 +22,7 @@ namespace PatientManagement.Infrastructure.Repositories.Implementations
         
         public async Task<Permission> CreatePermissionAsync(string name)
         {
-            var permission = new Permission
+            var permission = new Entities.Permission
             {
                 EncryptedName = _encryptionService.Encrypt(name)
             };
@@ -30,12 +30,16 @@ namespace PatientManagement.Infrastructure.Repositories.Implementations
             await _dbContext.Permissions.AddAsync(permission);
             await _dbContext.SaveChangesAsync();
 
-            return permission;
+            return new Permission(
+                id: permission.Id,
+                encryptedName: permission.EncryptedName,
+                dateCreated: permission.DateCreated,
+                dateModified: permission.DateModified);
         }
 
         public async Task<bool> AssignPermissionToRoleAsync(Guid roleId, Guid permissionId)
         {
-            var rolePermission = new RolePermission
+            var rolePermission = new Entities.RolePermission
             {
                 RoleId = roleId,
                 PermissionId = permissionId
@@ -57,12 +61,19 @@ namespace PatientManagement.Infrastructure.Repositories.Implementations
 
         public async Task<List<Permission>> GetPermissionsByRoleIdsAsync(IEnumerable<Guid> roleIds)
         {
-            return await _dbContext.RolePermissions
+            var permissions = await _dbContext.RolePermissions
                 .Include(rp => rp.Permission)
                 .Where(rp => roleIds.Contains(rp.RoleId))
                 .Select(rp => rp.Permission)
                 .Distinct()
                 .ToListAsync();
+
+            return permissions.Select(p =>
+                    new Permission(
+                        id: p.Id,
+                        encryptedName: p.EncryptedName,
+                        dateCreated: p.DateCreated,
+                        dateModified: p.DateModified)).ToList();
         }
 
         public async Task<List<Guid>> GetRoleIdsByNamesAsync(IEnumerable<string> roleNames)

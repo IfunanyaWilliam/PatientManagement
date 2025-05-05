@@ -2,12 +2,12 @@
 namespace PatientManagement.Application.Commands.Prescription.Handler
 {
     using Microsoft.AspNetCore.Http;
-    using Infrastructure.Repositories.Interfaces;
     using Parameters;
     using Results;
-    using Common.Handlers;
-    using Common.Utilities;
-    using Common.Parameters;
+    using Interfaces.Repositories;
+    using Utilities;
+    using Queries.Prescription.Dto;
+    using Application.Interfaces.Handlers;
 
     public class CreatePrescriptionCommandHandler :
         ICommandHandlerWithResult<CreatePrescriptionCommandParameters, CreatePrescriptionCommandResult>

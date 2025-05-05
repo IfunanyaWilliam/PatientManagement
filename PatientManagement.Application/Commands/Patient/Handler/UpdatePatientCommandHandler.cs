@@ -3,10 +3,10 @@ namespace PatientManagement.Application.Commands.Patient.Handler
 {
     using Parameters;
     using Results;
-    using Common.Handlers;
-    using Infrastructure.Repositories.Interfaces;
-    using PatientManagement.Common.Utilities;
     using Microsoft.AspNetCore.Http;
+    using Interfaces.Repositories;
+    using Utilities;
+    using Interfaces.Handlers;
 
     public class UpdatePatientCommandHandler : 
         ICommandHandlerWithResult<UpdatePatientCommandParameters, UpdatePatientCommandResult>

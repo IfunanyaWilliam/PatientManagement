@@ -9,10 +9,10 @@ namespace PatientManagement.Api.Controllers.v1
     using Application.Queries.Patient.Parameters;
     using Application.Queries.Patient.Results;
     using Infrastructure.PolicyProvider;
-    using Common.Contracts;
-    using Common.Results;
-    using Common.Enums;
-    
+    using Application.Interfaces.Commands;
+    using Application.Interfaces.Queries;
+    using Parameters;
+    using Results;
 
     [ApiController]
     [Authorize]
@@ -59,7 +59,7 @@ namespace PatientManagement.Api.Controllers.v1
         [PermissionAuthorize(permissionOperator: PermissionOperator.Or, "CreatePatient", "ManageMedicalRecords")]
         [ProducesResponseType(typeof(CreatePatientResult), StatusCodes.Status200OK)]
         public async Task<IActionResult> CreatePatientAsync(
-            [FromBody] CreatePatientCommandParameters parameters,
+            [FromBody] CreatePatientParameters parameters,
             CancellationToken ct = default)
         {
             if (parameters == null)
@@ -121,7 +121,7 @@ namespace PatientManagement.Api.Controllers.v1
         [PermissionAuthorize(permissionOperator: PermissionOperator.Or, "ViewMedicalRecords", "ManageMedicalRecords")]
         [ProducesResponseType(typeof(UpdatePatientResult), StatusCodes.Status200OK)]
         public async Task<IActionResult> UpdatePatientAsync(
-            UpdatePatientCommandParameters parameters,
+            UpdatePatientParameters parameters,
             CancellationToken ct = default)
         {
             if (parameters == null)
@@ -259,11 +259,11 @@ namespace PatientManagement.Api.Controllers.v1
                         searchParam: searchParam),
                     ct: ct);
 
-            if (result.Patients is null)
-                return new GetAllPatientsResult(new List<GetPatientResult>());
+            if (result is null)
+                return new GetAllPatientsResult(new List<GetPatientsResult>());
 
             return new GetAllPatientsResult(
-                    result.Patients.Select(p => new GetPatientResult(
+                    result.Patients.Select(p => new GetPatientsResult(
                         id: p.Id,
                         applicationUserId: p.ApplicationUserId,
                         title: p.Title,
