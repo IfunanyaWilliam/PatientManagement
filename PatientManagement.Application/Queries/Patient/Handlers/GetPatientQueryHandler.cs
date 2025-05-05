@@ -4,12 +4,11 @@ namespace PatientManagement.Application.Queries.Patient.Handlers
     using System.Threading;
     using System.Threading.Tasks;
     using Microsoft.AspNetCore.Http;
-    using Infrastructure.Repositories.Interfaces;
-    using Common.Handlers;
-    using Common.Utilities;
     using Parameters;
     using Results;
-    
+    using Interfaces.Repositories;
+    using Utilities;
+    using Interfaces.Handlers;
 
     public class GetPatientQueryHandler : IQueryHandler<GetPatientQueryParameters, GetPatientQueryResult>
     {

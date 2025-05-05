@@ -1,7 +1,8 @@
 ﻿
 namespace PatientManagement.Application.Commands.Patient.Parameters
 {
-    using Common.Contracts;
+    using Interfaces.Commands;
+
     public class DeletePatientCommandParameters : ICommand
     {
         public DeletePatientCommandParameters(Guid id)

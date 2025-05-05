@@ -5,9 +5,6 @@ namespace PatientManagement.Domain.ApplicationUser
     {
         public ApplicationUser(
             Guid id,
-            string? firstName,
-            string? middleName,
-            string? lastName,
             string? email,
             DateTime createdDate,
             DateTime dateModified,
@@ -15,11 +12,8 @@ namespace PatientManagement.Domain.ApplicationUser
             UserRole userRole)
         {
             Id = id;
-            FirstName = firstName;
-            MiddleName = middleName;
-            LastName = lastName;
             Email = email;
-            CreatedDate = createdDate;
+            DateCreated = createdDate;
             DateModified = dateModified;
             IsDeleted = isDeleted;
             Role = userRole;
@@ -27,11 +21,8 @@ namespace PatientManagement.Domain.ApplicationUser
 
 
         public Guid Id { get; set; }
-        public string? FirstName { get; set; }
-        public string? MiddleName { get; set; }
-        public string? LastName { get; set; }
         public string? Email { get; set; }
-        public DateTime CreatedDate { get; set; }
+        public DateTime DateCreated { get; set; }
         public DateTime DateModified { get; set; }
         public bool IsDeleted { get; set; }
         public UserRole Role { get; set; }

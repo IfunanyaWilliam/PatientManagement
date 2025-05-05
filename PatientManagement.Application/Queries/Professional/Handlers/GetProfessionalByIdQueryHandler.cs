@@ -5,11 +5,12 @@ namespace PatientManagement.Application.Queries.Professional.Handlers
     using System.Threading.Tasks;
     using Microsoft.AspNetCore.Http;
     using Microsoft.Extensions.Logging;
-    using Infrastructure.Repositories.Interfaces;
     using Professional.Parameters;
     using Professional.Resulsts;
-    using Common.Handlers;
-    using Common.Utilities;
+    using Interfaces.Repositories;
+    using Interfaces.Handlers;
+    using Utilities;
+    
 
     public class GetProfessionalByIdQueryHandler : 
         IQueryHandler<GetProfessionalByIdQueryParameters, GetProfessionalByIdQueryResult>

@@ -6,11 +6,11 @@ namespace PatientManagement.Infrastructure.Repositories.Implementations
     using Microsoft.Extensions.Logging;
     using Microsoft.EntityFrameworkCore;
     using DbContexts;
-    using Common.Utilities;
     using Domain.Prescription;
-    using Interfaces;
     using System.Linq.Expressions;
     using System.Linq;
+    using Application.Utilities;
+    using Application.Interfaces.Repositories;
 
     public class MedicationRepository : IMedicationRepository
     {

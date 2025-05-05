@@ -1,7 +1,7 @@
 ﻿
 namespace PatientManagement.Application.Commands.Professional.Parameters
 {
-    using Common.Contracts;
+    using Interfaces.Commands;
 
     public class ApproveProfessionalStatusCommandParameters : ICommand
     {

@@ -1,8 +1,7 @@
 ﻿
 namespace PatientManagement.Application.Commands.Patient.Results
 {
-    using Common.Contracts;
-    using Common.Enums;
+    using Interfaces.Commands;
 
     public class CreatePatientCommandResult : ICommandResult
     {

@@ -1,7 +1,8 @@
 ﻿
 namespace PatientManagement.Infrastructure.Entities
 {
-    using Common.Enums;
+    using Domain.ApplicationUser;
+    using Domain.Professional;
 
     public class Professional
     {

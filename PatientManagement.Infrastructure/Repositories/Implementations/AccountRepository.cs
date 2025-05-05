@@ -4,12 +4,11 @@ namespace PatientManagement.Infrastructure.Repositories.Implementations
     using Microsoft.AspNetCore.Identity;
     using Microsoft.Extensions.Logging;
     using DbContexts;
-    using PatientManagement.Common.Results;
-    using Repositories.Interfaces;
-    using Common.Enums;
     using Microsoft.AspNetCore.Http;
-    using PatientManagement.Common.Utilities;
-
+    using Domain.ApplicationUser;
+    using Application.Utilities;
+    using Application.Interfaces.Repositories;
+    using PatientManagement.Domain.Account;
 
     public class AccountRepository : IAccountRepository
     {
@@ -31,7 +30,7 @@ namespace PatientManagement.Infrastructure.Repositories.Implementations
         }
 
 
-        public async Task<CreateUserResult> CreateUserAsync(
+        public async Task<CreateUserResultDto> CreateUserAsync(
             string email,
             string password,
             UserRole role,
@@ -64,15 +63,11 @@ namespace PatientManagement.Infrastructure.Repositories.Implementations
             }
 
 
-            return new CreateUserResult(
+            return new CreateUserResultDto(
                 userId: newUser.Id,
                 email: email,
                 userRole: role.ToString(),
-                created: newUser.CreatedDate);
+                created: newUser.DateCreated);
         }
-
-
-
-
     }
 }

@@ -4,12 +4,12 @@ namespace PatientManagement.Application.Commands.Medication.Handler
     using System.Threading;
     using System.Threading.Tasks;
     using Microsoft.AspNetCore.Http;
-    using Infrastructure.Repositories.Interfaces;
-    using Common.Utilities;
-    using Common.Handlers;
     using Parameters;
     using Results;
-    
+    using Interfaces.Repositories;
+    using Utilities;
+    using Interfaces.Handlers;
+
     public class UpdateMedicationCommandHandler :
         ICommandHandlerWithResult<UpdateMedicationCommandParameters, UpdateMedicationCommandResult>
     {

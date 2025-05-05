@@ -7,15 +7,25 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Folder Include="Commands\Prescription\Dto\" />
     <Folder Include="Queries\Account\Handler\" />
     <Folder Include="Queries\Account\Parameters\" />
     <Folder Include="Queries\Account\Results\" />
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Authorization" Version="8.0.13" />
+    <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.3.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity" Version="2.3.1" />
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="8.0.0" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.1" />
+    <PackageReference Include="Scrutor" Version="6.0.1" />
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.5.0" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\PatientManagement.Common\PatientManagement.Common.csproj" />
     <ProjectReference Include="..\PatientManagement.Domain\PatientManagement.Domain.csproj" />
-    <ProjectReference Include="..\PatientManagement.Infrastructure\PatientManagement.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>

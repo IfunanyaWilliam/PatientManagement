@@ -1,7 +1,7 @@
 ﻿
 namespace PatientManagement.Application.Queries.Authentication.Results
 {
-    using Common.Contracts;
+    using Interfaces.Queries;
 
     public class GetAuthTokenQueryResult : IQueryResult
     {

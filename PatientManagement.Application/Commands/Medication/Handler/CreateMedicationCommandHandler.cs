@@ -6,10 +6,9 @@ namespace PatientManagement.Application.Commands.Medication.Handler
     using Microsoft.AspNetCore.Http;
     using Results;
     using Parameters;
-    using Common.Utilities;
-    using Common.Handlers;
-    using Infrastructure.Repositories.Interfaces;
-   
+    using Interfaces.Repositories;
+    using Application.Utilities;
+    using Interfaces.Handlers;
 
     public class CreateMedicationCommandHandler :
         ICommandHandlerWithResult<CreateMedicationCommandParameters, CreateMedicationCommandResult>

@@ -8,12 +8,11 @@ namespace PatientManagement.Infrastructure.Repositories.Implementations
     using Microsoft.AspNetCore.Identity;
     using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.Logging;
-    using Repositories.Interfaces;
-    using Common.Utilities;
+    using Domain.ApplicationUser;
     using Domain.Patient;
-    using Common.Enums;
     using DbContexts;
-          
+    using Application.Utilities;
+    using Application.Interfaces.Repositories;
 
     public class PatientRepository : IPatientRepository
     {

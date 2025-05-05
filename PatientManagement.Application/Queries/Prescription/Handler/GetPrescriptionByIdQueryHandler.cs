@@ -6,10 +6,10 @@ namespace PatientManagement.Application.Queries.Prescription.Handler
     using System.Threading;
     using Parameters;
     using Results;
-    using Common.Dto;
-    using Common.Utilities;
-    using Common.Handlers;
-    using Infrastructure.Repositories.Interfaces;    
+    using Interfaces.Handlers;
+    using Interfaces.Repositories;
+    using Utilities;
+    using Domain.Prescription;
 
     public class GetPrescriptionByIdQueryHandler : IQueryHandler<GetPrescriptionByIdQueryParameters, GetPrescriptionByIdQueryResult>
     {

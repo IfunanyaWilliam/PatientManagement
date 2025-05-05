@@ -2,7 +2,7 @@
 
 namespace PatientManagement.Application.Queries.Medication.Parameters
 {
-    using Common.Contracts;
+    using Interfaces.Queries;
 
     public class GetMedicationByIdQueryParameters : IQueryParameters
     {

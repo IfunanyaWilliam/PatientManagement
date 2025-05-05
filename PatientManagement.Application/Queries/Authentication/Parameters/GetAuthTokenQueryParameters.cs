@@ -1,7 +1,8 @@
 ﻿
 namespace PatientManagement.Application.Queries.Authentication.Parameters
 {
-    using Common.Contracts;
+    using Interfaces.Queries;
+
 
     public class GetAuthTokenQueryParameters : IQueryParameters
     {

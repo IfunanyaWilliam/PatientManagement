@@ -1,7 +1,7 @@
 ﻿
 namespace PatientManagement.Application.Commands.Medication.Results
 {
-    using Common.Contracts;
+    using Interfaces.Commands;
 
 
     public class CreateMedicationCommandResult : ICommandResult

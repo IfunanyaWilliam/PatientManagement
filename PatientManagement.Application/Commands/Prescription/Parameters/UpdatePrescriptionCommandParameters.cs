@@ -1,9 +1,8 @@
 ﻿
 namespace PatientManagement.Application.Commands.Prescription.Parameters
 {
-    using Common.Dto;
-    using Common.Contracts;
-    using PatientManagement.Common.Parameters;
+    using Interfaces.Commands;
+    using Queries.Prescription.Dto;
 
     public class UpdatePrescriptionCommandParameters : ICommand
     {

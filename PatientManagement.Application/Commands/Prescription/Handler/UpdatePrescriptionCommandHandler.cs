@@ -3,10 +3,10 @@ namespace PatientManagement.Application.Commands.Prescription.Handler
 {
     using Parameters;
     using Results;
-    using Common.Handlers;
-    using Infrastructure.Repositories.Interfaces;
     using Microsoft.AspNetCore.Http;
-    using Common.Utilities;
+    using Interfaces.Repositories;
+    using Utilities;
+    using Interfaces.Handlers;
 
     public class UpdatePrescriptionCommandHandler :
         ICommandHandlerWithResult<UpdatePrescriptionCommandParameters, UpdatePrescriptionCommandResult>
@@ -18,7 +18,6 @@ namespace PatientManagement.Application.Commands.Prescription.Handler
             _prescriptionRepository = prescriptionRepository;
         }
     
-
         public async Task<UpdatePrescriptionCommandResult> HandleAsync(
             UpdatePrescriptionCommandParameters command, 
             CancellationToken ct = default)

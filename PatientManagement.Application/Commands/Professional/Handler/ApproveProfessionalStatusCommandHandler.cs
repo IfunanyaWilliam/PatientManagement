@@ -4,10 +4,9 @@ namespace PatientManagement.Application.Commands.Professional.Handler
     using Microsoft.AspNetCore.Http;
     using Parameters;
     using Results;
-    using Common.Handlers;
-    using Common.Utilities;
-    using Infrastructure.Repositories.Interfaces;
-
+    using Interfaces.Repositories;
+    using Utilities;
+    using Interfaces.Handlers;
 
     public class ApproveProfessionalStatusCommandHandler :
         ICommandHandlerWithResult<ApproveProfessionalStatusCommandParameters, ApproveProfessionalStatusCommandResult>

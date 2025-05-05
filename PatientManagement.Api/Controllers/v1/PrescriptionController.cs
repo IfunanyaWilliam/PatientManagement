@@ -9,12 +9,12 @@ namespace PatientManagement.Api.Controllers.v1
     using Application.Commands.Prescription.Results;
     using Application.Queries.Prescription.Results;
     using Application.Queries.Prescription.Parameters;
-    using Common.Dto;
-    using Common.Enums;
-    using Common.Results;
-    using Common.Contracts;
-    using Common.Parameters;
-    
+    using Application.Queries.Prescription.Dto;
+    using Application.Interfaces.Commands;
+    using Application.Interfaces.Queries;
+    using Parameters;
+    using Results;
+    using Models;
 
     [ApiController]
     [Authorize]
@@ -199,7 +199,7 @@ namespace PatientManagement.Api.Controllers.v1
                 prescriptionId: result.PrescriptionId,
                 diagnosis: result.Diagnosis,
                 medications: result?.Medications?.Select(m =>
-                    new PrescribedMedication(
+                    new PrescribedMedicationDto(
                         medicationId: m.MedicationId,
                         name: m.Name,
                         dosage: m.Dosage,
@@ -271,7 +271,7 @@ namespace PatientManagement.Api.Controllers.v1
                             symptoms: p.Symptoms,
                             diagnosis: p.Diagnosis,
                             medications: p?.Medications?.Select(m =>
-                                new PrescribedMedication(
+                                new PrescribedMedicationDto(
                                     medicationId: m.MedicationId,
                                     name: m.Name,
                                     dosage: m.Dosage,
@@ -343,7 +343,7 @@ namespace PatientManagement.Api.Controllers.v1
                             symptoms: p.Symptoms,
                             diagnosis: p.Diagnosis,
                             medications: p?.Medications?.Select(m =>
-                                new PrescribedMedication(
+                                new PrescribedMedicationDto(
                                     medicationId: m.MedicationId,
                                     name: m.Name,
                                     dosage: m.Dosage,
@@ -410,7 +410,7 @@ namespace PatientManagement.Api.Controllers.v1
                             symptoms: p.Symptoms,
                             diagnosis: p.Diagnosis,
                             medications: p?.Medications?.Select(m =>
-                                new PrescribedMedication(
+                                new PrescribedMedicationDto(
                                     medicationId: m.MedicationId,
                                     name: m.Name,
                                     dosage: m.Dosage,

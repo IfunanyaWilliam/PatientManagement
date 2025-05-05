@@ -5,13 +5,11 @@ namespace PatientManagement.Application.Queries.Prescription.Handler
     using Microsoft.AspNetCore.Http;
     using Microsoft.Extensions.Logging;
     using Results;
-    using Common.Dto;
     using Parameters;
-    using Common.Handlers;
-    using Common.Results;
-    using Common.Utilities;
-    using Infrastructure.Repositories.Interfaces;
-    
+    using Interfaces.Repositories;
+    using Interfaces.Handlers;
+    using Utilities;
+    using Domain.Prescription;
 
     public class GetPrescriptionByPatientIdQueryHandler 
         : IQueryHandler<GetPrescriptionByPatientIdQueryParameters, GetPrescriptionByPatientIdQueryResult>
@@ -47,11 +45,11 @@ namespace PatientManagement.Application.Queries.Prescription.Handler
                     "GetPrescriptionByPatientIdQueryHandler: Prescriptions not found",
                     DateTime.UtcNow.AddHours(1));
 
-                return new GetPrescriptionByPatientIdQueryResult(new List<GetPrescriptionResult>());
+                return new GetPrescriptionByPatientIdQueryResult(new List<GetPrescriptionQueryResult>());
             }
 
             return new GetPrescriptionByPatientIdQueryResult(
-                prescriptions: result.Select(p => new GetPrescriptionResult(
+                prescriptions: result.Select(p => new GetPrescriptionQueryResult(
                             id: p.Id,
                             patientId: p.PatientId,
                             professionalId: p.ProfessionalId,

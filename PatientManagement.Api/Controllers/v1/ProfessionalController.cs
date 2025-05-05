@@ -5,14 +5,14 @@ namespace PatientManagement.Api.Controllers.v1
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.AspNetCore.Authorization;
     using Application.Commands.Professional.Parameters;
-    using Application.Commands.Professional.Results;
-    using Infrastructure.PolicyProvider;
-    using Common.Contracts;
-    using Common.Parameters;
-    using Common.Results;
-    using Common.Enums;
     using Application.Queries.Professional.Parameters;
+    using Application.Commands.Professional.Results;
     using Application.Queries.Professional.Resulsts;
+    using Infrastructure.PolicyProvider;
+    using Parameters;
+    using Results;
+    using Application.Interfaces.Commands;
+    using Application.Interfaces.Queries;
 
     [ApiController]
     [Authorize]

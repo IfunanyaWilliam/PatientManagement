@@ -6,11 +6,9 @@ namespace PatientManagement.Application.Queries.Patient.Handlers
     using System.Text.Json;
     using Parameters;
     using Results;
-    using Common.Handlers;
-    using Common.Utilities;
-    using Infrastructure.Repositories.Interfaces;
-    using Common.Results;
-    
+    using Utilities;
+    using Interfaces.Repositories;
+    using Interfaces.Handlers;
 
     public class GetAllPatientsQueryHandler : IQueryHandler<GetAllPatientsQueryParameters, GetAllPatientsQueryResult>
     {
@@ -45,11 +43,11 @@ namespace PatientManagement.Application.Queries.Patient.Handlers
                     "GetAllPatientsQueryHandler: Patients not found",
                     DateTime.UtcNow.AddHours(1));
 
-                return new GetAllPatientsQueryResult(new List<GetPatientResult>());
+                return new GetAllPatientsQueryResult(new List<GetPatientsQueryResult>());
             }
 
             return new GetAllPatientsQueryResult(
-                        result.Select(p => new GetPatientResult(
+                        result.Select(p => new GetPatientsQueryResult(
                             id: p.Id,
                             applicationUserId: p.ApplicationUserId,
                             title: p.Title,

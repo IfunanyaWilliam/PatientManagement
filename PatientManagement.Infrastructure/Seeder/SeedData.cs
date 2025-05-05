@@ -4,10 +4,11 @@ namespace PatientManagement.Infrastructure.Seeder
     using Microsoft.AspNetCore.Identity;
     using DbContexts;
     using Entities;
-    using PatientManagement.Common.Enums;
     using Microsoft.EntityFrameworkCore;
-    using PatientManagement.Infrastructure.Services.Interfaces;
+    using Services.Interfaces;
     using System.Data;
+    using Domain.ApplicationUser;
+    using Domain.Professional;
 
     public static class SeedData
     {
@@ -54,7 +55,7 @@ namespace PatientManagement.Infrastructure.Seeder
         }
 
         private static async Task SeedRolesAndUsers(
-            UserManager<ApplicationUser> userManager,
+            UserManager<Entities.ApplicationUser> userManager,
             RoleManager<IdentityRole<Guid>> roleManager,
             AppDbContext dbContext,
             IEncryptionService encryptionService)
@@ -103,19 +104,19 @@ namespace PatientManagement.Infrastructure.Seeder
         }
 
         private static async Task SeedUser(
-            UserManager<ApplicationUser> userManager,
+            UserManager<Entities.ApplicationUser> userManager,
             string email,
             UserRole userRole)
         {
             var existingUser = await userManager.FindByEmailAsync(email);
             if (existingUser == null)
             {
-                var user = new ApplicationUser
+                var user = new Entities.ApplicationUser
                 {
                     UserName = email,
                     Email = email,
                     EmailConfirmed = true,
-                    CreatedDate = DateTime.UtcNow
+                    DateCreated = DateTime.UtcNow
                 };
 
                 var result = await userManager.CreateAsync(user, "Pa55word@123");
@@ -198,7 +199,7 @@ namespace PatientManagement.Infrastructure.Seeder
                 Email = "mberede.dike@abc.com",
                 UserName = "mberede.dike@abc.com",
                 EmailConfirmed = true,
-                CreatedDate = DateTime.UtcNow.AddHours(1)
+                DateCreated = DateTime.UtcNow.AddHours(1)
             };
 
             string password = "Password!@1";
@@ -227,7 +228,7 @@ namespace PatientManagement.Infrastructure.Seeder
         }
         
         public static async Task SeedProfessional(
-            UserManager<ApplicationUser> userManager,
+            UserManager<Entities.ApplicationUser> userManager,
             AppDbContext dbContext)
         {
             Entities.ApplicationUser professionalUser = new Entities.ApplicationUser
@@ -235,7 +236,7 @@ namespace PatientManagement.Infrastructure.Seeder
                 Email = "mberede.Amadike@abc.com",
                 UserName = "mberede.Amadike@abc.com",
                 EmailConfirmed = true,
-                CreatedDate = DateTime.UtcNow.AddHours(1)
+                DateCreated = DateTime.UtcNow.AddHours(1)
             };
 
             string password = "Password!@4";

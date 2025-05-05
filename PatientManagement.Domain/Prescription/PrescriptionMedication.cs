@@ -1,5 +1,4 @@
 ﻿
-using PatientManagement.Common.Dto;
 
 namespace PatientManagement.Domain.Prescription
 {

@@ -4,9 +4,9 @@ namespace PatientManagement.Application.Commands.Professional.Handler
     using Microsoft.AspNetCore.Http;
     using Parameters;
     using Results;
-    using Common.Handlers;
-    using Infrastructure.Repositories.Interfaces;
-    using Common.Utilities;
+    using Interfaces.Repositories;
+    using Utilities;
+    using Interfaces.Handlers;
 
     public class CreateProfessionalCommandHandler :
         ICommandHandlerWithResult<CreateProfessionalCommandParameters, CreateProfessionalCommandResult>

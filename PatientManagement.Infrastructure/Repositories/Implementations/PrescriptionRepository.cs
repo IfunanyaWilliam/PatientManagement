@@ -9,11 +9,11 @@ namespace PatientManagement.Infrastructure.Repositories.Implementations
     using System.Text.Json;
     using System.Linq;
     using DbContexts;
-    using Common.Utilities;
-    using Interfaces;
-    using Common.Dto;
     using Domain.Prescription;
-    using Common.Parameters;
+    using Application.Utilities;
+    using Domain.Professional;
+    using Application.Interfaces.Repositories;
+    using Application.Queries.Prescription.Dto;
 
     public class PrescriptionRepository : IPrescriptionRepository
     {
@@ -59,7 +59,7 @@ namespace PatientManagement.Infrastructure.Repositories.Implementations
             if (professionalEntity is null || professionalEntity.IsDeleted)
                 throw new CustomException($"Professional with Id {professionalId} Not Found", StatusCodes.Status404NotFound);
 
-            if (professionalEntity.ProfessionalStatus != Common.Enums.ProfessionalStatus.Active
+            if (professionalEntity.ProfessionalStatus != ProfessionalStatus.Active
                 || !professionalEntity.IsActive)
             {
                 throw new CustomException($"The Professional is not allowed to consult with patient at the moment, " +
@@ -167,7 +167,7 @@ namespace PatientManagement.Infrastructure.Repositories.Implementations
             if (professionalEntity is null || professionalEntity.IsDeleted)
                 throw new CustomException($"Professional with Id {professionalId} Not Found", StatusCodes.Status404NotFound);
 
-            if (professionalEntity.ProfessionalStatus != Common.Enums.ProfessionalStatus.Active
+            if (professionalEntity.ProfessionalStatus != ProfessionalStatus.Active
                 || !professionalEntity.IsActive)
             {
                 throw new CustomException($"The Professional is not allowed to consult with patient at the moment, " +

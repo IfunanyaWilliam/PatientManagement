@@ -1,7 +1,8 @@
 ﻿
 namespace PatientManagement.Application.Queries.Patient.Parameters
 {
-    using Common.Contracts;
+    using Interfaces.Queries;
+
     public class GetPatientQueryParameters : IQueryParameters
     {
         public GetPatientQueryParameters(Guid patientId)

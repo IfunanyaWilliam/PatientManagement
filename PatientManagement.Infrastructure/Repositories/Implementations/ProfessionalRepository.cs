@@ -9,10 +9,9 @@ namespace PatientManagement.Infrastructure.Repositories.Implementations
     using Microsoft.EntityFrameworkCore;
     using Infrastructure.DbContexts;
     using Domain.Professional;
-    using Common.Enums;
-    using Common.Utilities;
-    using Interfaces;
-    
+    using Domain.ApplicationUser;
+    using Application.Utilities;
+    using Application.Interfaces.Repositories;
 
     public class ProfessionalRepository : IProfessionalRepository
     {

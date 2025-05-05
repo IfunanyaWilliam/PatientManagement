@@ -4,9 +4,9 @@ namespace PatientManagement.Application.Queries.Authentication.Handler
     using Microsoft.AspNetCore.Http;
     using Parameters;
     using Results;
-    using Common.Handlers;
-    using Infrastructure.Services.Interfaces;
-    using Common.Utilities;
+    using Utilities;
+    using Application.Interfaces.Services;
+    using Application.Interfaces.Handlers;
 
     public class GetAuthTokenQueryHandler : IQueryHandler<GetAuthTokenQueryParameters, GetAuthTokenQueryResult>
     {

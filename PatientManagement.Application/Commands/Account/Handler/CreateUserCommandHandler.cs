@@ -3,9 +3,8 @@ namespace PatientManagement.Application.Commands.Account.Handler
 {
     using Paremeters;
     using Result;
-    using Common.Handlers;
-    using Infrastructure.Repositories.Interfaces;
-
+    using Interfaces.Repositories;
+    using Interfaces.Handlers;
 
     public class CreateUserCommandHandler :
         ICommandHandlerWithResult<CreateUserCommandParameters, CreateUserCommandResults>
