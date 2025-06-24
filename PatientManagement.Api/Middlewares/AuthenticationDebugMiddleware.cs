@@ -79,13 +79,27 @@ namespace PatientManagement.Api.Middlewares
             try
             {
                 var claims = ExtractClaims(token);
-                if (claims != null && claims.Any())
+                if (claims == null || !claims.Any())
                 {
-                    var identity = new ClaimsIdentity(claims, "Bearer");
-                    var principal = new ClaimsPrincipal(identity);
-                    context.User = principal;
-                    _logger.LogInformation("Claims successfully extracted and assigned to context.User");
+                    _logger.LogInformation("Request had no access token");
+                    throw new CustomException($"This request requires an access token", StatusCodes.Status401Unauthorized);
                 }
+
+                var identity = new ClaimsIdentity(claims, "Bearer");
+                var principal = new ClaimsPrincipal(identity);
+
+                //check if IpAddress in token is same with user's IpAddress
+                string currentIpAddress = context.Connection.RemoteIpAddress.ToString();
+                string tokenIpAddress = claims.FirstOrDefault(u => u.Type == "ipAddress").Value;
+                if(currentIpAddress != tokenIpAddress)
+                {
+                    _logger.LogInformation($"IpAddress contained in access token does not match IpAddress from request" +
+                        $" for user: {principal.FindFirst(ClaimTypes.NameIdentifier)?.Value}");
+                    throw new CustomException($"This request requires a valid access token", StatusCodes.Status401Unauthorized);
+                }
+
+                context.User = principal;
+                _logger.LogInformation("Claims successfully extracted and assigned to context.User");
             }
             catch (Exception ex)
             {

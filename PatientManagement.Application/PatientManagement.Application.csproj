@@ -24,7 +24,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\PatientManagement.Common\PatientManagement.Common.csproj" />
     <ProjectReference Include="..\PatientManagement.Domain\PatientManagement.Domain.csproj" />
   </ItemGroup>
 

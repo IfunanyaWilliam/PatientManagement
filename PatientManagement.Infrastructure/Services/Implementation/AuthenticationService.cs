@@ -28,7 +28,7 @@ namespace PatientManagement.Infrastructure.Services.Implementation
         private readonly IPermissionRepository _permissionRepository;
         private readonly IEncryptionService _encryptionService;
         private readonly ILogger<AuthenticationService> _logger;
-
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
         public AuthenticationService(
             UserManager<Entities.ApplicationUser> userManager,
@@ -36,7 +36,8 @@ namespace PatientManagement.Infrastructure.Services.Implementation
             ITokenRepository refreshTokenRepository,
             IPermissionRepository permissionRepository,
             IEncryptionService encryptionService,
-            ILogger<AuthenticationService> logger)
+            ILogger<AuthenticationService> logger,
+            IHttpContextAccessor httpContextAccessor)
         {
             _userManager = userManager;
             _configuration = configuration;
@@ -44,6 +45,7 @@ namespace PatientManagement.Infrastructure.Services.Implementation
             _permissionRepository = permissionRepository;
             _encryptionService = encryptionService;
             _logger = logger;
+            _httpContextAccessor = httpContextAccessor;
         }
         
         public async Task<AuthenticationResultDto> GetAuthTokenAsync(string email, string password)
@@ -109,6 +111,7 @@ namespace PatientManagement.Infrastructure.Services.Implementation
             var claims = new List<Claim>
             {
                 new(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
+                new("ipAddress", _httpContextAccessor.HttpContext.Connection.RemoteIpAddress.ToString()),
                 new(JwtRegisteredClaimNames.Email, user.Email),
                 new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                 new(ClaimTypes.NameIdentifier, user.Id.ToString("D"))

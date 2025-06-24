@@ -27,7 +27,7 @@ namespace PatientManagement.Infrastructure.PolicyProvider
                 context.Succeed(requirement);
                 return Task.CompletedTask;
             }
-
+                
             foreach (var permission in requirement.Permissions)
             {
                 if (context.User.HasClaim(PermissionRequirement.ClaimType, permission))
