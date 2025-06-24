@@ -33,6 +33,8 @@ namespace PatientManagement.Infrastructure.Extensions
             .AddEntityFrameworkStores<AppDbContext>()
             .AddDefaultTokenProviders();
 
+            services.AddHttpContextAccessor();
+
             services.AddScoped<IEncryptionService, EncryptionService>();
             services.AddScoped<IAccountRepository, AccountRepository>();
             services.AddScoped<IPatientRepository, PatientRepository>();
