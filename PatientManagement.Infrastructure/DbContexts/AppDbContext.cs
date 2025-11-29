@@ -6,11 +6,49 @@ using System.Security;
 
 namespace PatientManagement.Infrastructure.DbContexts
 {
-    public class AppDbContext : IdentityDbContext<ApplicationUser, IdentityRole<Guid>, Guid>
+    public class AppDbContext : IdentityDbContext
+        <ApplicationUser,
+         IdentityRole<Guid>,
+         Guid,
+         IdentityUserClaim<Guid>,
+         IdentityUserRole<Guid>,
+         IdentityUserLogin<Guid>,
+         IdentityRoleClaim<Guid>,
+         IdentityUserToken<Guid>>
     {
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
         {
         }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<Patient>()
+                .HasOne(p => p.ApplicationUser)
+                .WithOne() 
+                .HasForeignKey<Patient>(p => p.ApplicationUserId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Professional>()
+                .HasOne(p => p.ApplicationUser)
+                .WithOne()
+                .HasForeignKey<Professional>(p => p.ApplicationUserId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Prescription>()
+                .HasOne(p => p.Patient)
+                .WithMany()
+                .HasForeignKey(p => p.PatientId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Prescription>()
+                .HasOne(p => p.Professional)
+                .WithMany()
+                .HasForeignKey(p => p.ProfessionalId)
+                .OnDelete(DeleteBehavior.Restrict);
+        }
+
         public DbSet<ApplicationUser> ApplicationUsers { get; set; }
         public DbSet<Patient> Patients { get; set; }
         public DbSet<Prescription> Prescriptions { get; set; }

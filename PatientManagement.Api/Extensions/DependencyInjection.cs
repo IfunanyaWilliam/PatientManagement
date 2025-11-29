@@ -32,7 +32,7 @@ namespace PatientManagement.Api.Extensions
             services.AddSwaggerConfiguration();
 
             services.AddApplicationDependencies();
-            services.AddInfrastructureDependencies();
+            services.AddInfrastructureDependencies(configuration);
         }
     }
 }
