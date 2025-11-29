@@ -60,21 +60,15 @@ namespace PatientManagement.Infrastructure.Seeder
             AppDbContext dbContext,
             IEncryptionService encryptionService)
         {
-
             var roles = new Dictionary<string, string[]>
             {
                 { nameof(UserRole.Patient), new[] { "CreatePatient", "ViewMedicalRecords" } },
 
                 { nameof(UserRole.Professional), new[] { "ManagePatientRecords", "ManageProfessionalRecords" }},
 
-                { nameof(UserRole.Administrator), new[] { "ManageMedicalRecords",
-                                                          "DeleteMedicalRecords", 
-                                                          "ManageUsers" }},
+                { nameof(UserRole.Administrator), new[] { "ManageMedicalRecords", "DeleteMedicalRecords", "ManageUsers" }},
 
-                { nameof(UserRole.SuperAdministrator), new[] { "ManageMedicalRecords",
-                                                               "DeleteMedicalRecords", 
-                                                               "ManageUsers", 
-                                                               "CreateAdmin"}}
+                { nameof(UserRole.SuperAdministrator), new[] { "ManageMedicalRecords", "DeleteMedicalRecords", "ManageUsers", "CreateAdmin"}}
             };
 
             foreach (var role in roles)
@@ -84,9 +78,11 @@ namespace PatientManagement.Infrastructure.Seeder
                     var identityRole = new IdentityRole<Guid> { Name = role.Key };
                     await roleManager.CreateAsync(identityRole);
 
-                    var permissions = await dbContext.Permissions
+                    var allPermissions = await dbContext.Permissions.ToListAsync();
+
+                    var permissions = allPermissions
                         .Where(p => role.Value.Contains(encryptionService.Decrypt(p.EncryptedName)))
-                        .ToListAsync();
+                        .ToList();
 
                     foreach (var permission in permissions)
                     {
@@ -133,6 +129,12 @@ namespace PatientManagement.Infrastructure.Seeder
         
         private static async Task SeedMedications(AppDbContext dbContext)
         {
+            var medicationsCount = await dbContext.Medications.CountAsync();
+            if (medicationsCount > 0)
+            {
+                return;
+            }
+
             List<Entities.Medication> medications = new List<Entities.Medication>
             {
                 new Entities.Medication
@@ -194,6 +196,12 @@ namespace PatientManagement.Infrastructure.Seeder
             UserManager<Entities.ApplicationUser> userManager,
             AppDbContext dbContext)
         {
+            var patientsCount = await dbContext.Patients.CountAsync();
+            if (patientsCount > 0)
+            {
+                return;
+            }
+
             var patientUser = new Entities.ApplicationUser
             {
                 Email = "mberede.dike@abc.com",
@@ -231,6 +239,12 @@ namespace PatientManagement.Infrastructure.Seeder
             UserManager<Entities.ApplicationUser> userManager,
             AppDbContext dbContext)
         {
+            var professionalsCount = await dbContext.Professionals.CountAsync();
+            if (professionalsCount > 0)
+            {
+                return;
+            }
+
             Entities.ApplicationUser professionalUser = new Entities.ApplicationUser
             {
                 Email = "mberede.Amadike@abc.com",
@@ -248,7 +262,7 @@ namespace PatientManagement.Infrastructure.Seeder
                 {
                     ApplicationUserId = professionalUser.Id,
                     Title = "Dr",
-                    FirstName = "Mbere",
+                    FirstName = "Mberede",
                     MiddleName = "Kaeji",
                     LastName = "Amadike",
                     PhoneNumber = "07098898767",

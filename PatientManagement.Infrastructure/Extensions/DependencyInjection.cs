@@ -14,13 +14,15 @@ namespace PatientManagement.Infrastructure.Extensions
     using PolicyProvider;
     using Application.Interfaces.Repositories;
     using Application.Interfaces.Services;
+    using Microsoft.Extensions.Configuration;
 
     public static class DependencyInjection
     {
-        public static IServiceCollection AddInfrastructureDependencies(this IServiceCollection services)
+        public static IServiceCollection AddInfrastructureDependencies(this IServiceCollection services, IConfiguration configuration)
         {
+            var connectionString = configuration.GetConnectionString("DefaultConnection");
             services.AddDbContext<AppDbContext>(options =>
-                    options.UseInMemoryDatabase(databaseName: "PatientManagementDb"));
+                    options.UseSqlServer(connectionString));
 
             services.AddIdentity<ApplicationUser, IdentityRole<Guid>>(options =>
             {
