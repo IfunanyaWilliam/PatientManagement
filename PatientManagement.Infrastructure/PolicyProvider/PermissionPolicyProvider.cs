@@ -35,11 +35,12 @@ namespace PatientManagement.Infrastructure.PolicyProvider
                     var _encryptionService = scope.ServiceProvider.GetRequiredService<IEncryptionService>();    
 
                     // Check if all the permissions exist in the database
-                    var permissionExists = await dbContext.Permissions
-                        .Where(p => permissions.Contains(_encryptionService.Decrypt(p.EncryptedName)))
-                        .ToListAsync();
+                    var permissionsList = await dbContext.Permissions.ToListAsync();
 
-                    if (permissionExists.Count == permissions.Length)
+                    var currentUserPermissions = permissionsList
+                        .Where(p => permissions.Contains(_encryptionService.Decrypt(p.EncryptedName))).ToList();
+
+                    if (currentUserPermissions.Count == permissions.Length)
                     {
                         var requirement = new PermissionRequirement(PermissionAuthorizeAttribute.GetOperatorFromPolicy(policyName), permissions);
                         return new AuthorizationPolicyBuilder().AddRequirements(requirement).Build();
