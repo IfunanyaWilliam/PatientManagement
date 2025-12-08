@@ -2,7 +2,7 @@
 namespace PatientManagement.Application.Interfaces.Repositories
 {
     using Domain.ApplicationUser;
-    using PatientManagement.Domain.Account;
+    using Domain.Account;
 
     public interface IAccountRepository
     {
@@ -11,6 +11,11 @@ namespace PatientManagement.Application.Interfaces.Repositories
             string email,
             string password,
             UserRole role,
+            CancellationToken cancellationToken = default);
+
+        Task<bool> InsertFacebookLoginAsync(
+            Guid userId, 
+            string facebookId, 
             CancellationToken cancellationToken = default);
 
     }

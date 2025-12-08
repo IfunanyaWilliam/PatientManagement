@@ -69,5 +69,31 @@ namespace PatientManagement.Infrastructure.Repositories.Implementations
                 userRole: role.ToString(),
                 created: newUser.DateCreated);
         }
+
+        //Add update user method
+
+
+
+        //Add a method to insert user Login when user logs in normally
+
+
+
+        public async Task<bool> InsertFacebookLoginAsync(Guid userId, string facebookId, CancellationToken cancellationToken = default)
+        {
+            var userLogin = new Entities.ExternalLogin
+            {
+                ApplicationUserId = userId,
+                Provider = "Facebook",
+                ProviderUserId = facebookId,
+                LinkedAt = DateTime.UtcNow
+            };
+
+            await _context.ExternalLogins.AddAsync(userLogin, cancellationToken);
+            return await _context.SaveChangesAsync(cancellationToken) > 0;
+        }
+
+
+
+        //Add a method to insert user Login when user logs with google
     }
 }
