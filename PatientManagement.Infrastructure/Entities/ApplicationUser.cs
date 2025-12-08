@@ -10,5 +10,6 @@ namespace PatientManagement.Infrastructure.Entities
         public DateTime DateModified { get; set; }
         public bool IsDeleted { get; set; } = false;
         public UserRole Role { get; set; }
+        public List<ExternalLogin> ExternalLogins { get; set; } = new();
     }
 }

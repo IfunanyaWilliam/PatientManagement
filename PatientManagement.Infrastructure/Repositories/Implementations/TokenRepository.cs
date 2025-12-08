@@ -53,7 +53,7 @@ namespace PatientManagement.Infrastructure.Repositories.Implementations
             return await _dbContext.SaveChangesAsync() > 0;
         }
 
-        public async Task<bool> UpdateAsync(string refreshToken)
+        public async Task<bool> RevokeRefreshTokenAsync(string refreshToken)
         {
             var existingToken = await _dbContext.RefreshTokens.FirstOrDefaultAsync(x => x.Token == refreshToken);
             if (existingToken != null)

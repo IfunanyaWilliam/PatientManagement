@@ -53,6 +53,7 @@ namespace PatientManagement.Infrastructure.Services.Implementation
             var user = await _userManager.FindByEmailAsync(email);
             if (user == null || !await _userManager.CheckPasswordAsync(user, password))
             {
+                _logger.LogInformation($"Authentication failed for user with email {email}");
                 throw new CustomException($"Invalid credentials", StatusCodes.Status401Unauthorized);
             }
 
@@ -66,6 +67,30 @@ namespace PatientManagement.Infrastructure.Services.Implementation
             }
 
             return new AuthenticationResultDto(
+                accessToken: accessToken,
+                refreshToken: refreshToken);
+        }
+
+        public async Task<FacebookAuthResultDto> GetAuthTokenAsync(string email)
+        {
+            var user = await _userManager.FindByEmailAsync(email);
+            if (user == null)
+            {
+                _logger.LogInformation($"User with facebook email {email} was not found");   
+                throw new CustomException($"Invalid credentials", StatusCodes.Status401Unauthorized);
+            }
+
+            var roles = await _userManager.GetRolesAsync(user);
+            var accessToken = await GenerateAccessToken(user, roles);
+            var refreshToken = await GenerateRefreshToken(user);
+
+            if (refreshToken is null)
+            {
+                return null;
+            }
+
+            return new FacebookAuthResultDto(
+                userId: user.Id,
                 accessToken: accessToken,
                 refreshToken: refreshToken);
         }
@@ -88,7 +113,7 @@ namespace PatientManagement.Infrastructure.Services.Implementation
 
             storedToken.IsRevoked = true;
             storedToken.DateModified = DateTime.UtcNow;
-            var result = await _refreshTokenRepository.UpdateAsync(storedToken.Token);
+            var result = await _refreshTokenRepository.RevokeRefreshTokenAsync(storedToken.Token);
 
             if(!result)
                 return null;
@@ -102,7 +127,7 @@ namespace PatientManagement.Infrastructure.Services.Implementation
         {
             if (refreshToken != null)
             {
-                await _refreshTokenRepository.UpdateAsync(refreshToken);
+                await _refreshTokenRepository.RevokeRefreshTokenAsync(refreshToken);
             }
         }
 

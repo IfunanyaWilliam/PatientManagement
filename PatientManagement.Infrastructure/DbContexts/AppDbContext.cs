@@ -47,6 +47,91 @@ namespace PatientManagement.Infrastructure.DbContexts
                 .WithMany()
                 .HasForeignKey(p => p.ProfessionalId)
                 .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<ExternalLogin>()
+            .HasOne(e => e.ApplicationUser)
+            .WithMany(u => u.ExternalLogins)
+            .HasForeignKey(e => e.ApplicationUserId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+
+            // Primary Key - Already has clustered index by default
+            modelBuilder.Entity<ApplicationUser>()
+                .HasKey(u => u.Id);
+
+            modelBuilder.Entity<ExternalLogin>()
+                .HasKey(e => e.Id);
+
+            modelBuilder.Entity<Patient>()
+                .HasKey(p => p.Id);
+
+            modelBuilder.Entity<Professional>()
+                .HasKey(p => p.Id);
+
+            modelBuilder.Entity<Prescription>()
+                .HasKey(p => p.Id);
+
+            // ==================== ADDITIONAL INDEXES ====================
+
+            modelBuilder.Entity<ApplicationUser>()
+                .HasIndex(u => u.Email)
+                .IsUnique();
+
+            modelBuilder.Entity<ApplicationUser>()
+                .HasIndex(u => u.UserName)
+                .IsUnique();
+
+            modelBuilder.Entity<ApplicationUser>()
+                .HasIndex(u => u.IsDeleted);
+
+            modelBuilder.Entity<ApplicationUser>()
+                .HasIndex(u => u.Role);
+
+            // ExternalLogin Indexes
+            modelBuilder.Entity<ExternalLogin>()
+                .HasIndex(e => new { e.ProviderUserId, e.Provider })
+                .IsUnique();
+
+            modelBuilder.Entity<ExternalLogin>()
+                .HasIndex(e => e.ApplicationUserId);
+
+            modelBuilder.Entity<Patient>()
+                .HasIndex(p => p.ApplicationUserId)
+                .IsUnique();
+
+            modelBuilder.Entity<Patient>()
+                .HasIndex(p => p.PhoneNumber);
+
+            modelBuilder.Entity<Patient>()
+                .HasIndex(p => p.IsDeleted);
+
+            modelBuilder.Entity<Patient>()
+                .HasIndex(p => p.IsActive);
+
+            modelBuilder.Entity<Professional>()
+                .HasIndex(p => p.ApplicationUserId)
+                .IsUnique();
+
+            modelBuilder.Entity<Professional>()
+                .HasIndex(p => p.License)
+                .IsUnique();
+
+            modelBuilder.Entity<Professional>()
+                .HasIndex(p => p.IsDeleted);
+            modelBuilder.Entity<Professional>()
+                .HasIndex(p => p.IsActive);
+
+            modelBuilder.Entity<Professional>()
+                .HasIndex(p => p.ProfessionalStatus);
+
+            modelBuilder.Entity<Prescription>()
+                .HasIndex(p => p.PatientId);
+
+            modelBuilder.Entity<Prescription>()
+                .HasIndex(p => p.ProfessionalId);
+
+            modelBuilder.Entity<Prescription>()
+                .HasIndex(p => p.IsActive);
         }
 
         public DbSet<ApplicationUser> ApplicationUsers { get; set; }
@@ -58,5 +143,6 @@ namespace PatientManagement.Infrastructure.DbContexts
         public DbSet<RefreshToken> RefreshTokens { get; set; }
         public DbSet<Permission> Permissions { get; set; }
         public DbSet<RolePermission> RolePermissions { get; set; }
+        public DbSet<ExternalLogin> ExternalLogins { get; set; }
     }
 }
