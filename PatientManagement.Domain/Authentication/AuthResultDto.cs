@@ -1,9 +1,9 @@
 ﻿
 namespace PatientManagement.Domain.Authentication
 {
-    public class FacebookAuthResultDto
+    public class AuthResultDto
     {
-        public FacebookAuthResultDto(
+        public AuthResultDto(
             Guid userId,
              string? accessToken,
             string? refreshToken)

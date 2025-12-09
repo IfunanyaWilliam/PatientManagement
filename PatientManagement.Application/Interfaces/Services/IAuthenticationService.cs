@@ -7,7 +7,7 @@ namespace PatientManagement.Application.Interfaces.Services
     {
         Task<AuthenticationResultDto> GetAuthTokenAsync(string email, string password);
 
-        Task<FacebookAuthResultDto> GetAuthTokenAsync(string email);
+        Task<AuthResultDto> GetAuthTokenAsync(string email);
 
         Task<AuthenticationResultDto> RefreshTokenAsync(string refreshToken);
 

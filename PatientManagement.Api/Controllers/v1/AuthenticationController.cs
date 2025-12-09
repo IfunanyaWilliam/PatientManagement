@@ -172,5 +172,53 @@ namespace PatientManagement.Api.Controllers.v1
                 refreshToken: result.RefreshToken
             ));
         }
+
+
+        /// <summary>
+        ///     POST: /api/v1/Authentication
+        /// </summary>
+        /// <remarks>
+        ///     Add a patient.
+        /// </remarks>
+        /// <param name="parameters"></param>
+        /// <param name="ct"></param>
+        /// <response code="200">
+        ///     Operation was successful.
+        /// </response>
+        /// <response code="400">
+        ///     Bad Request.
+        /// </response>
+        /// <response code = "500" >
+        ///     Internal Server Error.
+        /// </response>
+        [HttpPost]
+        [AllowAnonymous]
+        [ProducesResponseType(typeof(AuthenticationResult), StatusCodes.Status200OK)]
+        public async Task<IActionResult> LoginWithGoogleAsync(
+            LoginWithGoogleParameters parameters,
+            CancellationToken ct = default)
+        {
+            if (parameters == null)
+                return BadRequest("Invalid parameters");
+
+            var result = await _commandExecutorWithResult
+                .ExecuteAsync<LoginWithGoogleCommandParameters, LoginWithGoogleCommandResult>(
+                    command: new LoginWithGoogleCommandParameters(
+                        idToken: parameters.IdToken),
+                    ct: ct);
+
+            if (result == null
+                || result.AccessToken == null
+                || string.IsNullOrWhiteSpace(result.AccessToken))
+            {
+                ModelState.AddModelError("login.Unauthorized", "Access not authorized.");
+                return BadRequest(ModelState);
+            }
+
+            return Ok(new AuthenticationResult(
+                accessToken: result.AccessToken,
+                refreshToken: result.RefreshToken
+            ));
+        }
     }
 }

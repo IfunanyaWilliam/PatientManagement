@@ -78,13 +78,17 @@ namespace PatientManagement.Infrastructure.Repositories.Implementations
 
 
 
-        public async Task<bool> InsertFacebookLoginAsync(Guid userId, string facebookId, CancellationToken cancellationToken = default)
+        public async Task<bool> InsertExternalLoginAsync(
+            Guid userId, 
+            string provider, 
+            string providerUserId, 
+            CancellationToken cancellationToken = default)
         {
             var userLogin = new Entities.ExternalLogin
             {
                 ApplicationUserId = userId,
-                Provider = "Facebook",
-                ProviderUserId = facebookId,
+                Provider = provider,
+                ProviderUserId = providerUserId,
                 LinkedAt = DateTime.UtcNow
             };
 
