@@ -25,9 +25,9 @@ namespace PatientManagement.Infrastructure.Services.Implementation
             _logger = logger;
             _networkService = networkService;
             _configuration = configuration;
-            _ClientId = _configuration["Facebook:ClientId"]
+            _ClientId = Environment.GetEnvironmentVariable("FacebookClientId", EnvironmentVariableTarget.Machine)
                 ?? throw new CustomException("Facebook AppId not configured", StatusCodes.Status500InternalServerError);
-            _ClientSecret = _configuration["Facebook:ClientSecret"]
+            _ClientSecret = Environment.GetEnvironmentVariable("FacebookClientSecret", EnvironmentVariableTarget.Machine)
                 ?? throw new CustomException("Facebook AppSecret not configured", StatusCodes.Status500InternalServerError);
             _debugUrl = _configuration["Facebook:GraphDebugTokenUrl"] 
                 ?? throw new CustomException("Facebook GraphDebugTokenUrl not configured", StatusCodes.Status500InternalServerError);
