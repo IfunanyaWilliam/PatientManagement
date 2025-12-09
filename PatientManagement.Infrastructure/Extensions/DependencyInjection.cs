@@ -35,12 +35,6 @@ namespace PatientManagement.Infrastructure.Extensions
             .AddEntityFrameworkStores<AppDbContext>()
             .AddDefaultTokenProviders();
 
-            services.AddAuthentication().AddFacebook(opt =>
-            {
-                opt.ClientId = configuration["Facebook:ClientId"];
-                opt.ClientSecret = configuration["Facebook:ClientSecret"];
-            });
-            
 
             services.AddHttpContextAccessor();
 
@@ -55,6 +49,7 @@ namespace PatientManagement.Infrastructure.Extensions
             services.AddScoped<IMedicationRepository, MedicationRepository>();
             services.AddScoped<INetworkService, NetworkService>();
             services.AddScoped<IFacebookAuthService, FacebookAuthService>();
+            services.AddScoped<IGoogleAuthService, GoogleAuthService>();
 
             // Overrides the DefaultAuthorizationPolicyProvider
             services.AddScoped<IAuthorizationHandler, PermissionAuthorizationHandler>();

@@ -13,9 +13,10 @@ namespace PatientManagement.Application.Interfaces.Repositories
             UserRole role,
             CancellationToken cancellationToken = default);
 
-        Task<bool> InsertFacebookLoginAsync(
-            Guid userId, 
-            string facebookId, 
+        Task<bool> InsertExternalLoginAsync(
+            Guid userId,
+            string provider,
+            string providerUserId,
             CancellationToken cancellationToken = default);
 
     }

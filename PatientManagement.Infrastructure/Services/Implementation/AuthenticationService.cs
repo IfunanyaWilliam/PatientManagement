@@ -71,7 +71,7 @@ namespace PatientManagement.Infrastructure.Services.Implementation
                 refreshToken: refreshToken);
         }
 
-        public async Task<FacebookAuthResultDto> GetAuthTokenAsync(string email)
+        public async Task<AuthResultDto> GetAuthTokenAsync(string email)
         {
             var user = await _userManager.FindByEmailAsync(email);
             if (user == null)
@@ -89,7 +89,7 @@ namespace PatientManagement.Infrastructure.Services.Implementation
                 return null;
             }
 
-            return new FacebookAuthResultDto(
+            return new AuthResultDto(
                 userId: user.Id,
                 accessToken: accessToken,
                 refreshToken: refreshToken);

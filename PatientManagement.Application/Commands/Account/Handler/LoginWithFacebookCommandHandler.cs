@@ -49,9 +49,10 @@ namespace PatientManagement.Application.Commands.Account.Handler
                 throw new CustomException("Token not generated", StatusCodes.Status500InternalServerError);
             }
 
-            var isTokenInserted = await _accountRepository.InsertFacebookLoginAsync(
+            var isTokenInserted = await _accountRepository.InsertExternalLoginAsync(
                 userId: tokenResult.UserId,
-                facebookId: facebookValidationResult.Id,
+                provider: "Facebook",
+                providerUserId: facebookValidationResult.Id,
                 cancellationToken: ct);
 
             if (!isTokenInserted)
