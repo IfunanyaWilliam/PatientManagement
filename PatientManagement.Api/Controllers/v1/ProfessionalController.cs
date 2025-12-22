@@ -1,18 +1,19 @@
 ﻿
 namespace PatientManagement.Api.Controllers.v1
 {
-    using Asp.Versioning;
-    using Microsoft.AspNetCore.Mvc;
     using Microsoft.AspNetCore.Authorization;
+    using Microsoft.AspNetCore.Mvc;
     using Application.Commands.Professional.Parameters;
-    using Application.Queries.Professional.Parameters;
     using Application.Commands.Professional.Results;
-    using Application.Queries.Professional.Resulsts;
-    using Infrastructure.PolicyProvider;
-    using Parameters;
-    using Results;
     using Application.Interfaces.Commands;
     using Application.Interfaces.Queries;
+    using Application.Queries.Professional.Parameters;
+    using Application.Queries.Professional.Resulsts;
+    using Infrastructure.PolicyProvider;
+    using Asp.Versioning;
+    using FluentValidation;
+    using Parameters;
+    using Results;
 
     [ApiController]
     [Authorize]
@@ -22,13 +23,20 @@ namespace PatientManagement.Api.Controllers.v1
     {
         private readonly ICommandExecutorWithResult _commandExecutorWithResult;
         private readonly IQueryExecutor _queryExecutor;
+        private readonly IValidator<ApproveProfessionalStatusParameters> _approveValidator;
+        private readonly IValidator<CreateProfessionalParameters> _createProfessionalValidator;
+
 
         public ProfessionalController(
             ICommandExecutorWithResult commandExecutorWithResult,
-            IQueryExecutor queryExecutor)
+            IQueryExecutor queryExecutor,
+            IValidator<ApproveProfessionalStatusParameters> approveValidator,
+            IValidator<CreateProfessionalParameters> createProfessionalValidator)
         {
             _commandExecutorWithResult = commandExecutorWithResult;
             _queryExecutor = queryExecutor;
+            _approveValidator = approveValidator;
+            _createProfessionalValidator = createProfessionalValidator;
         }
 
 
@@ -64,7 +72,14 @@ namespace PatientManagement.Api.Controllers.v1
         {
             if (parameters == null)
                 return BadRequest("Parameter values are required");
-            
+
+            var validationResult = await _createProfessionalValidator.ValidateAsync(parameters, ct);
+
+            if (!validationResult.IsValid)
+            {
+                return BadRequest(validationResult.Errors.Select(e => e.ErrorMessage).ToList());
+            }
+
             var result = await _commandExecutorWithResult
                 .ExecuteAsync<CreateProfessionalCommandParameters, CreateProfessionalCommandResult>(
                     command: new CreateProfessionalCommandParameters(
@@ -130,8 +145,17 @@ namespace PatientManagement.Api.Controllers.v1
             [FromBody] ApproveProfessionalStatusParameters parameters,
             CancellationToken ct = default)
         {
-            if (parameters == null)
-                return BadRequest("Parameters must not be null.");
+            if (parameters == null) {
+
+                return BadRequest(new { Error = "Request body is required" });
+            }
+
+            var validationResult = await _approveValidator.ValidateAsync(parameters, ct);
+
+            if (!validationResult.IsValid)
+            {
+                return BadRequest(validationResult.Errors.Select(e => e.ErrorMessage).ToList());
+            }
 
             var result = await _commandExecutorWithResult
                 .ExecuteAsync<ApproveProfessionalStatusCommandParameters, ApproveProfessionalStatusCommandResult>(

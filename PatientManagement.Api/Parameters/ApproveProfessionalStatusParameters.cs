@@ -5,6 +5,10 @@ namespace PatientManagement.Api.Parameters
 
     public class ApproveProfessionalStatusParameters
     {
+        public ApproveProfessionalStatusParameters()
+        {
+        }
+
         public ApproveProfessionalStatusParameters(Guid professionalId)
         {
             ProfessionalId = professionalId;
