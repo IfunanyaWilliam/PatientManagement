@@ -1,9 +1,10 @@
 ﻿
 namespace PatientManagement.Api.Middlewares
 {
-    using System.Text.Json;
-    using PatientManagement.Api.Results;
     using Application.Utilities;
+    using PatientManagement.Api.Results;
+    using System.Text.Json;
+    using static System.Runtime.InteropServices.JavaScript.JSType;
 
     public class ExceptionMiddleware
     {
@@ -44,24 +45,33 @@ namespace PatientManagement.Api.Middlewares
             context.Response.ContentType = "application/json";
             context.Response.StatusCode = StatusCodes.Status500InternalServerError;
 
-            var errorResponse = new ExceptionResult();
-
             switch (ex)
             {
                 case CustomException customException:
                     context.Response.StatusCode = customException.StatusCode;
-                    errorResponse.StatusCode = customException.StatusCode;
-                    errorResponse.Message = customException.Message;
+
+                    var response = BaseResponse<object>.Fail
+                    (
+                        message: "Request processing failed.",
+                         error: customException.Message,
+                        responseCode: customException.ResponseCode
+                    );
+
+                    await context.Response.WriteAsync(JsonSerializer.Serialize(response));
                     break;
 
                 default:
                     context.Response.StatusCode = StatusCodes.Status500InternalServerError;
-                    errorResponse.StatusCode = StatusCodes.Status500InternalServerError;
-                    errorResponse.Message = "An internal server error occurred.";
+                    var generalResponse = BaseResponse<object>.Fail
+                    (
+                        message: "Request processing failed.",
+                         error: "An internal server error occurred.",
+                        responseCode: StatusCodes.Status500InternalServerError
+                    );
+
+                    await context.Response.WriteAsync(JsonSerializer.Serialize(generalResponse));
                     break;
             }
-
-            await context.Response.WriteAsync(JsonSerializer.Serialize(errorResponse));
         }
     }
 }

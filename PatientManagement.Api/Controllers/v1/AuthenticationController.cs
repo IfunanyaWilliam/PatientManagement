@@ -12,6 +12,7 @@ namespace PatientManagement.Api.Controllers.v1
     using PatientManagement.Application.Commands.Account.Paremeters;
     using PatientManagement.Application.Commands.Account.Result;
     using PatientManagement.Application.Interfaces.Commands;
+    using PatientManagement.Application.Utilities;
 
     [ApiController]
     [Authorize]
@@ -71,10 +72,14 @@ namespace PatientManagement.Api.Controllers.v1
                 return BadRequest(ModelState);
             }
 
-            return Ok(new AuthenticationResult(
-                accessToken: result.AccessToken,
-                refreshToken: result.RefreshToken
-            ));
+            return StatusCode(
+                    statusCode: StatusCodes.Status200OK,
+                     BaseResponse<AuthenticationResult>.Success(
+                         message: "User authenticated successfully",
+                         data: new AuthenticationResult(
+                            accessToken: result.AccessToken,
+                            refreshToken: result.RefreshToken),
+                         responseCode: 20));
         }
 
 
@@ -119,10 +124,14 @@ namespace PatientManagement.Api.Controllers.v1
                 return BadRequest(ModelState);
             }
 
-            return Ok(new AuthenticationResult(
-                accessToken: result.AccessToken,
-                refreshToken: result.RefreshToken
-            ));
+            return StatusCode(
+                statusCode: StatusCodes.Status200OK,
+                 BaseResponse<AuthenticationResult>.Success(
+                     data: new AuthenticationResult(
+                        accessToken: result.AccessToken,
+                        refreshToken: result.RefreshToken),
+                     message: "User authenticated successfully",
+                     responseCode: 00));
         }
 
 
@@ -167,10 +176,14 @@ namespace PatientManagement.Api.Controllers.v1
                 return BadRequest(ModelState);
             }
 
-            return Ok(new AuthenticationResult(
-                accessToken: result.AccessToken,
-                refreshToken: result.RefreshToken
-            ));
+            return StatusCode(
+                statusCode: StatusCodes.Status200OK,
+                 BaseResponse<AuthenticationResult>.Success(
+                     data: new AuthenticationResult(
+                        accessToken: result.AccessToken,
+                        refreshToken: result.RefreshToken),
+                     message: "User authenticated successfully",
+                     responseCode: 00));
         }
 
 
@@ -215,10 +228,14 @@ namespace PatientManagement.Api.Controllers.v1
                 return BadRequest(ModelState);
             }
 
-            return Ok(new AuthenticationResult(
-                accessToken: result.AccessToken,
-                refreshToken: result.RefreshToken
-            ));
+            return StatusCode(
+                statusCode: StatusCodes.Status200OK,
+                 BaseResponse<AuthenticationResult>.Success(
+                     data: new AuthenticationResult(
+                        accessToken: result.AccessToken,
+                        refreshToken: result.RefreshToken),
+                     message: "User authenticated successfully",
+                     responseCode: 00));
         }
     }
 }
