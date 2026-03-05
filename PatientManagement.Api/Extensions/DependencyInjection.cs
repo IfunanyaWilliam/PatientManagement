@@ -1,10 +1,13 @@
 ﻿
 namespace PatientManagement.Api.Extensions
 {
-    using Asp.Versioning;
     using Application.Extensions;
+    using Asp.Versioning;
+    using FluentValidation;
     using Infrastructure.Extensions;
-
+    using Microsoft.AspNetCore.Mvc;
+    using PatientManagement.Api.Filters;
+    using Validators;
 
     public static class DependencyInjection
     {
@@ -22,12 +25,18 @@ namespace PatientManagement.Api.Extensions
                 options.SubstituteApiVersionInUrl = true;
             });
 
+            //disable automatic model state validation
+            services.Configure<ApiBehaviorOptions>(options =>
+            {
+                options.SuppressModelStateInvalidFilter = true;
+            });
 
             services.AddControllers();
             services.AddEndpointsApiExplorer();
 
             services.AddSwaggerGen();
 
+            services.AddValidatorsFromAssemblyContaining<ApproveProfessionalStatusParametersValidator>();
             services.ConfigureAuthorization(configuration);
             services.AddSwaggerConfiguration();
 

@@ -8,6 +8,7 @@
     using Application.Interfaces.Commands;
     using Parameters;
     using Results;
+    using PatientManagement.Application.Utilities;
 
     [ApiController]
     [ApiVersion("1.0")]
@@ -57,11 +58,16 @@
                         userRole: parameters.UserRole),
                     ct: ct);
 
-            return Ok(new CreateUserResult(
-                userId: result.UserId,
-                email: result.Email,
-                userRole: result.UserRole,
-                created: result.DateCreated));
+            return StatusCode(
+                StatusCodes.Status200OK,
+                BaseResponse<CreateUserResult>.Success(
+                    data: new CreateUserResult(
+                            userId: result.UserId,
+                            email: result.Email,
+                            userRole: result.UserRole,
+                            created: result.DateCreated),
+                    message: "User created successfully.",
+                    responseCode: 00));
         }
     }
 }

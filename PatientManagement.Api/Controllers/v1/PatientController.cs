@@ -13,6 +13,7 @@ namespace PatientManagement.Api.Controllers.v1
     using Application.Interfaces.Queries;
     using Parameters;
     using Results;
+    using FluentValidation;
 
     [ApiController]
     [Authorize]
@@ -22,13 +23,19 @@ namespace PatientManagement.Api.Controllers.v1
     {
         private readonly ICommandExecutorWithResult _commandExecutorWithResult;
         private readonly IQueryExecutor _queryExecutor;
+        private readonly IValidator<CreatePatientParameters> _createPatientParametersValidator;
+        private readonly IValidator<UpdatePatientParameters> _updatePatientParametersValidator;
 
         public PatientController(
             ICommandExecutorWithResult commandExecutorWithResult, 
-            IQueryExecutor queryExecutor)
+            IQueryExecutor queryExecutor,
+            IValidator<CreatePatientParameters> createPatiendParametersValidator,
+            IValidator<UpdatePatientParameters> updatePatientParametersValidator)
         {
             _commandExecutorWithResult = commandExecutorWithResult;
             _queryExecutor = queryExecutor;
+            _createPatientParametersValidator = createPatiendParametersValidator;
+            _updatePatientParametersValidator = updatePatientParametersValidator;
         }
 
 
@@ -64,6 +71,14 @@ namespace PatientManagement.Api.Controllers.v1
         {
             if (parameters == null)
                 return BadRequest("Parameters must not be null.");
+
+            var validationResult = await _createPatientParametersValidator.ValidateAsync(parameters, ct);
+
+            if (!validationResult.IsValid)
+            {
+                var errors = validationResult.Errors.Select(e => e.ErrorMessage).ToList();
+                return BadRequest(new { Errors = errors });
+            }
 
             var result = await _commandExecutorWithResult
                 .ExecuteAsync<CreatePatientCommandParameters, CreatePatientCommandResult>(
@@ -126,6 +141,14 @@ namespace PatientManagement.Api.Controllers.v1
         {
             if (parameters == null)
                 return BadRequest("Parameters must not be null.");
+
+            var validationResult = await _updatePatientParametersValidator.ValidateAsync(parameters, ct);
+
+            if (!validationResult.IsValid)
+            {
+                var errors = validationResult.Errors.Select(e => e.ErrorMessage).ToList();
+                return BadRequest(new { Errors = errors });
+            }
 
             var result = await _commandExecutorWithResult
                 .ExecuteAsync<UpdatePatientCommandParameters, UpdatePatientCommandResult>(
