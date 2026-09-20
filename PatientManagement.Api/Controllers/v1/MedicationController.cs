@@ -14,7 +14,7 @@ namespace PatientManagement.Api.Controllers.v1
     using Application.Interfaces.Queries;
     using Parameters;
     using Results;
-    
+    using PatientManagement.Application.Utilities;
 
     [ApiController]
     [Authorize]
@@ -64,8 +64,11 @@ namespace PatientManagement.Api.Controllers.v1
             [FromBody] CreateMedicationParameters parameters,
             CancellationToken ct = default)
         {
-            if (parameters == null)
-                return BadRequest("Parameters must not be null.");
+            if (string.IsNullOrWhiteSpace(parameters.Name) || string.IsNullOrWhiteSpace(parameters.Description))
+                return BadRequest(
+                    BaseResponse<CreateMedicationResult>.Fail(
+                        error: "Medication Name and Description are required.",
+                        message: "Input validation failed."));
 
             var result = await _commandExecutorWithResult
                 .ExecuteAsync<CreateMedicationCommandParameters, CreateMedicationCommandResult>(
@@ -74,13 +77,17 @@ namespace PatientManagement.Api.Controllers.v1
                         description: parameters.Description),
                     ct: ct);
 
-            return Ok(new CreateMedicationResult(
-                id: result.Id,
-                name: result.Name,
-                description: result.Description,
-                isActive: result.IsActive,
-                createdDate: result.CreatedDate,
-                dateModified: result.DateModified));
+            return StatusCode(
+                StatusCodes.Status201Created,
+                BaseResponse<CreateMedicationResult>.Success(
+                    data: new CreateMedicationResult(
+                            id: result.Id,
+                            name: result.Name,
+                            description: result.Description,
+                            isActive: result.IsActive,
+                            createdDate: result.CreatedDate,
+                            dateModified: result.DateModified),
+                    message: "Medication added successfully"));
         }
 
         /// <summary>
@@ -113,8 +120,15 @@ namespace PatientManagement.Api.Controllers.v1
             [FromBody] UpdateMedicationParameters parameters,
             CancellationToken ct = default)
         {
-            if (parameters == null)
-                return BadRequest("Parameters must not be null.");
+            if (parameters.MedicationId == Guid.Empty 
+                || string.IsNullOrWhiteSpace(parameters.Name)
+                || string.IsNullOrWhiteSpace(parameters.Description))
+            {
+                return BadRequest(
+                    BaseResponse<CreatedAtActionResult>.Fail(
+                        error: "One or more of your input parameters are empty.",
+                        message: "Input validation failed."));
+            }
 
             var result = await _commandExecutorWithResult
                 .ExecuteAsync<UpdateMedicationCommandParameters, UpdateMedicationCommandResult>(
@@ -124,15 +138,16 @@ namespace PatientManagement.Api.Controllers.v1
                         description: parameters.Description),
                     ct: ct);
 
-            return Ok(new UpdateMedicationResult(
-               id: result.Id,
-               name: result.Name,
-               description: result.Description,
-               isActive: result.IsActive,
-               createdDate: result.CreatedDate,
-               dateModified: result.DateModified));
+            return Ok(BaseResponse<UpdateMedicationResult>.Success(
+                        data: new UpdateMedicationResult(
+                                   id: result.Id,
+                                   name: result.Name,
+                                   description: result.Description,
+                                   isActive: result.IsActive,
+                                   createdDate: result.CreatedDate,
+                                   dateModified: result.DateModified),
+                        message: "Medication updated successfully."));
         }
-
 
         /// <summary>
         ///     GET: /api/v1/medication/
@@ -165,20 +180,27 @@ namespace PatientManagement.Api.Controllers.v1
             CancellationToken ct = default)
         {
             if (id == Guid.Empty)
-                return BadRequest("Patient Id is required");
+            {
+                return BadRequest(
+                    BaseResponse<GetMedicationByIdResult>.Fail(
+                        error: "Medication Id is required.",
+                        message: "Input validation failed."));
+            }
 
             var result = await _queryExecutor
                 .ExecuteAsync<GetMedicationByIdQueryParameters, GetMedicationByIdQueryResult>(
                     parameters: new GetMedicationByIdQueryParameters(id: id),
                     ct: ct);
 
-            return Ok(new GetMedicationByIdResult(
-                id: result.Id,
-                name: result.Name,
-                isActive: result.IsActive,
-                description: result.Description,
-                createdDate: result.DateCreated,
-                dateModified: result.DateModified));
+            return Ok(BaseResponse<GetMedicationByIdResult>.Success(
+                data: new GetMedicationByIdResult(
+                            id: result.Id,
+                            name: result.Name,
+                            isActive: result.IsActive,
+                            description: result.Description,
+                            createdDate: result.DateCreated,
+                            dateModified: result.DateModified),
+                message: "Medication details retrieved."));
         }
 
 
@@ -226,18 +248,22 @@ namespace PatientManagement.Api.Controllers.v1
 
             if (result.Medications is null || !result.Medications.Any())
             {
-                return Ok(new GetAllMedicationsResult(new List<GetMedicationsResult>()));
+                return Ok(BaseResponse<GetAllMedicationsResult>.Success(
+                    data: new GetAllMedicationsResult(new List<GetMedicationsResult>()),
+                    message: "No medication found"));
             }
 
-            return Ok(new GetAllMedicationsResult(
-                result.Medications.Select(m =>
-                      new GetMedicationsResult(
-                          id: m.Id,
-                          name: m.Name,
-                          description: m.Description,
-                          isActive: m.IsActive,
-                          dateCreated: m.DateCreated,
-                          dateModified: m.DateModified))));
+            return Ok(BaseResponse<GetAllMedicationsResult>.Success(
+                    data: new GetAllMedicationsResult(
+                            result.Medications.Select(m =>
+                                  new GetMedicationsResult(
+                                      id: m.Id,
+                                      name: m.Name,
+                                      description: m.Description,
+                                      isActive: m.IsActive,
+                                      dateCreated: m.DateCreated,
+                                      dateModified: m.DateModified))),
+                    message: "Medications retrieved successfully."));
         }
     }
 }

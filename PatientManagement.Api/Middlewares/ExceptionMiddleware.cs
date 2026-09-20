@@ -54,7 +54,7 @@ namespace PatientManagement.Api.Middlewares
                     (
                         message: "Request processing failed.",
                          error: customException.Message,
-                        responseCode: customException.ResponseCode
+                        responseCode: customException.StatusCode
                     );
 
                     await context.Response.WriteAsync(JsonSerializer.Serialize(response));
@@ -65,7 +65,7 @@ namespace PatientManagement.Api.Middlewares
                     var generalResponse = BaseResponse<object>.Fail
                     (
                         message: "Request processing failed.",
-                         error: "An internal server error occurred.",
+                         error: "🤷 An internal server error occurred.",
                         responseCode: StatusCodes.Status500InternalServerError
                     );
 

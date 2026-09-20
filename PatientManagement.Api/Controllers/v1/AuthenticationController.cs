@@ -55,7 +55,9 @@ namespace PatientManagement.Api.Controllers.v1
             CancellationToken ct = default)
         {
             if (parameters == null)
-                return BadRequest("Invalid parameters");
+                return BadRequest(BaseResponse<GetAuthTokenResult>.Fail(
+                    error: "Parameter values are required",
+                    message: "No request body provided"));
 
             var result = await _queryExecutor
                 .ExecuteAsync<GetAuthTokenQueryParameters, GetAuthTokenQueryResult>(
@@ -68,8 +70,12 @@ namespace PatientManagement.Api.Controllers.v1
                 || result.AccessToken == null
                 || string.IsNullOrWhiteSpace(result.AccessToken))
             {
-                ModelState.AddModelError("login.Unauthorized", "Access not authorized.");
-                return BadRequest(ModelState);
+                return StatusCode(
+                    StatusCodes.Status500InternalServerError,
+                    BaseResponse<AuthenticationResult>.Fail(
+                        error: "Access token not generated",
+                        message: "Processing Error, try again later.",
+                        responseCode: StatusCodes.Status500InternalServerError));
             }
 
             return StatusCode(
@@ -108,7 +114,9 @@ namespace PatientManagement.Api.Controllers.v1
             CancellationToken ct = default)
         {
             if (parameters == null)
-                return BadRequest("Invalid parameters");
+                return BadRequest(BaseResponse<GetAuthTokenResult>.Fail(
+                    error: "Parameter values are required",
+                    message: "No request body provided"));
 
             var result = await _queryExecutor
                 .ExecuteAsync<GetRefreshTokenQueryParameters, GetAuthTokenQueryResult>(
@@ -117,11 +125,15 @@ namespace PatientManagement.Api.Controllers.v1
                     ct: ct);
 
             if (result == null
-                || result.AccessToken == null
+                || string.IsNullOrWhiteSpace(result.RefreshToken)
                 || string.IsNullOrWhiteSpace(result.AccessToken))
             {
-                ModelState.AddModelError("login.Unauthorized", "Access not authorized.");
-                return BadRequest(ModelState);
+                return StatusCode(
+                    StatusCodes.Status500InternalServerError,
+                    BaseResponse<AuthenticationResult>.Fail(
+                        error: "Access token not generated",
+                        message: "Processing Error, try again later.",
+                        responseCode: StatusCodes.Status500InternalServerError));
             }
 
             return StatusCode(
@@ -160,7 +172,9 @@ namespace PatientManagement.Api.Controllers.v1
             CancellationToken ct = default)
         {
             if (parameters == null)
-                return BadRequest("Invalid parameters");
+                return BadRequest(BaseResponse<GetAuthTokenResult>.Fail(
+                    error: "Parameter values are required",
+                    message: "No request body provided"));
 
             var result = await _commandExecutorWithResult
                 .ExecuteAsync<LoginWithFacebookCommandParameters, LoginWithFacebookCommandResult>(
@@ -172,8 +186,12 @@ namespace PatientManagement.Api.Controllers.v1
                 || result.AccessToken == null
                 || string.IsNullOrWhiteSpace(result.AccessToken))
             {
-                ModelState.AddModelError("login.Unauthorized", "Access not authorized.");
-                return BadRequest(ModelState);
+                return StatusCode(
+                     StatusCodes.Status500InternalServerError,
+                     BaseResponse<AuthenticationResult>.Fail(
+                         error: "Access token not generated",
+                         message: "Processing Error, try again later.",
+                         responseCode: StatusCodes.Status500InternalServerError));
             }
 
             return StatusCode(
@@ -212,7 +230,9 @@ namespace PatientManagement.Api.Controllers.v1
             CancellationToken ct = default)
         {
             if (parameters == null)
-                return BadRequest("Invalid parameters");
+                return BadRequest(BaseResponse<GetAuthTokenResult>.Fail(
+                    error: "Parameter values are required",
+                    message: "No request body provided"));
 
             var result = await _commandExecutorWithResult
                 .ExecuteAsync<LoginWithGoogleCommandParameters, LoginWithGoogleCommandResult>(
@@ -221,11 +241,15 @@ namespace PatientManagement.Api.Controllers.v1
                     ct: ct);
 
             if (result == null
-                || result.AccessToken == null
+                || string.IsNullOrWhiteSpace(result.RefreshToken)
                 || string.IsNullOrWhiteSpace(result.AccessToken))
             {
-                ModelState.AddModelError("login.Unauthorized", "Access not authorized.");
-                return BadRequest(ModelState);
+                return StatusCode(
+                        StatusCodes.Status500InternalServerError,
+                        BaseResponse<AuthenticationResult>.Fail(
+                            error: "Access token not generated",
+                            message: "Processing Error, try again later.",
+                            responseCode: StatusCodes.Status401Unauthorized));
             }
 
             return StatusCode(

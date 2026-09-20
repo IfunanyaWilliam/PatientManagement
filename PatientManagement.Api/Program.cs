@@ -13,7 +13,16 @@ public class Program
             builder.AddSerilog();
 
             builder.Services.AddServices(builder.Configuration);
-            
+
+            builder.WebHost.ConfigureKestrel(options =>
+            {
+                options.ListenAnyIP(7015, listenOptions =>
+                {
+                    listenOptions.UseHttps();
+                    listenOptions.Protocols = Microsoft.AspNetCore.Server.Kestrel.Core.HttpProtocols.Http1AndHttp2;
+                });
+            });
+
             var app = builder.Build();
 
             // Seed data and configure the request pipeline
