@@ -14,6 +14,7 @@ namespace PatientManagement.Api.Controllers.v1
     using Parameters;
     using Results;
     using FluentValidation;
+    using PatientManagement.Application.Utilities;
 
     [ApiController]
     [Authorize]
@@ -77,7 +78,9 @@ namespace PatientManagement.Api.Controllers.v1
             if (!validationResult.IsValid)
             {
                 var errors = validationResult.Errors.Select(e => e.ErrorMessage).ToList();
-                return BadRequest(new { Errors = errors });
+                return BadRequest(BaseResponse<CreatePatientResult>.Fail(
+                    errors: errors,
+                    message: "Input validation failed."));
             }
 
             var result = await _commandExecutorWithResult
@@ -92,20 +95,23 @@ namespace PatientManagement.Api.Controllers.v1
                         age: parameters.Age),
                     ct: ct);
 
-            return Ok(new CreatePatientResult(
-                id: result.Id,
-                applicationUserId: result.ApplicationUserId,
-                title: result.Title,
-                firstName: result.FirstName,
-                middleName: result.MiddleName,
-                lastName: result.LastName,
-                phoneNumber: result.PhoneNumber,
-                age: result.Age,
-                email: result.Email,
-                isActive: result.IsActive,
-                userRole: result.UserRole,
-                dateCreated: result.DateCreated,
-                dateModified: result.DateModified));
+            return Ok(BaseResponse<CreatePatientResult>.Success(
+                        data:new CreatePatientResult(
+                                    id: result.Id,
+                                    applicationUserId: result.ApplicationUserId,
+                                    title: result.Title,
+                                    firstName: result.FirstName,
+                                    middleName: result.MiddleName,
+                                    lastName: result.LastName,
+                                    phoneNumber: result.PhoneNumber,
+                                    age: result.Age,
+                                    email: result.Email,
+                                    isActive: result.IsActive,
+                                    userRole: result.UserRole,
+                                    dateCreated: result.DateCreated,
+                                    dateModified: result.DateModified),
+                        message: "Patient created successfully.",
+                        responseCode: StatusCodes.Status201Created));
         }
 
 

@@ -68,8 +68,12 @@ namespace PatientManagement.Api.Controllers.v1
                 || result.AccessToken == null
                 || string.IsNullOrWhiteSpace(result.AccessToken))
             {
-                ModelState.AddModelError("login.Unauthorized", "Access not authorized.");
-                return BadRequest(ModelState);
+                return StatusCode(
+                    StatusCodes.Status500InternalServerError,
+                    BaseResponse<AuthenticationResult>.Fail(
+                        error: "Access token not generated",
+                        message: "Processing Error, try again later.",
+                        responseCode: StatusCodes.Status500InternalServerError));
             }
 
             return StatusCode(
@@ -117,11 +121,15 @@ namespace PatientManagement.Api.Controllers.v1
                     ct: ct);
 
             if (result == null
-                || result.AccessToken == null
+                || string.IsNullOrWhiteSpace(result.RefreshToken)
                 || string.IsNullOrWhiteSpace(result.AccessToken))
             {
-                ModelState.AddModelError("login.Unauthorized", "Access not authorized.");
-                return BadRequest(ModelState);
+                return StatusCode(
+                    StatusCodes.Status500InternalServerError,
+                    BaseResponse<AuthenticationResult>.Fail(
+                        error: "Access token not generated",
+                        message: "Processing Error, try again later.",
+                        responseCode: StatusCodes.Status500InternalServerError));
             }
 
             return StatusCode(
@@ -172,8 +180,12 @@ namespace PatientManagement.Api.Controllers.v1
                 || result.AccessToken == null
                 || string.IsNullOrWhiteSpace(result.AccessToken))
             {
-                ModelState.AddModelError("login.Unauthorized", "Access not authorized.");
-                return BadRequest(ModelState);
+                return StatusCode(
+                     StatusCodes.Status500InternalServerError,
+                     BaseResponse<AuthenticationResult>.Fail(
+                         error: "Access token not generated",
+                         message: "Processing Error, try again later.",
+                         responseCode: StatusCodes.Status500InternalServerError));
             }
 
             return StatusCode(
@@ -221,11 +233,15 @@ namespace PatientManagement.Api.Controllers.v1
                     ct: ct);
 
             if (result == null
-                || result.AccessToken == null
+                || string.IsNullOrWhiteSpace(result.RefreshToken)
                 || string.IsNullOrWhiteSpace(result.AccessToken))
             {
-                ModelState.AddModelError("login.Unauthorized", "Access not authorized.");
-                return BadRequest(ModelState);
+                return StatusCode(
+                        StatusCodes.Status500InternalServerError,
+                        BaseResponse<AuthenticationResult>.Fail(
+                            error: "Access token not generated",
+                            message: "Processing Error, try again later.",
+                            responseCode: StatusCodes.Status401Unauthorized));
             }
 
             return StatusCode(

@@ -27,17 +27,18 @@ namespace PatientManagement.Application.Utilities
         {
             IsSuccess = false,
             ResponseCode = responseCode,
-            Message = message ?? null,
             Data = data,
+            Message = message ?? null,
             Errors = [error]
         };
 
-        public static BaseResponse<T> Fail(IEnumerable<string> errors, int responseCode = StatusCodes.Status400BadRequest, T? data = default) =>
+        public static BaseResponse<T> Fail(IEnumerable<string> errors, string message, int responseCode = StatusCodes.Status400BadRequest, T? data = default) =>
         new()
         {
             IsSuccess = false,
             ResponseCode = responseCode,
             Data = data,
+            Message = message ?? null,
             Errors = errors.ToList().AsReadOnly()
         };
     }
