@@ -6,13 +6,11 @@ namespace PatientManagement.Application.Utilities
     public class CustomException : Exception
     {
         public int StatusCode { get; }
-        public int ResponseCode { get; }
 
-        public CustomException(string message, int statusCode = StatusCodes.Status500InternalServerError, int responseCode = 99)
+        public CustomException(string message, int statusCode = StatusCodes.Status500InternalServerError)
             : base(message)
         {
             StatusCode = statusCode;
-            ResponseCode = responseCode;
         }
     }
 }

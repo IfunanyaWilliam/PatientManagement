@@ -71,15 +71,16 @@ namespace PatientManagement.Api.Controllers.v1
             CancellationToken ct = default)
         {
             if (parameters == null)
-                return BadRequest("Parameters must not be null.");
+                return BadRequest(BaseResponse<CreatePatientResult>.Fail(
+                    error: "Parameter values are required",
+                    message: "🤷 No request body provided"));
 
             var validationResult = await _createPatientParametersValidator.ValidateAsync(parameters, ct);
 
             if (!validationResult.IsValid)
             {
-                var errors = validationResult.Errors.Select(e => e.ErrorMessage).ToList();
                 return BadRequest(BaseResponse<CreatePatientResult>.Fail(
-                    errors: errors,
+                    errors: validationResult.Errors.Select(e => e.ErrorMessage).ToList(),
                     message: "Input validation failed."));
             }
 
@@ -110,7 +111,7 @@ namespace PatientManagement.Api.Controllers.v1
                                     userRole: result.UserRole,
                                     dateCreated: result.DateCreated,
                                     dateModified: result.DateModified),
-                        message: "Patient created successfully.",
+                        message: "✨ Patient created successfully.",
                         responseCode: StatusCodes.Status201Created));
         }
 
@@ -146,14 +147,17 @@ namespace PatientManagement.Api.Controllers.v1
             CancellationToken ct = default)
         {
             if (parameters == null)
-                return BadRequest("Parameters must not be null.");
+                return BadRequest(BaseResponse<CreatePatientResult>.Fail(
+                    error: "Parameter values are required",
+                    message: "No request body provided"));
 
             var validationResult = await _updatePatientParametersValidator.ValidateAsync(parameters, ct);
 
             if (!validationResult.IsValid)
             {
-                var errors = validationResult.Errors.Select(e => e.ErrorMessage).ToList();
-                return BadRequest(new { Errors = errors });
+                return BadRequest(BaseResponse<CreatePatientResult>.Fail(
+                    errors: validationResult.Errors.Select(e => e.ErrorMessage).ToList(),
+                    message: "Validation failed"));
             }
 
             var result = await _commandExecutorWithResult
@@ -169,20 +173,23 @@ namespace PatientManagement.Api.Controllers.v1
                         age: parameters.Age),
                     ct: ct);
 
-            return Ok(new UpdatePatientResult(
-                id: result.Id,
-                applicationUserId: result.ApplicationUserId,
-                title: result.Title,
-                firstName: result.FirstName,
-                middleName: result.MiddleName,
-                lastName: result.LastName,
-                phoneNumber: result.PhoneNumber,
-                age: result.Age,
-                email: result.Email,
-                isActive: result.IsActive,
-                userRole: result.UserRole,
-                createdDate: result.CreatedDate,
-                dateModified: result.DateModified));
+            return Ok(BaseResponse<UpdatePatientResult>.Success(
+                data: new UpdatePatientResult(
+                    id: result.Id,
+                    applicationUserId: result.ApplicationUserId,
+                    title: result.Title,
+                    firstName: result.FirstName,
+                    middleName: result.MiddleName,
+                    lastName: result.LastName,
+                    phoneNumber: result.PhoneNumber,
+                    age: result.Age,
+                    email: result.Email,
+                    isActive: result.IsActive,
+                    userRole: result.UserRole,
+                    createdDate: result.CreatedDate,
+                    dateModified: result.DateModified),
+                message: "✨ Patient updated successfully",
+                responseCode: StatusCodes.Status200OK));
         }
 
 
@@ -217,7 +224,9 @@ namespace PatientManagement.Api.Controllers.v1
             CancellationToken ct = default)
         {
             if (id == Guid.Empty)
-                return BadRequest("Patient Id is required");
+                return BadRequest(BaseResponse<GetPatientResult>.Fail(
+                    error: "Patient Id is required",
+                    message: "Invalid parameters"));
 
             var result = await _queryExecutor
                 .ExecuteAsync<GetPatientQueryParameters, GetPatientQueryResult>(
@@ -227,22 +236,27 @@ namespace PatientManagement.Api.Controllers.v1
             if (result == null)
                 return StatusCode(
                     StatusCodes.Status500InternalServerError, 
-                    new { message = "Your request could not be processed now, try again later." });
+                    BaseResponse<GetPatientResult>.Fail(
+                        error: "Your request could not be processed now, try again later.",
+                        message: "Internal Server Error"));
 
-            return Ok(new GetPatientResult(
-                id: result.Id,
-                applicationUserId: result.ApplicationUserId,
-                title: result.Title,
-                firstName: result.FirstName,
-                middleName: result.MiddleName,
-                lastName: result.LastName,
-                phoneNumber: result.PhoneNumber,
-                age: result.Age,
-                email: result.Email,
-                isActive: result.IsActive,
-                userRole: result.UserRole,
-                dateCreated: result.CreatedDate,
-                dateModified: result.DateModified));
+            return Ok(BaseResponse<GetPatientResult>.Success(
+                data: new GetPatientResult(
+                    id: result.Id,
+                    applicationUserId: result.ApplicationUserId,
+                    title: result.Title,
+                    firstName: result.FirstName,
+                    middleName: result.MiddleName,
+                    lastName: result.LastName,
+                    phoneNumber: result.PhoneNumber,
+                    age: result.Age,
+                    email: result.Email,
+                    isActive: result.IsActive,
+                    userRole: result.UserRole,
+                    dateCreated: result.CreatedDate,
+                    dateModified: result.DateModified),
+                message: "✨ Patient retrieved successfully",
+                responseCode: StatusCodes.Status200OK));
         }
 
 
@@ -274,7 +288,7 @@ namespace PatientManagement.Api.Controllers.v1
         [HttpGet("all")]
         [PermissionAuthorize(permissionOperator: PermissionOperator.Or, "ViewMedicalRecords", "ManagePatientRecords", "ManageMedicalRecords")]
         [ProducesResponseType(typeof(GetAllPatientsResult), StatusCodes.Status200OK)]
-        public async Task<GetAllPatientsResult> GetAllPatients(
+        public async Task<IActionResult> GetAllPatients(
             [FromQuery] int pageNumber = 1,
             [FromQuery] int pageSize = 10,
             [FromQuery] string searchParam = null,
@@ -288,10 +302,14 @@ namespace PatientManagement.Api.Controllers.v1
                         searchParam: searchParam),
                     ct: ct);
 
-            if (result is null)
-                return new GetAllPatientsResult(new List<GetPatientsResult>());
+            if (result is null || !result.Patients.Any())
+                return Ok(BaseResponse<GetAllPatientsResult>.Success(
+                    data: new GetAllPatientsResult(new List<GetPatientsResult>()),
+                    message: "🤔 No patients found",
+                    responseCode: StatusCodes.Status404NotFound));
 
-            return new GetAllPatientsResult(
+            return Ok(BaseResponse<GetAllPatientsResult>.Success(
+                data: new GetAllPatientsResult(
                     result.Patients.Select(p => new GetPatientsResult(
                         id: p.Id,
                         applicationUserId: p.ApplicationUserId,
@@ -305,7 +323,9 @@ namespace PatientManagement.Api.Controllers.v1
                         isActive: p.IsActive,
                         userRole: p.UserRole,
                         dateCreated: p.DateCreated,
-                        dateModified: p.DateModified)));
+                        dateModified: p.DateModified))),
+                message: "✨ Patients retrieved successfully",
+                responseCode: StatusCodes.Status200OK));
         }
 
 
@@ -340,7 +360,11 @@ namespace PatientManagement.Api.Controllers.v1
             CancellationToken ct = default)
         {
             if (id == Guid.Empty)
-                return BadRequest("Patient Id is required");
+                return BadRequest(BaseResponse<DeletePatientResult>.Fail(
+                    error: "Patient Id is required",
+                    message: "🤔 No Patient Id provided",
+                    responseCode: StatusCodes.Status400BadRequest));
+
             var result = await _commandExecutorWithResult
                 .ExecuteAsync<DeletePatientCommandParameters, DeletePatientCommandResult>(
                     command: new DeletePatientCommandParameters(id: id),
@@ -349,9 +373,15 @@ namespace PatientManagement.Api.Controllers.v1
             if (result == null)
                 return StatusCode(
                     StatusCodes.Status500InternalServerError,
-                    new { message = "Your request could not be processed at the moment, try again later." });
+                    BaseResponse<DeletePatientResult>.Fail(
+                        error: "Opps! 🫣 Internal Server Error",
+                        message: "Your request could not be processed at the moment, try again later.",
+                        responseCode: StatusCodes.Status500InternalServerError));
 
-            return Ok(new DeletePatientResult(result.IsDeleted));
+            return Ok(BaseResponse<DeletePatientResult>.Success(
+                data: new DeletePatientResult(result.IsDeleted),
+                message: "Patient deleted successfully",
+                responseCode: StatusCodes.Status200OK));
         }
     }
 }

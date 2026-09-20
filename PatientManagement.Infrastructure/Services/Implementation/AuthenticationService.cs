@@ -54,7 +54,7 @@ namespace PatientManagement.Infrastructure.Services.Implementation
             if (user == null || !await _userManager.CheckPasswordAsync(user, password))
             {
                 _logger.LogInformation($"Authentication failed for user with email {email}");
-                throw new CustomException($"Invalid credentials", StatusCodes.Status401Unauthorized);
+                throw new CustomException($"😡 Invalid credentials", StatusCodes.Status401Unauthorized);
             }
 
             var roles = await _userManager.GetRolesAsync(user);
@@ -77,7 +77,7 @@ namespace PatientManagement.Infrastructure.Services.Implementation
             if (user == null)
             {
                 _logger.LogInformation($"User with facebook email {email} was not found");   
-                throw new CustomException($"Invalid credentials", StatusCodes.Status401Unauthorized);
+                throw new CustomException($"😡 Invalid credentials", StatusCodes.Status401Unauthorized);
             }
 
             var roles = await _userManager.GetRolesAsync(user);
@@ -102,7 +102,7 @@ namespace PatientManagement.Infrastructure.Services.Implementation
             if (storedToken == null || storedToken.IsRevoked || DateTime.UtcNow > storedToken.ExpiresAt)
             {
                 _logger.LogInformation($"Refresh token for userId {storedToken.ApplicationUser} was invalid");
-                throw new CustomException($"Invalid credentials", StatusCodes.Status400BadRequest);
+                throw new CustomException($"😡 Invalid credentials", StatusCodes.Status400BadRequest);
             }
 
             var user = await _userManager.FindByEmailAsync(storedToken?.ApplicationUser?.Email);

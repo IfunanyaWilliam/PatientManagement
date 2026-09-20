@@ -55,7 +55,9 @@ namespace PatientManagement.Api.Controllers.v1
             CancellationToken ct = default)
         {
             if (parameters == null)
-                return BadRequest("Invalid parameters");
+                return BadRequest(BaseResponse<GetAuthTokenResult>.Fail(
+                    error: "Parameter values are required",
+                    message: "No request body provided"));
 
             var result = await _queryExecutor
                 .ExecuteAsync<GetAuthTokenQueryParameters, GetAuthTokenQueryResult>(
@@ -112,7 +114,9 @@ namespace PatientManagement.Api.Controllers.v1
             CancellationToken ct = default)
         {
             if (parameters == null)
-                return BadRequest("Invalid parameters");
+                return BadRequest(BaseResponse<GetAuthTokenResult>.Fail(
+                    error: "Parameter values are required",
+                    message: "No request body provided"));
 
             var result = await _queryExecutor
                 .ExecuteAsync<GetRefreshTokenQueryParameters, GetAuthTokenQueryResult>(
@@ -168,7 +172,9 @@ namespace PatientManagement.Api.Controllers.v1
             CancellationToken ct = default)
         {
             if (parameters == null)
-                return BadRequest("Invalid parameters");
+                return BadRequest(BaseResponse<GetAuthTokenResult>.Fail(
+                    error: "Parameter values are required",
+                    message: "No request body provided"));
 
             var result = await _commandExecutorWithResult
                 .ExecuteAsync<LoginWithFacebookCommandParameters, LoginWithFacebookCommandResult>(
@@ -224,7 +230,9 @@ namespace PatientManagement.Api.Controllers.v1
             CancellationToken ct = default)
         {
             if (parameters == null)
-                return BadRequest("Invalid parameters");
+                return BadRequest(BaseResponse<GetAuthTokenResult>.Fail(
+                    error: "Parameter values are required",
+                    message: "No request body provided"));
 
             var result = await _commandExecutorWithResult
                 .ExecuteAsync<LoginWithGoogleCommandParameters, LoginWithGoogleCommandResult>(

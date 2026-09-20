@@ -14,6 +14,7 @@ namespace PatientManagement.Api.Controllers.v1
     using FluentValidation;
     using Parameters;
     using Results;
+    using PatientManagement.Application.Utilities;
 
     [ApiController]
     [Authorize]
@@ -71,7 +72,9 @@ namespace PatientManagement.Api.Controllers.v1
             CancellationToken ct = default)
         {
             if (parameters == null)
-                return BadRequest("Parameter values are required");
+                return BadRequest(BaseResponse<CreateProfessionalResult>.Fail(
+                    error: "Parameter values are required",
+                    message: "Invalid parameters"));
 
             var validationResult = await _createProfessionalValidator.ValidateAsync(parameters, ct);
 
@@ -95,23 +98,26 @@ namespace PatientManagement.Api.Controllers.v1
                         userRole: parameters.UserRole),
                     ct: ct);
 
-            return Ok(new CreateProfessionalResult(
-                id: result.Id,
-                applicationUserId: result.ApplicationUserId,
-                title: result.Title,
-                firstName: result.FirstName,
-                middleName: result.MiddleName,
-                lastName: result.LastName,
-                phoneNumber: result.PhoneNumber,
-                age: result.Age,
-                qualification: result.Qualification,
-                license: result.License,
-                email: result.Email,
-                isActive: result.IsActive,
-                userRole: result.UserRole,
-                professionalStatus: result.ProfessionalStatus,
-                dateCreated: result.DateCreated,
-                dateModified: result.DateModified));
+            return Ok(BaseResponse<CreateProfessionalResult>.Success(
+                data: new CreateProfessionalResult(
+                    id: result.Id,
+                    applicationUserId: result.ApplicationUserId,
+                    title: result.Title,
+                    firstName: result.FirstName,
+                    middleName: result.MiddleName,
+                    lastName: result.LastName,
+                    phoneNumber: result.PhoneNumber,
+                    age: result.Age,
+                    qualification: result.Qualification,
+                    license: result.License,
+                    email: result.Email,
+                    isActive: result.IsActive,
+                    userRole: result.UserRole,
+                    professionalStatus: result.ProfessionalStatus,
+                    dateCreated: result.DateCreated,
+                    dateModified: result.DateModified),
+                message: "Professional created successfully",
+                responseCode: StatusCodes.Status200OK));
         }
 
 
@@ -147,14 +153,18 @@ namespace PatientManagement.Api.Controllers.v1
         {
             if (parameters == null) {
 
-                return BadRequest(new { Error = "Request body is required" });
+                return BadRequest(BaseResponse<CreateProfessionalResult>.Fail(
+                    error: "Parameter values are required",
+                    message: "No request body provided"));
             }
 
             var validationResult = await _approveValidator.ValidateAsync(parameters, ct);
 
             if (!validationResult.IsValid)
             {
-                return BadRequest(validationResult.Errors.Select(e => e.ErrorMessage).ToList());
+                return BadRequest(BaseResponse<CreateProfessionalResult>.Fail(
+                    errors: validationResult.Errors.Select(e => e.ErrorMessage),
+                    message: "Validation failed"));
             }
 
             var result = await _commandExecutorWithResult
@@ -163,23 +173,25 @@ namespace PatientManagement.Api.Controllers.v1
                         professionalId: parameters.ProfessionalId),
                     ct: ct);
 
-            return Ok(new ApproveProfessionalStatusResult(
-                id: result.Id,
-                applicationUserId: result.ApplicationUserId,
-                title: result.Title,
-                firstName: result?.FirstName,
-                middleName: result?.MiddleName,
-                lastName: result?.LastName,
-                phoneNumber: result?.PhoneNumber,
-                age: result.Age,
-                qualification: result?.Qualification,
-                license: result?.License,
-                email: result.Email,
-                isActive: result.IsActive,
-                userRole: result.UserRole,
-                professionalStatus: result.ProfessionalStatus,
-                dateCreated: result.DateCreated,
-                dateModified: result?.DateModified));
+            return Ok(BaseResponse<ApproveProfessionalStatusResult>.Success(
+                data: new ApproveProfessionalStatusResult(
+                    id: result.Id,
+                    applicationUserId: result.ApplicationUserId,
+                    title: result.Title,
+                    firstName: result?.FirstName,
+                    middleName: result?.MiddleName,
+                    lastName: result?.LastName,
+                    phoneNumber: result?.PhoneNumber,
+                    age: result.Age,
+                    qualification: result?.Qualification,
+                    license: result?.License,
+                    email: result?.Email,
+                    isActive: result.IsActive,
+                    userRole: result.UserRole,
+                    professionalStatus: result.ProfessionalStatus,
+                    dateCreated: result.DateCreated,
+                    dateModified: result?.DateModified),
+                message: "Professional status approved successfully"));
         }
 
         /// <summary>
@@ -213,7 +225,9 @@ namespace PatientManagement.Api.Controllers.v1
             CancellationToken ct = default)
         {
             if (professionalId == Guid.Empty)
-                return BadRequest("Patient Id is required");
+                return BadRequest(BaseResponse<GetProfessionalByIdResult>.Fail(
+                    error: "Professional Id is required",
+                    message: "No professional Id provided"));
 
             var result = await _queryExecutor
             .ExecuteAsync<GetProfessionalByIdQueryParameters, GetProfessionalByIdQueryResult>(
@@ -223,25 +237,30 @@ namespace PatientManagement.Api.Controllers.v1
             if (result == null)
                 return StatusCode(
                     StatusCodes.Status404NotFound,
-                    new { message = $"Professional with Id: {professionalId} Not Found." });
+                    BaseResponse<GetProfessionalByIdResult>.Fail(
+                        error: "Professional not found",
+                        message: $"Professional with Id: {professionalId} Not Found.",
+                        responseCode: StatusCodes.Status404NotFound));
 
-            return Ok(new GetProfessionalByIdResult(
-                id: result.Id,
-                applicationUserId: result.ApplicationUserId,
-                title: result.Title,
-                firstName: result?.FirstName,
-                middleName: result?.MiddleName,
-                lastName: result?.LastName,
-                phoneNumber: result?.PhoneNumber,
-                age: result.Age,
-                qualification: result?.Qualification,
-                license: result?.License,
-                email: result?.Email,
-                isActive: result.IsActive,
-                userRole: result.UserRole,
-                professionalStatus: result.ProfessionalStatus,
-                dateCreated: result.DateCreated,
-                dateModified: result?.DateModified));
+            return Ok(BaseResponse<GetProfessionalByIdResult>.Success(
+                data: new GetProfessionalByIdResult(
+                    id: result.Id,
+                    applicationUserId: result.ApplicationUserId,
+                    title: result.Title,
+                    firstName: result?.FirstName,
+                    middleName: result?.MiddleName,
+                    lastName: result?.LastName,
+                    phoneNumber: result?.PhoneNumber,
+                    age: result.Age,
+                    qualification: result?.Qualification,
+                    license: result?.License,
+                    email: result?.Email,
+                    isActive: result.IsActive,
+                    userRole: result.UserRole,
+                    professionalStatus: result.ProfessionalStatus,
+                    dateCreated: result.DateCreated,
+                    dateModified: result?.DateModified),
+                message: "Professional retrieved successfully"));
         }
 
 
@@ -288,10 +307,13 @@ namespace PatientManagement.Api.Controllers.v1
                     ct: ct);
 
             if (result == null)
-                return new GetAllProfessionalsResult(new List<GetProfessionalsResult>());
+                return Ok(BaseResponse<GetAllProfessionalsResult>.Success(
+                    data: new GetAllProfessionalsResult(new List<GetProfessionalsResult>()),
+                    message: "No professionals found"));
 
-            return Ok(new GetAllProfessionalsResult(
-                professionals: result.Professionals.Select(p =>
+            return Ok(BaseResponse<GetAllProfessionalsResult>.Success(
+                data: new GetAllProfessionalsResult(
+                    professionals: result.Professionals.Select(p =>
                         new GetProfessionalsResult(
                             id: p.Id,
                             applicationUserId: p.ApplicationUserId,
@@ -308,7 +330,8 @@ namespace PatientManagement.Api.Controllers.v1
                             userRole: p.UserRole,
                             professionalStatus: p.ProfessionalStatus,
                             dateCreated: p.DateCreated,
-                            dateModified: p?.DateModified))));
+                            dateModified: p?.DateModified))),
+                message: "Professionals retrieved successfully"));
         }
     }
 }
